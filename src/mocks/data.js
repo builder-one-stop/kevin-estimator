@@ -13,12 +13,6 @@ export const PROJECTS = [
   { id: 'PRJ-10001', title: 'Bathroom Remodel', amount: 50480.80, status: 'bidding', address: 'South Bay, CA', assignee: 'Luis' },
 ]
 
-export const CONTACTS = [
-  { name: 'Joel Ramirez', phone: '(310) 330-5545', address: '10305 S Prairie Ave, Inglewood, CA 90303' },
-  { name: 'Kevin', phone: '(310) 413-7231' },
-  { name: 'Luis', phone: '(310) 413-7231' },
-]
-
 export const INVOICES = [
   { name: 'Rampa de Concreto con Desnivel (8x6)', num: 'INV-10001-000', project: 'PRJ-10007 50 LF Drainage Trenching & Pipe Installation', est: 'EST-10017', date: 'Sep 23, 2026', amount: 4678.09 },
 ]
