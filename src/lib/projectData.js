@@ -10,6 +10,10 @@ export const STATUS_COLORS = {
   Approved: '#8DC63F', 'In progress': '#3BAFDA', Completed: '#5C5C58',
 }
 
+export function isProjectId(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value || '')
+}
+
 export function cleanProject(values) {
   return {
     name: values.name.trim(),

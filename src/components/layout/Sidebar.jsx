@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { BriefcaseBusiness, CalendarDays, ChevronUp, Clock3, ContactRound, Home, Search, Sparkles, WalletCards } from 'lucide-react'
+import { BriefcaseBusiness, CalendarDays, ChevronUp, Clock3, ContactRound, FileText, Home, Search, Sparkles, WalletCards } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { PROFILE } from '../../mocks/data.js'
 import UserMenu from './UserMenu.jsx'
@@ -17,6 +17,7 @@ export function LogoMark({ size = 30 }) {
 
 const navItems = [
   ['home', '/', Home], ['projects', '/projects', BriefcaseBusiness],
+  ['estimates', '/estimates', FileText],
   ['invoices', '/invoices', WalletCards], ['contacts', '/contacts', ContactRound],
   ['schedule', '/schedule', CalendarDays], ['time', '/time', Clock3],
 ]
@@ -49,11 +50,11 @@ export default function Sidebar({ onNavigate, onSoon }) {
         <LogoMark />
         <div><div className="brand-name">One Stop</div><div className="brand-sub">{t('brandSub')}</div></div>
       </div>
-      <button className="ask-btn" type="button" onClick={() => go('/')}><Sparkles size={20} />{t('ask')}</button>
+      <button className="ask-btn" type="button" onClick={() => { navigate('/', { state: { focusComposer: true } }); onNavigate() }}><Sparkles size={20} />{t('ask')}</button>
       <label className="search"><Search size={18} /><input ref={searchRef} placeholder={t('search')} aria-label={t('search')} /><span className="kbd">⌘K</span></label>
       <nav className="nav">
         {navItems.map(([key, path, Icon]) => {
-          const current = key === 'home' ? isHome : location.pathname === path
+          const current = key === 'home' ? isHome : location.pathname === path || location.pathname.startsWith(`${path}/`)
           return (
             <Link key={key} to={path} onClick={onNavigate} aria-current={current ? 'page' : undefined} className={current ? 'active' : ''}>
               <Icon />{t(`nav.${key}`)}

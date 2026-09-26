@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { BriefcaseBusiness, LayoutList, MapPin, Pencil, Plus, Search, SortDesc, Trash2, UserRound } from 'lucide-react'
-import { useOutletContext } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getClients } from '../services/clients.js'
 import { getProjects, updateProject } from '../services/projects.js'
 import { filterProjects, PROJECT_STAGES, STAGE_KEYS, STATUS_COLORS } from '../lib/projectData.js'
 import ProjectDialog from '../components/projects/ProjectDialog.jsx'
+import StageSelect from '../components/projects/StageSelect.jsx'
 import Button from '../components/ui/Button.jsx'
 import Chip from '../components/ui/Chip.jsx'
 import EmptyState from '../components/ui/EmptyState.jsx'
@@ -17,12 +18,6 @@ function ProjectActions({ project, onEdit, onDelete, t }) {
     <IconButton label={t('projects.editProject', { name: project.name })} onClick={() => onEdit(project)}><Pencil size={17} /></IconButton>
     <IconButton label={t('projects.deleteProject', { name: project.name })} onClick={() => onDelete(project)}><Trash2 size={17} /></IconButton>
   </span>
-}
-
-function StageSelect({ project, onChange, busy, t }) {
-  return <select className="project-stage-select" value={project.stage} onChange={(event) => onChange(project, event.target.value)} disabled={busy} aria-label={t('projects.changeStage', { name: project.name })}>
-    {PROJECT_STAGES.map((stage) => <option key={stage} value={stage}>{t(`status.${STAGE_KEYS[stage]}`)}</option>)}
-  </select>
 }
 
 export default function Projects() {
@@ -117,21 +112,23 @@ export default function Projects() {
                   return <section className="col" aria-label={t(`status.${STAGE_KEYS[stage]}`)} key={stage}>
                     <div className="col-head"><StatusDot color={STATUS_COLORS[stage]} />{t(`status.${STAGE_KEYS[stage]}`)}<span className="tag count-tag">{stageProjects.length}</span></div>
                     {/* TODO(estimates): Show project amounts when persisted estimates provide a real source. */}
-                    {stageProjects.length ? stageProjects.map((project) => <article className="pcard" key={project.id}>
+                    {stageProjects.length ? stageProjects.map((project) => <article className="pcard project-openable" key={project.id}>
+                      <Link className="project-hitbox" to={`/projects/${project.id}`} aria-label={t('projects.openProject', { name: project.name })} />
                       <span className="id">{project.id.slice(0, 8).toUpperCase()}</span>
                       <span className="title">{project.name}</span>
                       {project.address && <span className="pill"><MapPin size={14} />{project.address}</span>}
                       {project.client && <span className="pill"><UserRound size={14} />{project.client.name}</span>}
-                      <div className="project-card-foot"><StageSelect project={project} onChange={onStageChange} busy={Boolean(stageBusyId)} t={t} /><ProjectActions project={project} {...actionProps} /></div>
+                      <div className="project-card-foot"><StageSelect project={project} onChange={onStageChange} busy={Boolean(stageBusyId)} /><ProjectActions project={project} {...actionProps} /></div>
                     </article>) : <div className="col-empty">{t('projects.empty')}</div>}
                   </section>
                 })}
               </div>
             ) : (
-              <div className="rows">{visible.map((project) => <div className="row row-projects" key={project.id}>
+              <div className="rows">{visible.map((project) => <div className="row row-projects project-openable" key={project.id}>
+                <Link className="project-hitbox" to={`/projects/${project.id}`} aria-label={t('projects.openProject', { name: project.name })} />
                 <div className="project-list-name"><b>{project.name}</b>{project.address && <span className="muted row-note">{project.address}</span>}</div>
                 <span className="cell-ic"><UserRound size={16} /><span>{project.client?.name || t('projects.noClient')}</span></span>
-                <span className="project-list-stage"><StatusDot color={STATUS_COLORS[project.stage]} /><StageSelect project={project} onChange={onStageChange} busy={Boolean(stageBusyId)} t={t} /></span>
+                <span className="project-list-stage"><StatusDot color={STATUS_COLORS[project.stage]} /><StageSelect project={project} onChange={onStageChange} busy={Boolean(stageBusyId)} /></span>
                 <ProjectActions project={project} {...actionProps} />
               </div>)}</div>
             )}

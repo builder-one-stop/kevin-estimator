@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { cleanProject, filterProjects, PROJECT_STAGES, validateProject } from './projectData.js'
+import { cleanProject, filterProjects, isProjectId, PROJECT_STAGES, validateProject } from './projectData.js'
 
 describe('project data', () => {
   it('uses the six database stages', () => {
     expect(PROJECT_STAGES).toEqual(['Lead', 'Draft', 'Bidding', 'Approved', 'In progress', 'Completed'])
+  })
+
+  it('accepts project UUID routes and rejects unrelated paths', () => {
+    expect(isProjectId('550e8400-e29b-41d4-a716-446655440000')).toBe(true)
+    expect(isProjectId('not-a-project')).toBe(false)
   })
 
   it('trims optional fields and validates required values', () => {

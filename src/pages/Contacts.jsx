@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Mail, MapPin, Pencil, Phone, Plus, Search, SortDesc, Trash2, Upload, UsersRound, X } from 'lucide-react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { createClient, deleteClient, getClients, updateClient } from '../services/clients.js'
 import { cleanContact, filterContacts, validateContact } from '../lib/contactForm.js'
@@ -117,6 +117,8 @@ function ContactDialog({ mode, contact, onClose, onSaved, onDeleted, showToast }
 
 export default function Contacts() {
   const { t, i18n } = useTranslation()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const selectedClientId = searchParams.get('client')
   const { showSoon, showToast } = useOutletContext()
   const [contacts, setContacts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -137,9 +139,11 @@ export default function Contacts() {
     return () => { active = false }
   }, [retry])
 
-  const visible = filterContacts(contacts, query).slice().sort((a, b) =>
+  const visible = filterContacts(contacts, query).filter((contact) => !selectedClientId || contact.id === selectedClientId).sort((a, b) =>
     (descending ? -1 : 1) * a.name.localeCompare(b.name, i18n.language),
   )
+
+  function clearSearch() { setQuery(''); setSearchParams({}) }
 
   function onSaved(saved, mode) {
     setContacts((current) => mode === 'edit'
@@ -157,14 +161,14 @@ export default function Contacts() {
     <div className="page">
       <div className="page-head"><h1>{t('contacts.title')}</h1><div className="head-actions"><IconButton label={t('contacts.import')} onClick={showSoon}><Upload size={18} /></IconButton><Button onClick={() => setDialog({ mode: 'create' })}><Plus size={18} />{t('contacts.add')}</Button></div></div>
       <div className="filters contact-filters">
-        <Chip type="button">{t('contacts.all')}<span className="count">{contacts.length}</span></Chip>
+        <Chip type="button" onClick={clearSearch}>{t('contacts.all')}<span className="count">{contacts.length}</span></Chip>
         <label className="contact-search"><Search size={17} /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('contacts.search')} aria-label={t('contacts.search')} /></label>
         <span className="spacer" />
         <Chip type="button" aria-label={t('contacts.sortName')} aria-pressed={descending} onClick={() => setDescending((value) => !value)}><SortDesc size={16} />{t('a11y.sortName')}</Chip>
       </div>
       {loading ? <p className="contact-message" role="status">{t('contacts.loading')}</p>
         : loadError ? <EmptyState icon={UsersRound} title={t('contacts.loadError')} description={t('contacts.loadErrorDetail')} cta={t('contacts.retry')} onAction={() => { setLoading(true); setRetry((value) => value + 1) }} />
-          : visible.length === 0 ? <EmptyState icon={UsersRound} title={t(query ? 'contacts.noResults' : 'contacts.empty')} description={t(query ? 'contacts.noResultsDetail' : 'contacts.emptyDetail')} cta={t(query ? 'contacts.clearSearch' : 'contacts.add')} onAction={() => query ? setQuery('') : setDialog({ mode: 'create' })} />
+          : visible.length === 0 ? <EmptyState icon={UsersRound} title={t(query || selectedClientId ? 'contacts.noResults' : 'contacts.empty')} description={t(query || selectedClientId ? 'contacts.noResultsDetail' : 'contacts.emptyDetail')} cta={t(query || selectedClientId ? 'contacts.clearSearch' : 'contacts.add')} onAction={() => query || selectedClientId ? clearSearch() : setDialog({ mode: 'create' })} />
             : <div className="rows">{visible.map((contact) => (
               <div className="row row-contacts" key={contact.id}>
                 <div className="who"><span className="avatar">{contact.name.split(/\s+/).map((word) => word[0]).join('').slice(0, 2).toUpperCase()}</span><b className="truncate">{contact.name}</b><span className="tag">{t('contacts.client')}</span></div>

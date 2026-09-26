@@ -2,14 +2,14 @@ import { ArrowUp, MapPin, Mic, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import IconButton from '../ui/IconButton.jsx'
 
-export default function Composer({ value, onChange, onSend, compact = false, onSoon }) {
+export default function Composer({ value, onChange, onSend, compact = false, onSoon, inputRef }) {
   const { t } = useTranslation()
   const placeholder = compact ? t('replyPh') : t('composerPh')
   const submit = () => value.trim() && onSend()
 
   return (
     <div className="composer">
-      <textarea rows={compact ? 1 : 2} value={value} onChange={(event) => onChange(event.target.value)}
+      <textarea ref={inputRef} rows={compact ? 1 : 2} value={value} onChange={(event) => onChange(event.target.value)}
         onKeyDown={(event) => {
           if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) { event.preventDefault(); submit() }
         }}

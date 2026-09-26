@@ -1,38 +1,71 @@
-import { useState } from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom'
-import { CircleGauge, Flag, History, ReceiptText, TrendingUp } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate, useOutletContext } from 'react-router-dom'
+import { ArrowRight, BriefcaseBusiness, FileText, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import Chip from '../components/ui/Chip.jsx'
 import Composer from '../components/chat/Composer.jsx'
 import { LogoMark } from '../components/layout/Sidebar.jsx'
-
-const suggestions = [
-  [ReceiptText, 'var(--danger)'], [Flag, '#F0A030'], [CircleGauge, 'var(--lime)'], [TrendingUp, '#3BAFDA'],
-]
+import { PROFILE } from '../mocks/data.js'
+import { getRecentProjects } from '../services/projects.js'
+import { STAGE_KEYS, STATUS_COLORS } from '../lib/projectData.js'
+import Button from '../components/ui/Button.jsx'
+import StatusDot from '../components/ui/StatusDot.jsx'
 
 export default function Home() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const location = useLocation()
   const { showSoon } = useOutletContext()
   const [draft, setDraft] = useState('')
+  const [recentProjects, setRecentProjects] = useState([])
+  const [loadingProjects, setLoadingProjects] = useState(true)
+  const [projectsError, setProjectsError] = useState(false)
+  const [retry, setRetry] = useState(0)
+  const composerRef = useRef(null)
   const hour = new Date().getHours()
   const greeting = hour < 12 ? t('greet.morning') : hour < 19 ? t('greet.afternoon') : t('greet.evening')
   const send = () => navigate(`/chat/${Date.now()}`, { state: { prompt: draft.trim() } })
 
+  useEffect(() => {
+    if (location.state?.focusComposer) composerRef.current?.focus()
+  }, [location.state])
+
+  useEffect(() => {
+    let active = true
+    getRecentProjects(5).then((rows) => {
+      if (active) { setRecentProjects(rows); setLoadingProjects(false); setProjectsError(false) }
+    }).catch((cause) => {
+      console.error('Failed to load recent projects', cause)
+      if (active) { setLoadingProjects(false); setProjectsError(true) }
+    })
+    return () => { active = false }
+  }, [retry])
+
   return (
-    <div className="home">
-      <div className="home-top"><Chip onClick={showSoon}><History size={18} />{t('history')}</Chip></div>
-      <div className="home-center">
-        <LogoMark size={56} />
-        <h1 className="greet">{greeting}, Kevin</h1>
-        <div className="suggest">
-          {t('suggest', { returnObjects: true }).map((label, index) => {
-            const [Icon, color] = suggestions[index]
-            return <button type="button" key={label} onClick={() => setDraft(label)}><span style={{ color }}><Icon size={24} /></span>{label}</button>
-          })}
-        </div>
+    <div className="home home-dashboard">
+      <section className="home-hero" aria-label={t('home.askTitle')}>
+        <LogoMark size={42} />
+        <h1 className="greet">{t('home.greeting', { greeting, name: PROFILE.name.split(' ')[0] })}</h1>
+        <p>{t('home.askTitle')}</p>
+        <Composer inputRef={composerRef} value={draft} onChange={setDraft} onSend={send} onSoon={showSoon} />
+      </section>
+      <div className="home-recent">
+        <section className="home-section">
+          <div className="home-section-head"><div><span className="home-eyebrow">{t('home.work')}</span><h2>{t('home.recentEstimates')}</h2></div><Link to="/estimates">{t('home.viewAll')}<ArrowRight size={16} /></Link></div>
+          <div className="home-section-empty"><FileText size={22} /><div><b>{t('home.noEstimates')}</b><p>{t('home.noEstimatesDetail')}</p></div></div>
+          <Button variant="ghost" onClick={() => composerRef.current?.focus()}>{t('home.createEstimate')}</Button>
+        </section>
+        <section className="home-section">
+          <div className="home-section-head"><div><span className="home-eyebrow">{t('home.work')}</span><h2>{t('home.recentProjects')}</h2></div><Link to="/projects">{t('home.viewAll')}<ArrowRight size={16} /></Link></div>
+          {loadingProjects ? <p className="muted" role="status">{t('home.loadingProjects')}</p>
+            : projectsError ? <div className="home-section-empty"><BriefcaseBusiness size={22} /><div><b>{t('home.projectsError')}</b><button type="button" className="text-action" onClick={() => { setLoadingProjects(true); setRetry((value) => value + 1) }}>{t('home.retry')}</button></div></div>
+              : recentProjects.length ? <div className="home-project-list">{recentProjects.map((project) => <Link key={project.id} to={`/projects/${project.id}`}>
+                <span className="home-project-title">{project.name}</span>
+                <span className="home-project-meta"><StatusDot color={STATUS_COLORS[project.stage]} />{t(`status.${STAGE_KEYS[project.stage]}`)}{project.client && <span>· {project.client.name}</span>}{project.address && <span>· {project.address}</span>}</span>
+              </Link>)}</div>
+                : <div className="home-section-empty"><BriefcaseBusiness size={22} /><div><b>{t('home.noProjects')}</b><p>{t('home.noProjectsDetail')}</p></div></div>}
+        </section>
       </div>
-      <Composer value={draft} onChange={setDraft} onSend={send} onSoon={showSoon} />
+      <section className="home-attention"><Sparkles size={20} /><div><h2>{t('home.needsAttention')}</h2><p>{t('home.noAttention')}</p></div></section>
     </div>
   )
 }
