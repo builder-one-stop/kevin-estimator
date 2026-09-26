@@ -111,11 +111,24 @@ h1 { font-size: 28px; font-weight: 700; letter-spacing: -.02em; margin: 0; }
 .count-tag { height: 22px; padding: 0 8px; }
 .pcard { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 14px; margin-bottom: 8px; display: grid; gap: 6px; cursor: pointer; }
 .pcard:hover { background: var(--card-hover); }
+.pcard { cursor: default; }
 .pcard .id { font-size: 12px; color: var(--muted); }
 .pcard .title { font-weight: 600; line-height: 1.3; }
 .pcard .amt { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 14px; }
 .pill { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: 13px; color: var(--muted); max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; justify-self: start; }
 .col-empty { color: var(--faint); font-size: 13px; padding: 6px; }
+.project-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+.project-actions { display: inline-flex; gap: 4px; justify-content: flex-end; }
+.project-actions .icon-btn { width: 34px; height: 34px; }
+.project-stage-select, .project-filter-select { min-height: 36px; max-width: 100%; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--text); font-size: 14px; cursor: pointer; }
+.project-stage-select { min-width: 0; flex: 1; }
+.project-stage-select:disabled { opacity: .55; cursor: wait; }
+.project-filter-select { max-width: 190px; }
+.project-search { display: flex; align-items: center; gap: 8px; height: 36px; min-width: 180px; width: min(260px, 100%); padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--muted); }
+.project-search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 14px; }
+.project-list-name { min-width: 0; display: grid; gap: 3px; }
+.project-list-name b, .project-list-name .row-note { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.project-list-stage { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
 .rows { border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; }
 .row { display: grid; align-items: center; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--line); background: var(--card); }
 .row:last-child { border-bottom: 0; }
@@ -133,7 +146,9 @@ h1 { font-size: 28px; font-weight: 700; letter-spacing: -.02em; margin: 0; }
 .contact-dialog-body { display: grid; gap: 16px; padding: 22px; }
 .contact-field { display: grid; gap: 7px; font-size: 14px; font-weight: 600; }
 .contact-field input { width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--card); outline: 0; }
+.contact-field select { width: 100%; height: 42px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--card); outline: 0; }
 .contact-field input:focus { border-color: var(--orange); }
+.contact-field select:focus { border-color: var(--orange); }
 .contact-field input[aria-invalid="true"] { border-color: var(--danger); }
 .contact-error { margin: 0; color: var(--danger); font-size: 14px; }
 .contact-confirm { margin: 0; color: var(--muted); }
@@ -141,7 +156,7 @@ h1 { font-size: 28px; font-weight: 700; letter-spacing: -.02em; margin: 0; }
 .btn-danger { background: var(--danger); color: var(--text); }
 .btn-danger:hover { background: #c9443d; }
 .contact-dialog button:disabled { opacity: .55; cursor: wait; }
-.row-projects { grid-template-columns: 110px minmax(220px,3fr) 120px minmax(120px,1fr) 120px; }
+.row-projects { grid-template-columns: minmax(0,2fr) minmax(0,1fr) 170px auto; }
 .row-invoices { grid-template-columns: minmax(200px,2fr) minmax(200px,2fr) 130px 110px 120px 90px; }
 .who { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .who .avatar { border-radius: 50%; background: #383838; color: var(--text); font-weight: 600; }
@@ -179,6 +194,7 @@ button.list-item:hover { background: var(--card-hover); }
   .app { flex-direction: column; }
   .mobile-bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg); }
   .row-projects, .row-invoices, .row-contacts { grid-template-columns: 1fr; }
+  .row-projects .project-actions { justify-content: flex-start; }
   .contact-row-actions { justify-content: flex-start; }
   .row .end { text-align: left; }
   .page, .home { padding: 20px 16px; }
