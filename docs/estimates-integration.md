@@ -1,13 +1,23 @@
-# Estimates integration boundary
+# Estimates integration
 
-`public.estimates` does not exist yet. The `/estimates` page, the Home recent estimates section, and the project Estimates tab intentionally show empty states. No estimate rows, totals, statuses, or alerts are inferred from chat output or invoice mocks.
+The Estimates list, Home recent estimates, project Estimates tab, and editor all use `src/services/estimates.js` and the same `/estimates/:id` record. A project is optional. An estimate linked to a project inherits its client; a database trigger rejects a mismatch when the project has a client.
 
-When the persisted estimate model is designed:
+## Data and security
 
-- Give each estimate one stable ID and a direct route such as `/estimates/:id`. Home, `/estimates`, and `/projects/:id/estimates` should link to that same route.
-- Support optional `project_id` and `client_id` relationships. A project and a client may each have multiple estimates. Decide how client identity stays consistent when both links are present.
-- Serve all three estimate lists through one data service, with recent and project filtered queries. Load related project and client names in the query instead of making one request per row.
-- Derive total, status, document code, and dates only from persisted estimate data. Customer facing estimate, proposal, contract, and PDF content must be in English regardless of interface language.
-- Define follow-up ownership and timestamps (`assigned_salesperson`, `last_contact_at`, `next_follow_up_at`) alongside the later auth/workspace model. Build attention signals only after those fields and rules exist.
+- `public.estimates` stores ownership, optional client and project links, status, markup basis points, a version, and one JSON document containing ordered sections, items, and proposal text. This lets autosave write the full document atomically.
+- `public.estimate_messages` is ready for per-estimate conversation. Browser clients may insert user prompts only. Assistant replies require a trusted server.
+- Both tables have RLS limited to the signed-in owner. Anonymous users cannot read or write estimates. Contacts and Projects retain their prior temporary anonymous policies; the new migration also grants authenticated access so those pages keep working after sign-in. That prior public access still needs a workspace-scoped auth migration before production.
+- Email link sign-in is used for Estimates. `supabase/config.toml` adds the local Vite redirect origins. A deployed origin must be added before production use.
+- Optimistic saves require the previous `version`; the trigger increments it. A stale write returns no row. The local draft is retained across reloads, even when the remote version changes. The editor then requires the user to choose whether to save the local draft over the new version or use the remote version.
 
-Invoices currently have only mock data and no project relationship, so the project Invoices tab and financial summary also remain empty. The existing `projects.client_id` foreign key and nested project routes are the only project relationships needed now.
+## Money and documents
+
+`src/lib/estimateDocument.js` computes costs in integer cents, applies the markup in basis points (3600 by default), and allocates any rounding cents across client line prices. The editor, list, proposal, and PDF share these functions. Markup is on cost; the shown margin is profit divided by sale price. No tax or extra charges are added.
+
+The client proposal is always in English. It shows sale prices and total, without internal costs, markup, or margin. `src/lib/proposalPdf.js` creates a paginated downloadable PDF from the same document and totals. The editor loads the PDF library on demand.
+
+## AI boundary
+
+The old sample chat route redirects to Estimates. No AI backend or secret is configured in Supabase, so the workspace labels the assistant as pending. It does not generate replies, item changes, or supplier prices. Future integration should use an authenticated server endpoint, validate structured operations against the estimate document, preserve manual edits, and record applied operations so users can undo them.
+
+Invoices remain separate and unlinked to projects; project invoice and financial placeholders have not been turned into fabricated amounts.

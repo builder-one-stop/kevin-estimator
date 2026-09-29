@@ -13,10 +13,13 @@ function renderRoute(path) {
 }
 
 describe('primary routes', () => {
-  it('renders Estimates in the main navigation and its empty state', () => {
+  it('renders Estimates immediately after Home and requires a session', () => {
     const html = renderRoute('/estimates')
     expect(html).toContain('nav.estimates')
-    expect(html).toContain('estimates.empty')
+    expect(html.indexOf('nav.home')).toBeLessThan(html.indexOf('nav.estimates'))
+    expect(html.indexOf('nav.estimates')).toBeLessThan(html.indexOf('nav.projects'))
+    expect(html).toContain('estimateEditor.loading')
+    expect(renderRoute('/estimates/550e8400-e29b-41d4-a716-446655440000')).toContain('estimateEditor.loading')
   })
 
   it('resolves a project workspace route and keeps Projects active', () => {
@@ -30,10 +33,10 @@ describe('primary routes', () => {
     expect(renderRoute('/contacts?client=550e8400-e29b-41d4-a716-446655440000')).toContain('contacts.loading')
   })
 
-  it('shows recent sections on Home without fabricated estimates', () => {
+  it('shows recent sections on Home while persisted estimates load', () => {
     const html = renderRoute('/')
     expect(html).toContain('home.recentEstimates')
-    expect(html).toContain('home.noEstimates')
+    expect(html).toContain('estimateEditor.loading')
     expect(html).toContain('home.recentProjects')
     expect(html).toContain('home.needsAttention')
   })

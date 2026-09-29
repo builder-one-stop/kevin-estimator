@@ -1,0 +1,5 @@
+project_id = "kevin-estimator"
+
+[auth]
+# Local Vite URLs for email sign-in. Add the deployed origin before production use.
+additional_redirect_urls = ["http://localhost:5173/**", "http://127.0.0.1:5173/**"]
