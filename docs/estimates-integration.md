@@ -35,3 +35,31 @@ Invoices remain separate and unlinked to projects; project invoice and financial
 ## Review walkthrough
 
 Run `npm run dev`, sign in through the email-link form, create a contact and a project, then use Home → New estimate or Estimates in navigation. Select the project (its client is inherited), add a section and an item, enter quantity 2 and unit cost 100: the default 36% markup yields $200 cost, $72 markup and $272 sale price. Wait for Saved, return to Estimates, reopen and reload. Switch EN/ES while editing. Open the same estimate in two tabs and edit both; a stale save must offer explicit conflict resolution, while the other pending draft remains recoverable. The next acceptance step is this walkthrough with Kevin using a real sign-in email, before any application release.
+
+
+## Real-browser validation after 813d42f — 2026-10-02
+
+The integrated journey was exercised in **Google Chrome**, controlled by Playwright, against local Vite at `http://127.0.0.1:5173` and the real linked Supabase project `vtpciccluvpaclbeqxih`. This is a real browser run, separate from the jsdom component suite. No production deployment or merge was performed.
+
+Authentication used a temporary `@example.invalid` test account and a Supabase Admin-generated one-time magic link. Opening that link exercised Supabase verification, the redirect callback, browser session persistence and actual authenticated RLS requests. Generating a link does **not** send email. Mailbox delivery/receipt and the user's own email-link journey remain unverified; the user's email was requested separately. No mail was sent to Kevin or third parties.
+
+Observed browser results:
+
+- Anonymous routes show sign-in; a blocked OTP request produces a visible error without sending mail.
+- Created a `QA-BROWSER-*` contact and a project linked to it, entirely through the UI.
+- Created estimates from both the dashboard and the Estimates navigation page, linked the project and confirmed inherited client selection.
+- Edited line descriptions, quantities and costs: `2 × 100` at 36% markup produced `$272.00`; `2.5 × 120.50` produced `$301.25` cost, `$108.45` markup and `$409.70` sale price. Saved, reloaded and reopened with values preserved.
+- Two tabs used the same actual authenticated session. A controlled failed PATCH preserved B's draft while A saved. B's stale retry showed conflict controls; reload recovered B's input, and an explicit **Save my draft** persisted it.
+- **Use remote version** discarded only the selected draft; a different pending revision from the other tab remained available for explicit recovery and save.
+- With failed pending edits, navigated to Settings, switched EN→ES, reopened the estimate and observed the original input plus Spanish error/save labels. Retrying persisted the changes.
+- Observed loading and save states, injected a GET 503 and retried successfully against Supabase. The SDK retries GET failures before displaying the error; tests allow that delay. PATCH failures are injected only in the test browser, without changing the server.
+- Normal sign-out removed private content in both tabs and remained signed out after reload.
+- Found and fixed a silent server sign-out failure: the installed Supabase SDK clears local authentication even when remote revocation fails. The menu now shows the error instead of hiding it, prevents repeat clicks while waiting, and labels the signed-out identity accurately. The account menu now fits inside the sidebar so this message is readable.
+
+Evidence: [`results.json`](../evidence/browser-validation/results.json), [saved estimate](../evidence/browser-validation/04-estimate-saved.png), [two-tab conflict](../evidence/browser-validation/05-conflict-two-tabs.png), [Spanish pending draft](../evidence/browser-validation/06-spanish-pending.png), [sign-out error](../evidence/browser-validation/10-logout-failure-fixed.png). Captures contain synthetic test data only; tokens, generated login links, API keys and real email addresses are not written to evidence.
+
+Reproduction: start `npm run dev -- --host 127.0.0.1`, then run `npm run test:browser` with Google Chrome installed and an authenticated Supabase CLI available as `supabase` (or set `SUPABASE_CLI` to its executable). The browser suite intentionally creates temporary remote test data in the verified project; it never runs as part of `npm test`. `BROWSER_HEADED=1` shows the main journey in a Chrome window. Administrative credentials stay in the Node fixture process; they are never injected into the browser. All application operations use the test user's real session. Cleanup filters by that exact newly created user ID, checks that its three data tables are empty, then deletes that temporary account.
+
+Final checks: 48 unit/component/SQL tests passed; lint is clean; build succeeds with the existing bundle-size advisory. A read-only remote cleanup query returned zero `QA-BROWSER` clients, projects, estimates and auth users. No migration or remote configuration change was needed.
+
+The remaining acceptance gate before Kevin's independent trial is a received email and a completed sign-in using the actual email flow. The generated-link browser run verifies the application journey, not email transport.

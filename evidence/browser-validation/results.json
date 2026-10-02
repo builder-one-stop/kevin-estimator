@@ -1,0 +1,58 @@
+{
+  "browser": "Google Chrome",
+  "backend": "vtpciccluvpaclbeqxih",
+  "results": [
+    {
+      "result": "PASS",
+      "step": "Real Chrome + Supabase magic-link callback authenticates; email delivery is not tested by generated link"
+    },
+    {
+      "result": "PASS",
+      "step": "Created a contact through UI and real Supabase"
+    },
+    {
+      "result": "PASS",
+      "step": "Created project linked to the test contact through UI"
+    },
+    {
+      "result": "PASS",
+      "step": "Dashboard estimate: inherited client; edited quantity/prices; 2×100→272 and 2.5×120.50→409.70 at 36% markup; Saving/Saved observed"
+    },
+    {
+      "result": "PASS",
+      "step": "Reloaded and reopened the persisted estimate with correct item values and totals"
+    },
+    {
+      "result": "PASS",
+      "step": "Created a second estimate from Estimates navigation"
+    },
+    {
+      "result": "PASS",
+      "step": "Two real tabs: failed B draft survives A save and reload; stale retry shows conflict; explicit Save my draft persists B"
+    },
+    {
+      "result": "PASS",
+      "step": "Use remote discards only selected B draft; A’s independent pending revision remains recoverable and saves correctly"
+    },
+    {
+      "result": "PASS",
+      "step": "Changed EN→ES through Settings with failed pending edits; reopened draft retained input, Spanish errors, then saved"
+    },
+    {
+      "result": "PASS",
+      "step": "Real browser displays loading while Supabase requests retry"
+    },
+    {
+      "result": "PASS",
+      "step": "Controlled real-browser load failure displays Spanish error; retry reloads real Supabase data"
+    },
+    {
+      "result": "PASS",
+      "step": "Sign-out through UI removes private content in both tabs and survives reload"
+    },
+    {
+      "result": "PASS",
+      "step": "No uncaught browser application errors during the integrated journey"
+    }
+  ]
+}

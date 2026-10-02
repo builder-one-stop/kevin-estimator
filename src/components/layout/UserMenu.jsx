@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { BookOpen, HelpCircle, LogOut, Megaphone, Settings, SlidersHorizontal } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { PROFILE } from '../../mocks/data.js'
 import { supabase } from '../../supabaseClient.js'
 
 export default function UserMenu({ onClose, onNavigate, onSignIn, onSoon, triggerRef }) {
   const { t } = useTranslation()
   const ref = useRef(null)
   const [user, setUser] = useState(null)
+  const [signingOut, setSigningOut] = useState(false)
+  const [signOutError, setSignOutError] = useState(false)
 
   useEffect(() => {
     let active = true
@@ -16,7 +17,17 @@ export default function UserMenu({ onClose, onNavigate, onSignIn, onSoon, trigge
     return () => { active = false; subscription.unsubscribe() }
   }, [])
 
-  async function signOut() { await supabase.auth.signOut(); onClose() }
+  async function signOut() {
+    if (signingOut) return
+    setSigningOut(true)
+    setSignOutError(false)
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) { setSignOutError(true); return }
+      onClose()
+    } catch { setSignOutError(true) }
+    finally { setSigningOut(false) }
+  }
 
   useEffect(() => {
     const onKey = (event) => event.key === 'Escape' && onClose()
@@ -32,14 +43,14 @@ export default function UserMenu({ onClose, onNavigate, onSignIn, onSoon, trigge
   }, [onClose, triggerRef])
 
   const item = (Icon, key, action = onSoon) => (
-    <button type="button" role="menuitem" onClick={action}><Icon />{t(`menu.${key}`)}</button>
+    <button type="button" role="menuitem" onClick={action} disabled={key === 'signout' && signingOut}><Icon />{t(key === 'signout' && signingOut ? 'menu.signingOut' : `menu.${key}`)}</button>
   )
 
   return (
     <div className="menu" role="menu" ref={ref}>
       <div className="menu-head">
-        <span className="avatar">{user?.email?.slice(0, 2).toUpperCase() || PROFILE.userInitials}</span>
-        <div><b>{user?.email || PROFILE.name}</b>{user && <small>{t('menu.signedIn')}</small>}</div>
+        <span className="avatar">{user?.email?.slice(0, 2).toUpperCase() || 'OS'}</span>
+        <div><b>{user?.email || t('menu.signedOut')}</b>{user && <small>{t('menu.signedIn')}</small>}</div>
       </div>
       {item(Settings, 'settings', onNavigate)}
       {item(SlidersHorizontal, 'presets')}
@@ -48,6 +59,7 @@ export default function UserMenu({ onClose, onNavigate, onSignIn, onSoon, trigge
       {item(Megaphone, 'whatsnew')}
       {item(HelpCircle, 'help')}
       <hr />
+      {signOutError && <p className="menu-error" role="alert">{t('menu.signOutError')}</p>}
       {user ? item(LogOut, 'signout', signOut) : item(LogOut, 'signin', onSignIn)}
     </div>
   )
