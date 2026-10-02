@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useParams } from 'react-router-dom'
+import { Navigate, Route, Routes, useParams, Outlet, useOutletContext } from 'react-router-dom'
 import AppShell from './components/layout/AppShell.jsx'
 import Home from './pages/Home.jsx'
 import Projects from './pages/Projects.jsx'
@@ -20,22 +20,29 @@ function EstimateWorkspaceRoute() {
   return <EstimateWorkspace key={id} />
 }
 
+function AuthenticatedRoutes() {
+  const context = useOutletContext()
+  return <EstimateAuth><Outlet context={context} /></EstimateAuth>
+}
+
 export default function App() {
   return (
     <Routes>
       <Route element={<AppShell />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/chat/:id" element={<Navigate to="/estimates" replace />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/:id" element={<ProjectWorkspace />}>
-          <Route index element={<ProjectOverview />} />
-          <Route path="estimates" element={<ProjectEstimates />} />
-          <Route path="invoices" element={<ProjectInvoices />} />
+        <Route element={<AuthenticatedRoutes />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/chat/:id" element={<Navigate to="/estimates" replace />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<ProjectWorkspace />}>
+            <Route index element={<ProjectOverview />} />
+            <Route path="estimates" element={<ProjectEstimates />} />
+            <Route path="invoices" element={<ProjectInvoices />} />
+          </Route>
+          <Route path="/estimates" element={<Estimates />} />
+          <Route path="/estimates/:id" element={<EstimateWorkspaceRoute />} />
+          <Route path="/contacts" element={<Contacts />} />
         </Route>
-        <Route path="/estimates" element={<EstimateAuth><Estimates /></EstimateAuth>} />
-        <Route path="/estimates/:id" element={<EstimateAuth><EstimateWorkspaceRoute /></EstimateAuth>} />
         <Route path="/invoices" element={<Invoices />} />
-        <Route path="/contacts" element={<Contacts />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/time" element={<TimeTracking />} />
         <Route path="/settings" element={<Settings />} />

@@ -24,20 +24,16 @@ describe('primary routes', () => {
 
   it('resolves a project workspace route and keeps Projects active', () => {
     const html = renderRoute('/projects/550e8400-e29b-41d4-a716-446655440000')
-    expect(html).toContain('workspace.loading')
+    expect(html).toContain('estimateEditor.loading')
     expect(html).toContain('aria-current="page"')
   })
 
   it('accepts a project estimates subroute and an exact contact link', () => {
-    expect(renderRoute('/projects/550e8400-e29b-41d4-a716-446655440000/estimates')).toContain('workspace.loading')
-    expect(renderRoute('/contacts?client=550e8400-e29b-41d4-a716-446655440000')).toContain('contacts.loading')
+    expect(renderRoute('/projects/550e8400-e29b-41d4-a716-446655440000/estimates')).toContain('estimateEditor.loading')
+    expect(renderRoute('/contacts?client=550e8400-e29b-41d4-a716-446655440000')).toContain('estimateEditor.loading')
   })
 
-  it('shows recent sections on Home while persisted estimates load', () => {
-    const html = renderRoute('/')
-    expect(html).toContain('home.recentEstimates')
-    expect(html).toContain('estimateEditor.loading')
-    expect(html).toContain('home.recentProjects')
-    expect(html).toContain('home.needsAttention')
+  it('requires a session before loading dashboard data', () => {
+    expect(renderRoute('/')).toContain('estimateEditor.loading')
   })
 })

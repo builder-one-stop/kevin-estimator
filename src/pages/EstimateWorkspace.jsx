@@ -6,6 +6,7 @@ import { getEstimate, saveEstimate } from '../services/estimates.js'
 import { getClients } from '../services/clients.js'
 import { getProjects } from '../services/projects.js'
 import { calculateEstimate, COST_TYPES, ESTIMATE_STATUSES, itemCostCents, moveInArray, newItem, newSection, proposalPrices, UNITS, validateEstimate } from '../lib/estimateDocument.js'
+import { draftStore } from '../lib/estimateDrafts.js'
 import { formatMoney } from '../lib/money.js'
 
 const editable = (record) => ({ title: record.title, client_id: record.client_id, project_id: record.project_id, status: record.status, markup_bps: record.markup_bps, document: record.document })
@@ -29,62 +30,96 @@ export default function EstimateWorkspace() {
   const draftRef = useRef(null)
   const queueRef = useRef(Promise.resolve())
   const conflictRef = useRef(false)
-  const backupKey = `estimate:draft:${id}`
+  const storeRef = useRef(null)
+  const revisionRef = useRef(null)
+  const sourceRef = useRef(null)
+  const activeRef = useRef(false)
+  const [backups, setBackups] = useState([])
+  const [legacy, setLegacy] = useState(null)
+  const tRef = useRef(t)
+  useEffect(() => { tRef.current = t }, [t])
+
+  function refreshBackups() {
+    try { setBackups(storeRef.current?.list().filter((entry) => entry.key !== revisionRef.current && entry.key !== sourceRef.current) || []) }
+    catch { setError(tRef.current('estimateEditor.backupError')) }
+  }
+  function writeBackup(version, value) {
+    try {
+      revisionRef.current = storeRef.current.write(version, editable(value), revisionRef.current)
+      refreshBackups()
+      return true
+    } catch { setError(tRef.current('estimateEditor.backupError')); return false }
+  }
+  function clearBackup(key) {
+    try { storeRef.current.remove(key) }
+    catch { setError(tRef.current('estimateEditor.backupError')) }
+  }
 
   useEffect(() => {
     let active = true
+    activeRef.current = true
     Promise.all([getEstimate(id), getClients(), getProjects()]).then(([record, clientRows, projectRows]) => {
       if (!active) return
-      if (!record) { setError(t('estimateEditor.notFound')); return }
+      if (!record) { setError(tRef.current('estimateEditor.notFound')); return }
       savedRef.current = record
+      storeRef.current = draftStore(localStorage, record.owner_id, id)
       let initial = record
       try {
-        const backup = JSON.parse(localStorage.getItem(backupKey) || 'null')
-        if (backup?.draft && JSON.stringify(backup.draft) !== JSON.stringify(editable(record))) {
-          initial = { ...record, ...backup.draft }
+        const pending = storeRef.current.list()
+        const backup = pending[0]
+        if (backup) {
+          initial = { ...record, ...editable(backup.draft) }
+          sourceRef.current = backup.key
+          writeBackup(backup.version, initial)
           const changedRemotely = backup.version !== record.version
           conflictRef.current = changedRemotely
           setConflict(changedRemotely)
           setSaveStatus(changedRemotely ? 'error' : 'saving')
-          if (changedRemotely) setError(t('estimateEditor.conflictRecovered'))
-        } else {
-          localStorage.removeItem(backupKey)
+          if (changedRemotely) setError(tRef.current('estimateEditor.conflictRecovered'))
         }
-      } catch { /* Ignore invalid local backup. */ }
+        setLegacy(storeRef.current.legacy())
+        refreshBackups()
+      } catch { setError(tRef.current('estimateEditor.backupError')) }
       draftRef.current = initial; setDraft(initial); setClients(clientRows); setProjects(projectRows)
-      if (!conflictRef.current) setError('')
-    }).catch((cause) => { if (active) setError(cause.message) })
-    return () => { active = false }
-  }, [id, backupKey, retry, t])
+    }).catch(() => { if (active) setError(tRef.current('estimateEditor.loadError')) })
+    const changed = () => refreshBackups()
+    window.addEventListener('storage', changed)
+    return () => { active = false; activeRef.current = false; window.removeEventListener('storage', changed) }
+    // Changing the UI language must not reload or replace a pending draft.
+  }, [id, retry])
 
   const enqueueSave = useCallback(function saveQueued() {
     queueRef.current = queueRef.current.catch(() => {}).then(async () => {
       const snapshot = draftRef.current
       const saved = savedRef.current
-      if (!snapshot || !saved || snapshot.id !== saved.id || conflictRef.current) return
+      if (!activeRef.current || !snapshot || !saved || snapshot.id !== saved.id || conflictRef.current) return
       if (JSON.stringify(editable(snapshot)) === JSON.stringify(editable(saved))) {
-        if (draftRef.current === snapshot) { setSaveStatus('saved'); localStorage.removeItem(backupKey) }
+        if (draftRef.current === snapshot) { setSaveStatus('saved'); clearBackup(revisionRef.current); clearBackup(sourceRef.current); revisionRef.current = null; sourceRef.current = null; refreshBackups() }
         return
       }
       const patch = editable(snapshot)
       const invalid = validateEstimate(patch.document, patch.markup_bps)
-      if (invalid) { setSaveStatus('error'); setError(invalid); return }
+      if (invalid) { setSaveStatus('error'); setError(tRef.current('estimateEditor.invalid')); return }
       setSaveStatus('saving')
+      const revision = revisionRef.current
+      const source = sourceRef.current
       try {
         const result = await saveEstimate(saved, patch)
-        if (savedRef.current?.id !== saved.id) return
+        if (!activeRef.current || savedRef.current?.id !== saved.id) return
         savedRef.current = result
-        if (draftRef.current === snapshot) { setSaveStatus('saved'); setError(''); localStorage.removeItem(backupKey) }
+        clearBackup(revision); clearBackup(source); sourceRef.current = null
+        if (draftRef.current === snapshot) { setSaveStatus('saved'); setError(''); revisionRef.current = null; refreshBackups() }
         else {
-          localStorage.setItem(backupKey, JSON.stringify({ version: result.version, draft: editable(draftRef.current) }))
+          writeBackup(result.version, draftRef.current)
           saveQueued()
         }
       } catch (cause) {
+        if (!activeRef.current) return
         if (cause.code === 'ESTIMATE_CONFLICT') { conflictRef.current = true; setConflict(true) }
-        setSaveStatus('error'); setError(cause.message)
+        setSaveStatus('error'); setError(tRef.current(cause.code === 'ESTIMATE_CONFLICT' ? 'estimateEditor.conflictRecovered' : 'estimateEditor.saveError'))
       }
     })
-  }, [backupKey])
+  }, [])
 
   useEffect(() => {
     if (!draft) return undefined
@@ -98,7 +133,7 @@ export default function EstimateWorkspace() {
     draftRef.current = next
     setDraft(next)
     setSaveStatus(conflictRef.current ? 'error' : 'saving')
-    localStorage.setItem(backupKey, JSON.stringify({ version: savedRef.current?.version, draft: editable(next) }))
+    writeBackup(savedRef.current?.version, next)
   }
   function updateDocument(change) { edit((current) => ({ ...current, document: change(current.document) })) }
   function updateSection(sectionId, change) { updateDocument((doc) => ({ ...doc, sections: doc.sections.map((section) => section.id === sectionId ? change(section) : section) })) }
@@ -118,27 +153,52 @@ export default function EstimateWorkspace() {
     try {
       await queueRef.current.catch(() => {})
       const latest = await getEstimate(id)
+      if (!activeRef.current) return
       if (!latest) throw new Error(t('estimateEditor.notFound'))
       savedRef.current = latest
       conflictRef.current = false; setConflict(false); setError('')
-      localStorage.setItem(backupKey, JSON.stringify({ version: latest.version, draft: editable(draftRef.current) }))
+      writeBackup(latest.version, draftRef.current)
       enqueueSave()
-    } catch (cause) { setError(cause.message) }
+    } catch { setError(t('estimateEditor.loadError')) }
   }
 
   async function useRemoteDraft() {
+    const selected = draftRef.current
     try {
       conflictRef.current = true
       await queueRef.current.catch(() => {})
       const latest = await getEstimate(id)
+      if (!activeRef.current) return
       if (!latest) throw new Error(t('estimateEditor.notFound'))
+      if (draftRef.current !== selected) { setConflict(true); setError(t('estimateEditor.conflictRecovered')); return }
       savedRef.current = latest; draftRef.current = latest; setDraft(latest)
-      localStorage.removeItem(backupKey)
+      clearBackup(revisionRef.current); clearBackup(sourceRef.current); revisionRef.current = null; sourceRef.current = null; refreshBackups()
       conflictRef.current = false; setConflict(false); setError(''); setSaveStatus('saved')
-    } catch (cause) { setError(cause.message) }
+    } catch { setError(t('estimateEditor.loadError')) }
   }
 
-  if (error && !draft) return <div className="page"><div role="alert" className="estimate-error">{error}</div><button className="btn btn-ghost" onClick={() => setRetry((value) => value + 1)}>{t('home.retry')}</button></div>
+  async function recoverBackup(backup) {
+    conflictRef.current = true
+    setConflict(true)
+    await queueRef.current.catch(() => {})
+    if (!activeRef.current) return
+    // Back up the current input before switching, including edits made while
+    // waiting for the queue. A quota failure must not replace unbacked input.
+    if (JSON.stringify(editable(draftRef.current)) !== JSON.stringify(editable(savedRef.current))
+      && !writeBackup(savedRef.current.version, draftRef.current)) return
+    const next = { ...savedRef.current, ...editable(backup.draft) }
+    let adopted
+    try { adopted = storeRef.current.write(backup.version, editable(next)) }
+    catch { setError(t('estimateEditor.backupError')); return }
+    sourceRef.current = backup.key || null
+    revisionRef.current = adopted
+    draftRef.current = next; setDraft(next)
+    conflictRef.current = true; setConflict(true); setSaveStatus('error')
+    setError(t('estimateEditor.conflictRecovered'))
+    refreshBackups()
+  }
+
+  if (error && !draft) return <div className="page"><div role="alert" className="estimate-error">{error}</div><button className="btn btn-ghost" onClick={() => { setError(''); setRetry((value) => value + 1) }}>{t('home.retry')}</button></div>
   if (!draft) return <div className="page"><p role="status">{t('estimateEditor.loading')}</p></div>
   const totals = calculateEstimate(draft.document, draft.markup_bps)
   const client = clients.find((row) => row.id === draft.client_id)
@@ -166,6 +226,11 @@ export default function EstimateWorkspace() {
       <span className={`estimate-save estimate-save-${saveStatus}`} role="status">{t(`estimateEditor.${saveStatus}`)}</span>
     </header>
     {error && <div className="estimate-error" role="alert">{error} {conflict ? <><button type="button" onClick={keepLocalDraft}>{t('estimateEditor.keepLocal')}</button><button type="button" onClick={useRemoteDraft}>{t('estimateEditor.useRemote')}</button></> : <button type="button" onClick={enqueueSave}>{t('estimateEditor.retrySave')}</button>}</div>}
+    {(backups.length > 0 || legacy?.draft) && <div className="estimate-error" role="status">
+      <p>{t('estimateEditor.otherDrafts')}</p>
+      {backups.map((backup) => <button key={backup.key} onClick={() => recoverBackup(backup)}>{t('estimateEditor.recoverDraft', { title: backup.draft.title })}</button>)}
+      {legacy?.draft && <button onClick={() => { recoverBackup(legacy); setLegacy(null) }}>{t('estimateEditor.recoverLegacy')}</button>}
+    </div>}
     <div className="estimate-fields">
       <label>{t('estimateEditor.client')}<select value={draft.client_id || ''} onChange={(event) => clientChanged(event.target.value)}><option value="">{t('projects.noClient')}</option>{clients.map((row) => <option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
       <label>{t('estimateEditor.project')}<select value={draft.project_id || ''} onChange={(event) => projectChanged(event.target.value)}><option value="">{t('estimateEditor.noProject')}</option>{projects.map((row) => <option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
@@ -179,7 +244,7 @@ export default function EstimateWorkspace() {
       </aside>
       <main className="estimate-main">
         {view === 'estimate' ? <>
-          <div className="estimate-table-head"><h2>{t('estimateEditor.workItems')}</h2><button className="btn btn-ghost" onClick={() => updateDocument((doc) => ({ ...doc, sections: [...doc.sections, newSection()] }))}><Plus size={16} />{t('estimateEditor.addSection')}</button></div>
+          <div className="estimate-table-head"><h2>{t('estimateEditor.workItems')}</h2><button className="btn btn-ghost" onClick={() => updateDocument((doc) => ({ ...doc, sections: [...doc.sections, { ...newSection(), title: t('estimateEditor.newSection') }] }))}><Plus size={16} />{t('estimateEditor.addSection')}</button></div>
           {!draft.document.sections.length && <p className="estimate-empty-items">{t('estimateEditor.noItems')}</p>}
           {draft.document.sections.map((section, sectionIndex) => <section className="estimate-section" key={section.id}>
             <div className="estimate-section-head"><button aria-label={t('estimateEditor.toggleSection')} onClick={() => updateSection(section.id, (row) => ({ ...row, collapsed: !row.collapsed }))}>{section.collapsed ? <ChevronRight size={18} /> : <ChevronDown size={18} />}</button>
@@ -199,7 +264,7 @@ export default function EstimateWorkspace() {
           </section>)}
           <div className="estimate-summary"><label>{t('estimateEditor.markupRate')}<span className="estimate-markup-input"><input type="number" min="0" max="1000" step="0.1" value={draft.markup_bps / 100} onChange={(event) => edit((current) => ({ ...current, markup_bps: Math.round(Number(event.target.value) * 100) }))} />%</span></label><dl><div><dt>{t('estimateEditor.costTotal')}</dt><dd>{money(totals.costCents)}</dd></div><div><dt>{t('estimateEditor.markup')}</dt><dd>{money(totals.markupCents)}</dd></div><div><dt>{t('estimateEditor.profit')}</dt><dd>{money(totals.profitCents)}</dd></div><div className="grand"><dt>{t('estimateEditor.salePrice')}</dt><dd>{money(totals.priceCents)}</dd></div></dl><small>{t('estimateEditor.marginInfo', { value: totals.marginPercent.toFixed(1) })}</small></div>
         </> : <div className="estimate-proposal"><div className="estimate-proposal-actions"><h2>{t('estimateEditor.proposal')}</h2><button className="btn btn-ghost" onClick={previewPdf}><Eye size={16} />{t('estimateEditor.previewPdf')}</button><button className="btn btn-primary" onClick={downloadPdf}><Download size={16} />{t('estimateEditor.downloadPdf')}</button></div>
-          <p className="muted">{t('estimateEditor.englishDocument')}</p><div className="proposal-fields">{[['intro', 'Introduction'], ['scope', 'Scope of work'], ['notes', 'Notes'], ['exclusions', 'Exclusions'], ['terms', 'Terms & conditions']].map(([key, label]) => <label key={key}>{label}<textarea value={proposal[key] || ''} onChange={(event) => updateDocument((doc) => ({ ...doc, proposal: { ...doc.proposal, [key]: event.target.value } }))} rows={key === 'scope' ? 4 : 2} /></label>)}</div>
+          <p className="muted">{t('estimateEditor.englishDocument')}</p><div className="proposal-fields">{['intro', 'scope', 'notes', 'exclusions', 'terms'].map((key) => <label key={key}>{t(`estimateEditor.proposalFields.${key}`)}<textarea value={proposal[key] || ''} onChange={(event) => updateDocument((doc) => ({ ...doc, proposal: { ...doc.proposal, [key]: event.target.value } }))} rows={key === 'scope' ? 4 : 2} /></label>)}</div>
           <article className="proposal-preview"><div className="proposal-brand">ONE STOP <small>Building & Remodeling · Los Angeles, CA</small></div><p className="proposal-kicker">ESTIMATE & CLIENT PROPOSAL</p><h2>{draft.title}</h2><p><b>Prepared for:</b> {client?.name || 'Client to be confirmed'}</p><p><b>Job address:</b> {project?.address || client?.address || 'To be confirmed'}</p>
             {proposal.intro && <section><h3>Introduction</h3><p>{proposal.intro}</p></section>}{proposal.scope && <section><h3>Scope of work</h3><p>{proposal.scope}</p></section>}
             <section><h3>Work and pricing</h3>{draft.document.sections.map((section) => <div key={section.id}><h4>{section.title}</h4>{section.items.map((item) => <div className="proposal-line" key={item.id}><span>{item.description || 'Item'} · {item.quantity} {item.unit}</span><b>{money(clientPrices.get(item.id) ?? 0)}</b></div>)}</div>)}<div className="proposal-total"><span>Total proposal</span><b>{money(totals.priceCents)}</b></div></section>

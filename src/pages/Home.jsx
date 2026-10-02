@@ -63,17 +63,17 @@ export default function Home() {
       if (!active) return
       if (!data.session) { setRecentEstimates([]); setEstimateState('signedOut'); return }
       listEstimates({ limit: 5 }).then((rows) => { if (active) { setRecentEstimates(rows); setEstimateState('ready') } })
-        .catch((cause) => { if (active) { setEstimateError(cause.message); setEstimateState('error') } })
+        .catch(() => { if (active) { setEstimateError(t('estimateEditor.loadError')); setEstimateState('error') } })
     })
     return () => { active = false }
-  }, [retry, authTick])
+  }, [retry, authTick, t])
 
   async function createNewEstimate(title = '') {
     const { data } = await supabase.auth.getSession()
     if (!data.session) { navigate('/estimates'); return }
     setEstimateBusy(true)
-    try { const row = await createEstimate({ title: typeof title === 'string' && title ? title.slice(0, 120) : 'Untitled estimate' }); navigate(`/estimates/${row.id}`) }
-    catch (cause) { setEstimateError(cause.message); setEstimateState('error'); setEstimateBusy(false) }
+    try { const row = await createEstimate({ title: typeof title === 'string' && title ? title.slice(0, 120) : t('estimateEditor.untitled') }); navigate(`/estimates/${row.id}`) }
+    catch { setEstimateError(t('estimateEditor.loadError')); setEstimateState('error'); setEstimateBusy(false) }
   }
 
   return (

@@ -21,9 +21,9 @@ export default function Estimates() {
   useEffect(() => {
     let active = true
     listEstimates().then((data) => { if (active) { setRows(data); setError(''); setLoading(false) } })
-      .catch((cause) => { if (active) { setError(cause.message); setLoading(false) } })
+      .catch(() => { if (active) { setError(t('estimateEditor.loadError')); setLoading(false) } })
     return () => { active = false }
-  }, [retry])
+  }, [retry, t])
 
   const visible = useMemo(() => rows.filter((row) => {
     const needle = query.trim().toLowerCase()
@@ -31,21 +31,22 @@ export default function Estimates() {
   }), [rows, query, status])
 
   async function create() {
+    if (busy) return
     setBusy(true); setError('')
-    try { const row = await createEstimate(); navigate(`/estimates/${row.id}`) }
-    catch (cause) { setError(cause.message); setBusy(false) }
+    try { const row = await createEstimate({ title: t('estimateEditor.untitled') }); navigate(`/estimates/${row.id}`) }
+    catch { setError(t('estimateEditor.loadError')); setBusy(false) }
   }
   async function copy(row) {
     setBusy(true); setError('')
     try { const created = await duplicateEstimate(row); setRows((current) => [created, ...current]) }
-    catch (cause) { setError(cause.message) }
+    catch { setError(t('estimateEditor.loadError')) }
     finally { setBusy(false) }
   }
   async function remove(row) {
     if (!window.confirm(t('estimateEditor.deleteConfirm', { name: row.title }))) return
     setBusy(true); setError('')
     try { await deleteEstimate(row.id); setRows((current) => current.filter((item) => item.id !== row.id)) }
-    catch (cause) { setError(cause.message) }
+    catch { setError(t('estimateEditor.loadError')) }
     finally { setBusy(false) }
   }
 
@@ -57,7 +58,7 @@ export default function Estimates() {
         <option value="">{t('estimates.allStatuses')}</option>{ESTIMATE_STATUSES.map((value) => <option key={value} value={value}>{t(`estimateStatus.${value}`)}</option>)}
       </select></div>
     {error && <div className="estimate-error" role="alert">{error} <button type="button" onClick={() => { setLoading(true); setRetry((value) => value + 1) }}>{t('home.retry')}</button></div>}
-    {loading ? <p role="status">{t('estimateEditor.loading')}</p> : rows.length === 0 ? <EmptyState icon={FileText} title={t('estimates.empty')} description={t('estimates.emptyDetail')} cta={t('estimates.create')} onAction={create} />
+    {loading ? <p role="status">{t('estimateEditor.loading')}</p> : error && rows.length === 0 ? null : rows.length === 0 ? <EmptyState icon={FileText} title={t('estimates.empty')} description={t('estimates.emptyDetail')} cta={t('estimates.create')} onAction={create} />
       : visible.length === 0 ? <p className="contact-message">{t('estimateEditor.noResults')}</p>
         : <div className="estimate-list"><div className="estimate-list-head"><span>{t('estimateEditor.name')}</span><span>{t('estimateEditor.client')}</span><span>{t('estimateEditor.total')}</span><span>{t('estimateEditor.status')}</span><span>{t('estimateEditor.modified')}</span><span /></div>
           {visible.map((row) => <div className="estimate-list-row" key={row.id}><Link to={`/estimates/${row.id}`} className="estimate-list-name">{row.title}</Link><span>{row.client?.name || '—'}</span>
