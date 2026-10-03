@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-03",
+  "project": "vtpciccluvpaclbeqxih",
+  "flow": "Normal One Stop email-link sign-in",
+  "browser_request": {
+    "source": "Real Chrome, local app sign-in form",
+    "supabase_otp_http_status": 200,
+    "check_email_state_visible": true
+  },
+  "user_confirmation": {
+    "gmail_message_received": true,
+    "one_stop_opened_from_received_link": true
+  },
+  "supabase_auth_read_only_check": {
+    "account_confirmed": true,
+    "sign_in_after_link_request": true,
+    "authenticated_session_created_after_request": true
+  },
+  "result": "Email delivery and application access verified by user confirmation plus Supabase Auth state",
+  "limit": "The user's browser screen was reported by the user, not captured by automated browser control"
+}

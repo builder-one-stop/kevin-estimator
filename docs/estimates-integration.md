@@ -30,7 +30,7 @@ Invoices remain separate and unlinked to projects; project invoice and financial
 - `npm test` runs unit tests, React DOM integration tests (jsdom with mocked services), and actual SQL migration/RLS tests using PGlite. The interface suite covers dashboard creation, editing, totals, client/project alignment, reopening, EN/ES, account changes, retry and concurrent editor instances sharing storage.
 - `supabase/tests/remote-isolation.sql` also passed against the linked remote project. It creates two transaction-only auth fixtures, checks real authenticated/anonymous roles, links and version conflicts, and rolls everything back. It can be rerun with `supabase db query --linked --file supabase/tests/remote-isolation.sql` after verifying the linked project. No email is sent.
 - Anonymous REST reads returned HTTP 401 / PostgreSQL `42501` on all four tables. No application version was deployed.
-- Scope of verification: interface behavior was exercised in jsdom, and database behavior against real Supabase separately. Real email delivery and a human signed-in browser session were not tested. Build succeeds with Vite’s bundle-size advisory for a chunk over 500 kB.
+- Scope of this 2026-10-02 check: interface behavior was exercised in jsdom, and database behavior against real Supabase separately. Email delivery and a human signed-in browser session were verified later, on 2026-10-03, as recorded below. Build succeeds with Vite’s bundle-size advisory for a chunk over 500 kB.
 
 ## Review walkthrough
 
@@ -41,7 +41,7 @@ Run `npm run dev`, sign in through the email-link form, create a contact and a p
 
 The integrated journey was exercised in **Google Chrome**, controlled by Playwright, against local Vite at `http://127.0.0.1:5173` and the real linked Supabase project `vtpciccluvpaclbeqxih`. This is a real browser run, separate from the jsdom component suite. No production deployment or merge was performed.
 
-Authentication used a temporary `@example.invalid` test account and a Supabase Admin-generated one-time magic link. Opening that link exercised Supabase verification, the redirect callback, browser session persistence and actual authenticated RLS requests. Generating a link does **not** send email. Mailbox delivery/receipt and the user's own email-link journey remain unverified; the user's email was requested separately. No mail was sent to Kevin or third parties.
+Authentication used a temporary `@example.invalid` test account and a Supabase Admin-generated one-time magic link. Opening that link exercised Supabase verification, the redirect callback, browser session persistence and actual authenticated RLS requests. Generating a link does **not** send email. This scripted run did not test email delivery. The normal email-link journey was verified separately on 2026-10-03, as recorded below. No mail was sent to Kevin or third parties during the scripted run.
 
 Observed browser results:
 
@@ -62,4 +62,11 @@ Reproduction: start `npm run dev -- --host 127.0.0.1`, then run `npm run test:br
 
 Final checks: 48 unit/component/SQL tests passed; lint is clean; build succeeds with the existing bundle-size advisory. A read-only remote cleanup query returned zero `QA-BROWSER` clients, projects, estimates and auth users. No migration or remote configuration change was needed.
 
-The remaining acceptance gate before Kevin's independent trial is a received email and a completed sign-in using the actual email flow. The generated-link browser run verifies the application journey, not email transport.
+The generated-link browser run verifies the application journey. The normal email transport and sign-in were verified separately on 2026-10-03. Kevin's own trial remains the next acceptance step.
+
+
+## Normal email sign-in — 2026-10-03
+
+**Verified.** In the local One Stop application at `http://127.0.0.1:5173`, Chrome submitted the user's authorized address through the ordinary **Send sign-in link** form. The linked Supabase project `vtpciccluvpaclbeqxih` returned HTTP 200, and the form displayed its check-email state. The user confirmed receipt in Gmail, then confirmed that opening that received link opened One Stop correctly. A read-only check of Supabase Auth showed the account confirmed and an authenticated session created after the email-link request. Together, these observations verify delivery, link redemption, and access to the application. The user's browser screen was confirmed by the user; it was not captured by the automated Chrome run.
+
+[Non-sensitive verification record](../evidence/browser-validation/email-access.json) contains the signals above without the email address, one-time link, tokens or session identifiers. No test account or customer record was created in this check, and no application release was deployed.
