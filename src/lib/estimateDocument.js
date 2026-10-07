@@ -1,6 +1,7 @@
+import Decimal from 'decimal.js'
 export const ESTIMATE_STATUSES = ['Draft', 'Sent', 'Accepted', 'Rejected']
 export const COST_TYPES = ['material', 'labor', 'equipment', 'other']
-export const UNITS = ['ea', 'sf', 'lf', 'hr', 'day', 'cy', 'lot']
+export const UNITS = ['ea', 'sf', 'lf', 'hr', 'day', 'cy', 'lot', 'gal', 'qt']
 
 export const emptyDocument = () => ({ sections: [], proposal: { intro: '', scope: '', notes: '', exclusions: '', terms: '' } })
 export const newSection = () => ({ id: crypto.randomUUID(), title: 'New section', collapsed: false, items: [] })
@@ -9,12 +10,16 @@ export const newItem = () => ({ id: crypto.randomUUID(), description: '', quanti
 export function moneyCents(value) {
   const number = Number(value)
   if (!Number.isFinite(number) || number < 0) return 0
-  return Math.round((number + Number.EPSILON) * 100)
+  return new Decimal(number).times(100).toDecimalPlaces(0, Decimal.ROUND_HALF_UP).toNumber()
 }
 
 export function itemCostCents(item) {
   const quantity = Number(item.quantity)
-  return Number.isFinite(quantity) && quantity >= 0 ? Math.round(quantity * moneyCents(item.unitCost)) : 0
+  return Number.isFinite(quantity) && quantity >= 0 ? new Decimal(quantity).times(moneyCents(item.unitCost)).toDecimalPlaces(0, Decimal.ROUND_HALF_UP).toNumber() : 0
+}
+
+export function itemUnitSaleCents(item, markupBps = 3600) {
+  return new Decimal(moneyCents(item.unitCost)).times(new Decimal(item.markupBps ?? markupBps).div(10000).plus(1)).toDecimalPlaces(0, Decimal.ROUND_HALF_UP).toNumber()
 }
 
 export function calculateEstimate(document, markupBps = 3600) {
@@ -23,19 +28,23 @@ export function calculateEstimate(document, markupBps = 3600) {
     costCents: (section.items ?? []).reduce((sum, item) => sum + itemCostCents(item), 0),
   }))
   const costCents = sections.reduce((sum, section) => sum + section.costCents, 0)
-  const markupCents = Math.round(costCents * Number(markupBps || 0) / 10000)
+  const exactMarkup = (document?.sections ?? []).flatMap(s => s.items ?? []).reduce((sum, item) =>
+    sum.plus(new Decimal(itemCostCents(item)).times(item.markupBps ?? markupBps ?? 0).div(10000)), new Decimal(0))
+  const markupCents = exactMarkup.toDecimalPlaces(0, Decimal.ROUND_HALF_UP).toNumber()
   const priceCents = costCents + markupCents
-  return { sections, costCents, markupCents, profitCents: markupCents, priceCents,
+  const items = (document?.sections ?? []).flatMap(s => s.items ?? [])
+  const costsByType = Object.fromEntries(COST_TYPES.map(type => [type, items.filter(i => i.costType === type).reduce((n, i) => n + itemCostCents(i), 0)]))
+  const laborHours = items.filter(i => i.costType === 'labor' && i.unit === 'hr').reduce((n, i) => n.plus(Number(i.quantity) || 0), new Decimal(0)).toNumber()
+  return { sections, costsByType, laborHours, costCents, markupCents, profitCents: markupCents, priceCents,
     marginPercent: priceCents ? markupCents / priceCents * 100 : 0 }
 }
 
 // Allocate rounding cents so displayed client line prices sum to the final sale price.
 export function proposalPrices(document, markupBps = 3600) {
-  const rate = 1 + markupBps / 10000
   const items = (document?.sections ?? []).flatMap((section) => section.items ?? [])
   const priced = items.map((item, index) => {
-    const exact = itemCostCents(item) * rate
-    return { id: item.id, index, cents: Math.floor(exact), remainder: exact - Math.floor(exact) }
+    const exact = new Decimal(itemCostCents(item)).times(new Decimal(item.markupBps ?? markupBps).div(10000).plus(1))
+    return { id: item.id, index, cents: exact.floor().toNumber(), remainder: exact.minus(exact.floor()).toNumber() }
   })
   let remainder = calculateEstimate(document, markupBps).priceCents - priced.reduce((sum, item) => sum + item.cents, 0)
   for (const item of [...priced].sort((a, b) => b.remainder - a.remainder || a.index - b.index)) {
@@ -46,9 +55,13 @@ export function proposalPrices(document, markupBps = 3600) {
 }
 
 export function duplicateDocument(document) {
-  return { ...structuredClone(document), sections: document.sections.map((section) => ({
-    ...structuredClone(section), id: crypto.randomUUID(), items: section.items.map((item) => ({ ...structuredClone(item), id: crypto.randomUUID() })),
-  })) }
+  const result = structuredClone(document)
+  const sectionIds = new Map(document.sections.map(s => [s.id, crypto.randomUUID()]))
+  result.sections = document.sections.map(section => ({ ...structuredClone(section), id: sectionIds.get(section.id),
+    items: section.items.map(item => ({ ...structuredClone(item), id: crypto.randomUUID(), ...(item.taskId ? { taskId: sectionIds.get(section.id) } : {}) })) }))
+  if (result.scope) result.scope.plan.tasks = result.scope.plan.tasks.map(task => ({ ...task, id: sectionIds.get(task.id) }))
+  delete result.conversationId
+  return result
 }
 
 export function moveInArray(array, index, direction) {
@@ -65,6 +78,7 @@ export function validateEstimate(document, markupBps) {
   for (const section of document.sections) {
     if (typeof section.title !== 'string' || !Array.isArray(section.items)) return 'Invalid section'
     for (const item of section.items) {
+      if (item.markupBps != null && (!Number.isInteger(item.markupBps) || item.markupBps < 0 || item.markupBps > 100000)) return 'Invalid item markup'
       if (typeof item.description !== 'string' || !COST_TYPES.includes(item.costType) || !UNITS.includes(item.unit)) return 'Invalid item'
       if (!Number.isFinite(Number(item.quantity)) || Number(item.quantity) < 0 || !Number.isFinite(Number(item.unitCost)) || Number(item.unitCost) < 0) return 'Invalid quantity or cost'
     }

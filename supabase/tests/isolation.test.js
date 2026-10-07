@@ -5,7 +5,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest'
 const A = '10000000-0000-4000-8000-000000000001'
 const B = '10000000-0000-4000-8000-000000000002'
 const migrations = readdirSync('supabase/migrations').sort().map((file) => readFileSync(`supabase/migrations/${file}`, 'utf8'))
-const bootstrap = `create role anon; create role authenticated;
+const bootstrap = `create role anon; create role authenticated; create role service_role bypassrls;
 create schema auth; create table auth.users(id uuid primary key);
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
 grant usage on schema public, auth to anon, authenticated;
@@ -34,9 +34,9 @@ describe('actual SQL migrations and RLS (Postgres/PGlite)', () => {
     const legacy = new PGlite()
     try {
       await legacy.exec(bootstrap)
-      for (const migration of migrations.slice(0, -1)) await legacy.exec(migration)
+      for (const migration of migrations.slice(0, 4)) await legacy.exec(migration)
       await legacy.exec("insert into clients(name) values ('Unassigned'); insert into projects(name) values ('Unassigned')")
-      await expect(legacy.exec(migrations.at(-1))).rejects.toThrow('requires explicit reconciliation')
+      await expect(legacy.exec(migrations[4])).rejects.toThrow('requires explicit reconciliation')
       await legacy.exec('rollback')
       expect((await legacy.query('select name from clients')).rows).toEqual([{ name: 'Unassigned' }])
       expect((await legacy.query('select name from projects')).rows).toEqual([{ name: 'Unassigned' }])

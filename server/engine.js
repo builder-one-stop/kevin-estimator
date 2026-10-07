@@ -1,0 +1,140 @@
+import { randomUUID } from 'node:crypto'
+import { z } from 'zod'
+import { assertPlan, assertDocument, documentFromLines, proposedChange, fail, localText } from '../shared/aiDomain.js'
+import { defaultSettings, outputSchema, planSchema } from '../shared/aiSchemas.js'
+const bodySchema=z.object({requestId:z.string().uuid(),version:z.number().int().min(1),action:z.enum(['message','retry','generate','savePlan','approve','apply','cancel','language','links','restore']),
+  content:z.string().max(8000).optional(),plan:planSchema.optional(),revision:z.number().int().optional(),language:z.enum(['en','es']).optional(),
+  clientId:z.string().uuid().nullable().optional(),projectId:z.string().uuid().nullable().optional(),estimateVersion:z.number().int().optional(),restoreVersion:z.number().int().optional()}).strict()
+export class EstimatorEngine {
+ constructor(repo,provider,{logger=console.info}={}) { this.repo=repo;this.provider=provider;this.active=new Map();this.logger=logger }
+ async create(owner,body) {
+  const input=z.object({id:z.string().uuid(),title:z.string().min(1).max(160),language:z.enum(['en','es'])}).strict().parse(body)
+  try{return await this.repo.get(owner,input.id)}catch(e){if(e.status!==404)throw e}
+  return this.repo.commit(owner,{id:input.id,title:input.title,client_id:null,project_id:null,state:{messages:[],plan:null,planRevision:0,approvedRevision:null,documentLanguage:input.language,receipts:[],runs:[]}},0)
+ }
+ async context(owner,row) {
+  const estimate=row.estimate_id ? await this.repo.estimate(owner,row.estimate_id):null
+  const clientId=estimate?estimate.client_id:row.client_id
+  const projectId=estimate?estimate.project_id:row.project_id
+  const client=clientId ? await this.repo.owned(owner,'clients',clientId):null
+  const project=projectId ? await this.repo.owned(owner,'projects',projectId):null
+  return {plan:row.state.plan,pendingPlan:row.state.run?.contextPlan||row.state.pending?.plan||null,approvedRevision:row.state.approvedRevision,estimate,client,project,documentLanguage:row.state.documentLanguage}
+ }
+ async command(owner,id,input) {
+  const body=bodySchema.parse(input); await this.repo.expire(owner)
+  let row=await this.repo.get(owner,id)
+  if(row.state.receipts.includes(body.requestId))return row
+  if(row.version!==body.version)throw fail('CONFLICT',409)
+  const s=row.state, working=s.run?.status==='working'
+  if(working && body.action!=='cancel')throw fail('RUN_BUSY',409)
+  let estimate=null,estimateVersion=null,origin='ai'
+  if(body.action==='cancel') {
+   s.run={...s.run,status:'cancelled'};this.active.get(s.run.id)?.abort()
+  } else if(body.action==='savePlan') {
+   assertPlan(body.plan)
+   if(row.estimate_id) {
+    const current=await this.repo.estimate(owner,row.estimate_id)
+    s.pending={plan:body.plan,revision:s.planRevision+1,estimateVersion:current.version,operations:[],blocked:true,costDelta:null,saleDelta:null}
+   } else {s.plan=body.plan;s.planRevision++;s.approvedRevision=null}
+  } else if(body.action==='approve') {
+   if(body.revision!==s.planRevision || !s.plan)throw fail('CONFLICT',409)
+   assertPlan(s.plan,true);s.approvedRevision=s.planRevision
+  } else if(body.action==='links') {
+   if(row.estimate_id)throw fail('EDIT_LINKS_IN_ESTIMATE',409)
+   const project=body.projectId?await this.repo.owned(owner,'projects',body.projectId):null
+   if(body.clientId)await this.repo.owned(owner,'clients',body.clientId)
+   if(project && project.client_id!==(body.clientId||null))throw fail('FORBIDDEN_RELATION',403)
+   row.client_id=body.clientId||null;row.project_id=body.projectId||null
+  } else if(body.action==='language') {
+   if(!body.language)throw fail('INVALID_LANGUAGE')
+   s.documentLanguage=body.language
+   if(row.estimate_id){estimate=await this.repo.estimate(owner,row.estimate_id);estimateVersion=estimate.version;estimate.document.language=body.language;origin='document-language'}
+  } else if(body.action==='restore') {
+   const current=await this.repo.estimate(owner,row.estimate_id)
+   if(current.version!==body.estimateVersion)throw fail('ESTIMATE_CONFLICT',409)
+   const revision=(await this.repo.revisions(owner,row.estimate_id)).find(r=>r.version===body.restoreVersion)
+   if(!revision)throw fail('NOT_FOUND',404)
+   estimate={...current,title:revision.snapshot.title,document:revision.snapshot.document,markup_bps:revision.snapshot.markup_bps};estimateVersion=current.version
+   assertDocument(estimate.document,estimate.markup_bps)
+   s.plan=estimate.document.scope?.plan||null;s.planRevision++;s.approvedRevision=s.planRevision
+   if(estimate.document.scope)estimate.document.scope.revision=s.planRevision
+   s.pending=null;origin='restore'
+  } else if(body.action==='apply') {
+   if(!s.pending || body.revision!==s.pending.revision)throw fail('CONFLICT',409)
+   if(s.pending.blocked)throw fail('PLAN_HAS_QUESTIONS',409)
+   const current=await this.repo.estimate(owner,row.estimate_id)
+   if(current.version!==s.pending.estimateVersion)throw fail('ESTIMATE_CONFLICT',409)
+   estimate={...current,document:s.pending.document,markup_bps:s.pending.markupBps};estimateVersion=current.version
+   s.plan=s.pending.plan;s.planRevision=s.pending.revision;s.approvedRevision=s.planRevision;s.pending=null;origin='chat-approved'
+  } else {
+   if(s.messages.length+(body.content?2:1)>80)throw fail('TURN_LIMIT')
+   if(body.action==='retry' && s.run?.status!=='error')throw fail('INVALID_RETRY',409)
+   const mode=body.action==='retry'?s.run.mode:body.action==='generate'?'generate':row.estimate_id?'change':'plan'
+   if(mode==='generate' && (row.estimate_id||!s.plan||s.approvedRevision!==s.planRevision))throw fail('PLAN_NOT_APPROVED',409)
+   if(mode==='generate')assertPlan(s.plan,true)
+   if(mode!=='generate' && body.action!=='retry' && !body.content?.trim())throw fail('EMPTY_MESSAGE')
+   if(this.active.size>=8)throw fail('SERVER_BUSY',429)
+   if(body.content && !s.messages.length)row.title=body.content.slice(0,160)
+   if(body.content)s.messages.push({id:body.requestId,role:'user',content:body.content,createdAt:new Date().toISOString()})
+   if(mode==='plan')s.approvedRevision=null
+   s.run={id:randomUUID(),status:'working',stage:'preparing',mode,contextPlan:s.pending?.plan||null,startedAt:new Date().toISOString()}
+   s.pending=null
+  }
+  s.receipts=[...s.receipts,body.requestId].slice(-200)
+  row=await this.repo.commit(owner,row,row.version,estimate,estimateVersion,origin)
+  if(['message','retry','generate'].includes(body.action)) {
+   const controller=new AbortController();this.active.set(row.state.run.id,controller)
+   // A persisted lease allows reloading the UI while work continues. No success is sent before commit.
+   this.perform(owner,row,controller).catch(()=>{}).finally(()=>this.active.delete(row.state.run.id))
+  }
+  return row
+ }
+ async perform(owner,initial,controller) {
+  let row=initial;const runId=row.state.run.id;const start=Date.now()
+  const timer=setTimeout(()=>controller.abort(),120000)
+  const stage=async(value)=>{row.state.run.stage=value;row=await this.repo.commit(owner,row,row.version)}
+  try {
+   const context=await this.context(owner,row)
+   const settings=(await this.repo.settings(owner))?.data||defaultSettings()
+   const assets=await this.repo.assets(owner,row.id)
+   if(assets.length)await stage('images')
+   const images=await Promise.all(assets.map(a=>this.repo.image(owner,a.id)))
+   await stage(row.state.run.mode==='generate'?'generating':'planning')
+   const {result:raw,metrics}=await this.provider.run({mode:row.state.run.mode,messages:row.state.messages,context,settings,images,signal:controller.signal,onStage:stage})
+   if(controller.signal.aborted)throw fail('CANCELLED')
+   const result=outputSchema.parse(raw);let estimate=null,estimateVersion=null
+   const s=row.state
+   if(s.run.mode==='plan') {
+    if(result.lines.length||result.changes.length)throw fail('MODEL_INVALID_OUTPUT')
+    if(result.plan){assertPlan(result.plan);s.plan=result.plan;s.planRevision++;s.approvedRevision=null}
+   } else if(s.run.mode==='generate') {
+    if(result.plan||result.changes.length)throw fail('MODEL_CHANGED_APPROVED_PLAN')
+    const document={...documentFromLines(s.plan,result.lines,s.documentLanguage,settings.catalog,settings.business,s.planRevision), conversationId:row.id}
+    estimate={id:randomUUID(),title:localText(s.plan.title,s.documentLanguage),markup_bps:s.plan.markupBps,document};estimateVersion=0
+   } else {
+    if(result.lines.length)throw fail('MODEL_INVALID_OUTPUT')
+    if(result.changes.length || result.plan) {
+     if(result.plan?.pending.length) {
+      assertPlan(result.plan)
+      s.pending={plan:result.plan,revision:s.planRevision+1,estimateVersion:context.estimate.version,operations:[],blocked:true,costDelta:null,saleDelta:null}
+     } else s.pending={...proposedChange(context.estimate,result,settings.catalog,s.planRevision+1),revision:s.planRevision+1}
+    }
+   }
+   s.messages.push({id:randomUUID(),role:'assistant',content:result.message,createdAt:new Date().toISOString()})
+   s.run={...s.run,status:'ready',stage:'ready',metrics};s.runs=[...s.runs,s.run].slice(-30)
+   row=await this.repo.commit(owner,row,row.version,estimate,estimateVersion,'ai-approved-plan')
+   this.logger(JSON.stringify({event:'estimator_run',runId,...metrics,status:'ready'}))
+  } catch(error) {
+   const code=controller.signal.aborted?'CANCELLED_OR_TIMEOUT':typeof error.code==='string' && /^[A-Z_]+$/.test(error.code)?error.code: (error.name==='ZodError'?'MODEL_INVALID_OUTPUT':'MODEL_UNAVAILABLE')
+   // Never log SDK bodies, prompts, images, tokens or personal context.
+   this.logger(JSON.stringify({event:'estimator_run',runId,status:'error',code,durationMs:Date.now()-start,model:this.provider.model||'controlled-test',...(error.metrics?{metrics:error.metrics}:{})}))
+   try {
+    const latest=await this.repo.get(owner,initial.id)
+    if(latest.state.run?.id===runId && latest.state.run.status==='working') {
+     latest.state.run={...latest.state.run,status:'error',error:code,...(error.metrics?{metrics:error.metrics}:{})};latest.state.runs=[...latest.state.runs,latest.state.run].slice(-30)
+     await this.repo.commit(owner,latest,latest.version)
+    }
+   } catch { /* A competing cancellation/recovery owns the newer state. */ }
+  } finally { clearTimeout(timer) }
+ }
+}

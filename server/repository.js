@@ -1,0 +1,72 @@
+import { createClient } from '@supabase/supabase-js'
+import { fail } from '../shared/aiDomain.js'
+export class SupabaseRepository {
+  constructor(url, key) { this.db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }) }
+  async result(query) {
+    const { data, error } = await query
+    if (error) {
+      if (/CONFLICT|23505|ai_one_run/.test(`${error.message} ${error.code}`)) throw fail('CONFLICT',409)
+      if (/RELATION|MISMATCH|23503/.test(`${error.message} ${error.code}`)) throw fail('FORBIDDEN_RELATION',403)
+      throw fail('DATABASE_UNAVAILABLE',503)
+    }
+    return data
+  }
+  async authenticate(token) {
+    const { data, error } = await this.db.auth.getUser(token)
+    if (error || !data.user) throw fail('UNAUTHORIZED',401)
+    return data.user.id
+  }
+  async list(owner) { return this.result(this.db.from('ai_conversations').select('id,title,version,estimate_id,created_at,updated_at').eq('owner_id',owner).order('updated_at',{ascending:false}).limit(100)) }
+  async get(owner,id) {
+    const row = await this.result(this.db.from('ai_conversations').select('*').eq('owner_id',owner).eq('id',id).maybeSingle())
+    if (!row) throw fail('NOT_FOUND',404)
+    return row
+  }
+  async commit(owner,row,expected,estimate=null,estimateVersion=null,origin='ai') {
+    return this.result(this.db.rpc('ai_commit',{p_owner:owner,p_id:row.id,p_expected:expected,p_row:row,p_estimate:estimate,p_estimate_version:estimateVersion,p_origin:origin}))
+  }
+  async expire(owner) {
+    const rows = await this.result(this.db.from('ai_conversations').select('*').eq('owner_id',owner).eq('state->run->>status','working'))
+    for (const row of rows) if (Date.now()-Date.parse(row.state.run.startedAt)>150000) {
+      row.state.run = { ...row.state.run, status:'error', error:'RUN_EXPIRED' }
+      try { await this.commit(owner,row,row.version) } catch (e) { if(e.code!=='CONFLICT') throw e }
+    }
+  }
+  async estimate(owner,id) { return this.owned(owner,'estimates',id) }
+  async owned(owner,table,id) {
+    if (!['estimates','clients','projects'].includes(table)) throw fail('UNAUTHORIZED_TOOL',403)
+    const row = await this.result(this.db.from(table).select('*').eq('owner_id',owner).eq('id',id).maybeSingle())
+    if (!row) throw fail('FORBIDDEN_RELATION',403)
+    return row
+  }
+  async settings(owner) { return this.result(this.db.from('ai_settings').select('*').eq('owner_id',owner).maybeSingle()) }
+  async saveSettings(owner,data,version) {
+    const row = version === 0
+      ? await this.result(this.db.from('ai_settings').insert({owner_id:owner,data}).select().single())
+      : await this.result(this.db.from('ai_settings').update({data,version:version+1,updated_at:new Date().toISOString()}).eq('owner_id',owner).eq('version',version).select().maybeSingle())
+    if (!row) throw fail('CONFLICT',409)
+    return row
+  }
+  async revisions(owner,id) { await this.estimate(owner,id); return this.result(this.db.from('estimate_revisions').select('*').eq('owner_id',owner).eq('estimate_id',id).order('version',{ascending:false}).limit(50)) }
+  async assets(owner,id) { await this.get(owner,id); return this.result(this.db.from('ai_attachments').select('*').eq('owner_id',owner).eq('conversation_id',id).order('created_at')) }
+  async asset(owner,id) { const x = await this.result(this.db.from('ai_attachments').select('*').eq('owner_id',owner).eq('id',id).maybeSingle()); if(!x) throw fail('NOT_FOUND',404); return x }
+  async upload(owner,conversation,id,bytes,mime) {
+    const path = `${owner}/${conversation}/${id}`
+    const {error} = await this.db.storage.from('estimate-evidence').upload(path,bytes,{contentType:mime,upsert:false})
+    if(error) throw fail('UPLOAD_FAILED',503)
+    try { return await this.result(this.db.from('ai_attachments').insert({id,owner_id:owner,conversation_id:conversation,path,mime,size:bytes.length}).select().single()) }
+    catch(e) { await this.db.storage.from('estimate-evidence').remove([path]); throw e }
+  }
+  async image(owner,id) {
+    const asset=await this.asset(owner,id)
+    const {data,error}=await this.db.storage.from('estimate-evidence').download(asset.path)
+    if(error) throw fail('IMAGE_UNAVAILABLE',503)
+    return {bytes:Buffer.from(await data.arrayBuffer()),mime:asset.mime}
+  }
+  async deleteAsset(owner,id) {
+    const asset=await this.asset(owner,id)
+    await this.result(this.db.from('ai_attachments').delete().eq('owner_id',owner).eq('id',id))
+    const {error}=await this.db.storage.from('estimate-evidence').remove([asset.path])
+    if(error) throw fail('STORAGE_CLEANUP_PENDING',503)
+  }
+}

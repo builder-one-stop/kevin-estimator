@@ -1,0 +1,14 @@
+> kevin-estimator@0.0.0 test
+> vitest run
+
+
+ RUN  v5.0.1 <repository>
+
+
+ Test Files  14 passed (14)
+      Tests  71 passed (71)
+   Start at  20:39:00
+   Duration  6.72s (tests 64%, import 15%, transform 14%, environment 7%)
+
+    Isolate  14 workers spawned · ~234ms startup each (spawn + environment, per file)
+             at least ~422ms faster with isolate: false — reuses workers across files instead of one per file

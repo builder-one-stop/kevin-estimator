@@ -1,0 +1,25 @@
+import { useEffect,useState } from 'react'
+import { Link } from 'react-router-dom'
+import { aiRequest } from '../services/ai.js'
+import { settingsSchema,catalogSchema } from '../../shared/aiSchemas.js'
+import { useAiText,errorText } from '../components/ai/strings.js'
+import { UNITS } from '../lib/estimateDocument.js'
+import '../styles/ai.css'
+export default function AiSettings(){
+ const {a}=useAiText();const [data,setData]=useState(null),[version,setVersion]=useState(0),[error,setError]=useState(''),[saved,setSaved]=useState(false),[busy,setBusy]=useState(false)
+ useEffect(()=>{aiRequest('settings').then(x=>{setData(x.data);setVersion(x.version)}).catch(e=>setError(e.code))},[])
+ function edit(next){setData(next);setSaved(false)}
+ async function save(){setBusy(true);setError('');try{settingsSchema.parse(data);const x=await aiRequest('settings',{data,version});setVersion(x.version);setSaved(true)}catch(e){setError(e.code||'INVALID_INPUT')}finally{setBusy(false)}}
+ const text=(key,value,onChange,type='text')=><label>{a(key)}<input type={type} value={value} onChange={e=>onChange(type==='number'?Number(e.target.value):e.target.value)}/></label>
+ async function importFile(e){const file=e.target.files?.[0];e.target.value='';if(!file)return;try{if(file.size>1000000)throw Error();const rows=JSON.parse(await file.text());const catalog=rows.map(r=>catalogSchema.parse({...r,id:r.id||crypto.randomUUID()}));if(new Set(catalog.map(c=>c.id)).size!==catalog.length)throw Error();settingsSchema.parse({...data,catalog});edit({...data,catalog})}catch{setError('INVALID_CATALOG')}}
+ return <div className="page ai-page"><Link to="/chat">← {a('history')}</Link><h1>{a('settings')}</h1>{error&&<p role="alert">{errorText(error,a)}</p>}{!data?<p>{a('loading')}</p>:<>
+ <section className="ai-card"><h2>{a('business')}</h2><div className="ai-grid">{['name','address','phone','license'].map(k=><div key={k}>{text(k,data.business[k],v=>edit({...data,business:{...data.business,[k]:v}}))}</div>)}</div>
+ {text('labor',data.labor.hourlyRate,v=>edit({...data,labor:{...data.labor,hourlyRate:v}}),'number')}{text('productivity',data.labor.productivity,v=>edit({...data,labor:{...data.labor,productivity:v}}))}</section>
+ <section className="ai-card"><h2>{a('preferences')}</h2><p>{a('preferenceHelp')}</p>{data.preferences.map(p=><div className="ai-grid" key={p.id}>{['label','value'].map(k=><div key={k}>{text(k,p[k],v=>edit({...data,preferences:data.preferences.map(x=>x.id===p.id?{...x,[k]:v,updatedAt:new Date().toISOString()}:x)}))}</div>)}<small>{p.source} · {new Date(p.updatedAt).toLocaleDateString()}</small><button onClick={()=>edit({...data,preferences:data.preferences.filter(x=>x.id!==p.id)})}>{a('remove')}</button></div>)}<button onClick={()=>edit({...data,preferences:[...data.preferences,{id:crypto.randomUUID(),label:'',value:'',source:'explicit-user',updatedAt:new Date().toISOString()}]})}>{a('add')}</button></section>
+ <section className="ai-card"><h2>{a('catalog')}</h2><p>{a('catalogHelp')}</p><label>{a('import')}<input type="file" accept="application/json,.json" onChange={importFile}/></label>
+ {data.catalog.map(c=><details key={c.id}><summary>{c.product||a('product')} · {c.unitCost} USD/{c.unit} · {c.status}</summary><div className="ai-grid">{['product','brand','package','unitCost','vendor','location','url','sku','checkedAt','evidence'].map(k=><div key={k}>{text(k,c[k],v=>edit({...data,catalog:data.catalog.map(x=>x.id===c.id?{...x,[k]:v}:x)}),k==='unitCost'?'number':k==='checkedAt'?'date':'text')}</div>)}
+ <label>{a('unit')}<select value={c.unit} onChange={e=>edit({...data,catalog:data.catalog.map(x=>x.id===c.id?{...x,unit:e.target.value}:x)})}>{UNITS.map(u=><option key={u}>{u}</option>)}</select></label><label>{a('provenance')}<select value={c.status} onChange={e=>edit({...data,catalog:data.catalog.map(x=>x.id===c.id?{...x,status:e.target.value}:x)})}><option value="manual">{a('manual')}</option><option value="provisional">{a('provisionalStatus')}</option><option value="verified">{a('verified')}</option></select></label></div><button onClick={()=>edit({...data,catalog:data.catalog.filter(x=>x.id!==c.id)})}>{a('remove')}</button></details>)}
+ <button onClick={()=>edit({...data,catalog:[...data.catalog,{id:crypto.randomUUID(),product:'',brand:'',package:'',unit:'ea',unitCost:0,currency:'USD',vendor:'',location:'',url:'',sku:'',checkedAt:new Date().toISOString().slice(0,10),status:'manual',evidence:''}]})}>{a('add')}</button></section>
+ <button className="btn btn-primary" disabled={busy} onClick={save}>{a('save')}</button>{saved&&<span role="status">{a('saved')}</span>}</>}
+ </div>
+}

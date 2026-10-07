@@ -11,11 +11,14 @@ import { calculateEstimate } from '../lib/estimateDocument.js'
 import { formatMoney } from '../lib/money.js'
 import { supabase } from '../supabaseClient.js'
 import { STAGE_KEYS, STATUS_COLORS } from '../lib/projectData.js'
+import { createConversation, command } from '../services/ai.js'
+import { useAiText } from '../components/ai/strings.js'
 import Button from '../components/ui/Button.jsx'
 import StatusDot from '../components/ui/StatusDot.jsx'
 
 export default function Home() {
   const { t } = useTranslation()
+  const { a, language } = useAiText()
   const navigate = useNavigate()
   const location = useLocation()
   const { showSoon } = useOutletContext()
@@ -32,7 +35,13 @@ export default function Home() {
   const composerRef = useRef(null)
   const [hour] = useState(() => new Date().getHours())
   const greeting = hour < 12 ? t('greet.morning') : hour < 19 ? t('greet.afternoon') : t('greet.evening')
-  const send = () => createNewEstimate(draft.trim())
+  const send = async () => {
+    if (estimateBusy || !draft.trim()) return
+    setEstimateBusy(true)
+    try { const row = await createConversation(draft.trim().slice(0, 160), language); await command(row, 'message', { content: draft.trim() }); navigate(`/chat/${row.id}`) }
+    catch { setEstimateError(a('unavailable')); setEstimateState('error') }
+    finally { setEstimateBusy(false) }
+  }
 
   useEffect(() => {
     if (location.state?.focusComposer) composerRef.current?.focus()
@@ -82,6 +91,7 @@ export default function Home() {
         <LogoMark size={42} />
         <h1 className="greet">{t('home.greeting', { greeting, name: PROFILE.name.split(' ')[0] })}</h1>
         <p>{t('home.askTitle')}</p>
+        <Link to="/chat">{a('history')}</Link>
         <Composer simple inputRef={composerRef} value={draft} onChange={setDraft} onSend={send} onSoon={showSoon} />
       </section>
       <div className="home-recent">

@@ -14,11 +14,16 @@ import Contacts from './pages/Contacts.jsx'
 import Schedule from './pages/Schedule.jsx'
 import TimeTracking from './pages/TimeTracking.jsx'
 import Settings from './pages/Settings.jsx'
+import Chats from './pages/Chats.jsx'
+import AiChat from './pages/AiChat.jsx'
+import AiSettings from './pages/AiSettings.jsx'
 
 function EstimateWorkspaceRoute() {
   const { id } = useParams()
   return <EstimateWorkspace key={id} />
 }
+
+function AiChatRoute() { const { id } = useParams(); return <AiChat key={id} /> }
 
 function AuthenticatedRoutes() {
   const context = useOutletContext()
@@ -31,7 +36,9 @@ export default function App() {
       <Route element={<AppShell />}>
         <Route element={<AuthenticatedRoutes />}>
           <Route path="/" element={<Home />} />
-          <Route path="/chat/:id" element={<Navigate to="/estimates" replace />} />
+          <Route path="/chat" element={<Chats />} />
+          <Route path="/chat/settings" element={<AiSettings />} />
+          <Route path="/chat/:id" element={<AiChatRoute />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectWorkspace />}>
             <Route index element={<ProjectOverview />} />

@@ -14,11 +14,11 @@ The Estimates list, Home recent estimates, project Estimates tab, and editor all
 
 `src/lib/estimateDocument.js` computes costs in integer cents, applies the markup in basis points (3600 by default), and allocates any rounding cents across client line prices. The editor, list, proposal, and PDF share these functions. Markup is on cost; the shown margin is profit divided by sale price. No tax or extra charges are added.
 
-The client proposal is always in English. It shows sale prices and total, without internal costs, markup, or margin. `src/lib/proposalPdf.js` creates a paginated downloadable PDF from the same document and totals. The editor loads the PDF library on demand.
+Legacy manual proposals retain their English template. AI-backed estimates use an explicit EN/ES document choice and render their stored approved scope; client prices are the default, with internal costs available only by explicit opt-in. `src/lib/proposalPdf.js` creates a paginated downloadable PDF from the same document and totals. The editor loads the PDF library on demand.
 
 ## AI boundary
 
-The old sample chat route redirects to Estimates. No AI backend or secret is configured in Supabase, so the workspace labels the assistant as pending. It does not generate replies, item changes, or supplier prices. Future integration should use an authenticated server endpoint, validate structured operations against the estimate document, preserve manual edits, and record applied operations so users can undo them.
+The `/chat` history and `/chat/:id` workspace now use an authenticated Node backend, strict Responses schemas, reviewable plans and version-checked estimate changes. See [AI estimator specification](ai-estimator-spec.md) and [activation / evaluation record](ai-estimator-evals.md). This implementation is locally verified with a separate controlled provider; the new migration and server are **not activated remotely**. Missing real credentials produce an explicit error. No supplier integration is implied by the internal catalog.
 
 Invoices remain separate and unlinked to projects; project invoice and financial placeholders have not been turned into fabricated amounts.
 

@@ -1,0 +1,58 @@
+{
+  "estimate-browser.pdf": {
+    "pages": 4,
+    "expected_total": "$4,273.80",
+    "total_present": true,
+    "default_internal_cost_hidden": true,
+    "section_headers_on_new_pages": true,
+    "all_pages_numbered": true,
+    "kitchen_walls_only": true,
+    "spot_prime_preserved": true,
+    "no_expanded_prime": true,
+    "alternative_finish_preserved": true,
+    "ceiling_product_preserved": true,
+    "no_overflow": true
+  },
+  "fixture-detailed.pdf": {
+    "pages": 4,
+    "expected_total": "$4,008.60",
+    "total_present": true,
+    "default_internal_cost_hidden": true,
+    "section_headers_on_new_pages": true,
+    "all_pages_numbered": true,
+    "kitchen_walls_only": true,
+    "spot_prime_preserved": true,
+    "no_expanded_prime": true,
+    "alternative_finish_preserved": true,
+    "ceiling_product_preserved": true,
+    "no_overflow": true
+  },
+  "proposal-browser.pdf": {
+    "pages": 3,
+    "expected_total": "$4,273.80",
+    "total_present": true,
+    "default_internal_cost_hidden": true,
+    "section_headers_on_new_pages": true,
+    "all_pages_numbered": true,
+    "kitchen_walls_only": true,
+    "spot_prime_preserved": true,
+    "no_expanded_prime": true,
+    "alternative_finish_preserved": true,
+    "ceiling_product_preserved": true,
+    "no_overflow": true
+  },
+  "fixture-proposal.pdf": {
+    "pages": 3,
+    "expected_total": "$4,008.60",
+    "total_present": true,
+    "default_internal_cost_hidden": true,
+    "section_headers_on_new_pages": true,
+    "all_pages_numbered": true,
+    "kitchen_walls_only": true,
+    "spot_prime_preserved": true,
+    "no_expanded_prime": true,
+    "alternative_finish_preserved": true,
+    "ceiling_product_preserved": true,
+    "no_overflow": true
+  }
+}

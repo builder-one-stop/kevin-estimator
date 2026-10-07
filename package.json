@@ -9,17 +9,24 @@
     "test": "vitest run",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test:browser": "node scripts/browser-smoke.mjs && node scripts/validate-browser.mjs && node scripts/browser-errors.mjs"
+    "test:browser": "node scripts/browser-smoke.mjs && node scripts/validate-browser.mjs && node scripts/browser-errors.mjs",
+    "dev:api": "node --env-file=.env.server.local server/index.js",
+    "test:ai:browser": "node scripts/ai-browser.mjs",
+    "dev:ai:fixture": "node scripts/ai-local-harness.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
+    "decimal.js": "^10.6.0",
     "i18next": "^26.4.2",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.47.0",
+    "openai": "^7.30.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-i18next": "^17.0.15",
-    "react-router-dom": "^7.18.4"
+    "react-router-dom": "^7.18.4",
+    "zod": "^4.6.5",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",

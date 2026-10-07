@@ -1,0 +1,2 @@
+# Generated PDF evidence must retain its byte-exact cross-reference tables.
+evidence/ai-estimator/*.pdf binary

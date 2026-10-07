@@ -5,10 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { calculateEstimate, ESTIMATE_STATUSES } from '../lib/estimateDocument.js'
 import { createEstimate, deleteEstimate, duplicateEstimate, listEstimates } from '../services/estimates.js'
 import { formatMoney } from '../lib/money.js'
+import { useAiText } from '../components/ai/strings.js'
 import EmptyState from '../components/ui/EmptyState.jsx'
 
 export default function Estimates() {
   const { t } = useTranslation()
+  const { a } = useAiText()
   const navigate = useNavigate()
   const [rows, setRows] = useState([])
   const [query, setQuery] = useState('')
@@ -53,6 +55,7 @@ export default function Estimates() {
   return <div className="page estimates-page">
     <div className="page-head"><div><h1>{t('estimates.title')}</h1><p className="estimates-intro">{t('estimates.intro')}</p></div>
       <button type="button" className="btn btn-primary" onClick={create} disabled={busy}><Plus size={18} />{t('estimates.create')}</button></div>
+    <p><Link to="/chat">{a('chat')} · {a('history')}</Link></p>
     <div className="filters"><label className="project-search"><Search size={17} /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('estimates.search')} aria-label={t('estimates.search')} /></label>
       <select className="project-filter-select" value={status} onChange={(event) => setStatus(event.target.value)} aria-label={t('estimates.filterStatus')}>
         <option value="">{t('estimates.allStatuses')}</option>{ESTIMATE_STATUSES.map((value) => <option key={value} value={value}>{t(`estimateStatus.${value}`)}</option>)}

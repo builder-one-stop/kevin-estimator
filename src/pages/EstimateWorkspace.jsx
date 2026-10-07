@@ -6,6 +6,8 @@ import { getEstimate, saveEstimate } from '../services/estimates.js'
 import { getClients } from '../services/clients.js'
 import { getProjects } from '../services/projects.js'
 import { calculateEstimate, COST_TYPES, ESTIMATE_STATUSES, itemCostCents, moveInArray, newItem, newSection, proposalPrices, UNITS, validateEstimate } from '../lib/estimateDocument.js'
+import ApprovedProposal from '../components/ai/ApprovedProposal.jsx'
+import { useAiText } from '../components/ai/strings.js'
 import { draftStore } from '../lib/estimateDrafts.js'
 import { formatMoney } from '../lib/money.js'
 
@@ -15,7 +17,9 @@ const money = (cents) => formatMoney(cents / 100)
 export default function EstimateWorkspace() {
   const { id } = useParams()
   const { t } = useTranslation()
+  const { a } = useAiText()
   const [draft, setDraft] = useState(null)
+  const [savedVersion, setSavedVersion] = useState(null)
   const [clients, setClients] = useState([])
   const [projects, setProjects] = useState([])
   const [error, setError] = useState('')
@@ -61,7 +65,7 @@ export default function EstimateWorkspace() {
     Promise.all([getEstimate(id), getClients(), getProjects()]).then(([record, clientRows, projectRows]) => {
       if (!active) return
       if (!record) { setError(tRef.current('estimateEditor.notFound')); return }
-      savedRef.current = record
+      savedRef.current = record; setSavedVersion(record.version)
       storeRef.current = draftStore(localStorage, record.owner_id, id)
       let initial = record
       try {
@@ -106,7 +110,7 @@ export default function EstimateWorkspace() {
       try {
         const result = await saveEstimate(saved, patch)
         if (!activeRef.current || savedRef.current?.id !== saved.id) return
-        savedRef.current = result
+        savedRef.current = result; setSavedVersion(result.version)
         clearBackup(revision); clearBackup(source); sourceRef.current = null
         if (draftRef.current === snapshot) { setSaveStatus('saved'); setError(''); revisionRef.current = null; refreshBackups() }
         else {
@@ -155,7 +159,7 @@ export default function EstimateWorkspace() {
       const latest = await getEstimate(id)
       if (!activeRef.current) return
       if (!latest) throw new Error(t('estimateEditor.notFound'))
-      savedRef.current = latest
+      savedRef.current = latest; setSavedVersion(latest.version)
       conflictRef.current = false; setConflict(false); setError('')
       writeBackup(latest.version, draftRef.current)
       enqueueSave()
@@ -171,7 +175,7 @@ export default function EstimateWorkspace() {
       if (!activeRef.current) return
       if (!latest) throw new Error(t('estimateEditor.notFound'))
       if (draftRef.current !== selected) { setConflict(true); setError(t('estimateEditor.conflictRecovered')); return }
-      savedRef.current = latest; draftRef.current = latest; setDraft(latest)
+      savedRef.current = latest; setSavedVersion(latest.version); draftRef.current = latest; setDraft(latest)
       clearBackup(revisionRef.current); clearBackup(sourceRef.current); revisionRef.current = null; sourceRef.current = null; refreshBackups()
       conflictRef.current = false; setConflict(false); setError(''); setSaveStatus('saved')
     } catch { setError(t('estimateEditor.loadError')) }
@@ -203,7 +207,7 @@ export default function EstimateWorkspace() {
   const totals = calculateEstimate(draft.document, draft.markup_bps)
   const client = clients.find((row) => row.id === draft.client_id)
   const project = projects.find((row) => row.id === draft.project_id)
-  const pdfRecord = { ...draft, client, project }
+  const pdfRecord = { ...draft, version: savedVersion || draft.version, client, project }
   const proposal = draft.document.proposal
   const clientPrices = proposalPrices(draft.document, draft.markup_bps)
 
@@ -240,7 +244,7 @@ export default function EstimateWorkspace() {
     <div className="estimate-layout">
       <aside className={`estimate-assistant ${assistantOpen ? '' : 'collapsed'}`} style={{ '--assistant-width': `${assistantWidth}px` }}>
         <button className="estimate-assistant-toggle" onClick={() => setAssistantOpen((open) => !open)}>{assistantOpen ? <ChevronDown size={17} /> : <ChevronRight size={17} />}{t('estimateEditor.assistant')}</button>
-        {assistantOpen && <div><p>{t('estimateEditor.aiPending')}</p><label>{t('estimateEditor.panelWidth')}<input type="range" min="240" max="430" value={assistantWidth} onChange={(event) => setAssistantWidth(Number(event.target.value))} /></label></div>}
+        {assistantOpen && <div><p><Link to={draft.document.conversationId ? `/chat/${draft.document.conversationId}` : '/chat'}>{a(draft.document.conversationId ? 'backChat' : 'noChat')}</Link></p><label>{t('estimateEditor.panelWidth')}<input type="range" min="240" max="430" value={assistantWidth} onChange={(event) => setAssistantWidth(Number(event.target.value))} /></label></div>}
       </aside>
       <main className="estimate-main">
         {view === 'estimate' ? <>
@@ -253,17 +257,17 @@ export default function EstimateWorkspace() {
             </div>
             {!section.collapsed && <><div className="estimate-grid-labels"><span>{t('estimateEditor.description')}</span><span>{t('estimateEditor.qty')}</span><span>{t('estimateEditor.unit')}</span><span>{t('estimateEditor.unitCost')}</span><span>{t('estimateEditor.costType')}</span><span>{t('estimateEditor.cost')}</span><span /></div>
               {section.items.map((item, itemIndex) => <div className="estimate-item-wrap" key={item.id}><div className="estimate-item-row">
-                <input aria-label={t('estimateEditor.description')} value={item.description} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, description: event.target.value }))} placeholder={t('estimateEditor.description')} />
+                <input aria-label={t('estimateEditor.description')} value={item.description} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, description: event.target.value, translations: undefined, origin: 'manual' }))} placeholder={t('estimateEditor.description')} />
                 <input aria-label={t('estimateEditor.qty')} type="number" min="0" step="0.01" value={item.quantity} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, quantity: event.target.value }))} />
-                <select aria-label={t('estimateEditor.unit')} value={item.unit} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, unit: event.target.value }))}>{UNITS.map((unit) => <option key={unit}>{unit}</option>)}</select>
-                <input aria-label={t('estimateEditor.unitCost')} type="number" min="0" step="0.01" value={item.unitCost} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, unitCost: event.target.value }))} />
+                <select aria-label={t('estimateEditor.unit')} value={item.unit} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, unit: event.target.value, price: { ...row.price, status: 'manual' }, origin: 'manual', needsReview: true }))}>{UNITS.map((unit) => <option key={unit}>{unit}</option>)}</select>
+                <input aria-label={t('estimateEditor.unitCost')} type="number" min="0" step="0.01" value={item.unitCost} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, unitCost: event.target.value, price: { ...row.price, status: 'manual' }, origin: 'manual' }))} />
                 <select aria-label={t('estimateEditor.costType')} value={item.costType} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, costType: event.target.value }))}>{COST_TYPES.map((type) => <option key={type} value={type}>{t(`costType.${type}`)}</option>)}</select>
                 <strong>{money(itemCostCents(item))}</strong><button aria-label={t('estimateEditor.details')} onClick={() => setDetailId(detailId === item.id ? null : item.id)}><ChevronDown size={17} /></button>
-              </div>{detailId === item.id && <div className="estimate-item-detail"><label>{t('estimateEditor.notes')}<textarea value={item.notes || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, notes: event.target.value }))} /></label><label>{t('estimateEditor.priceSource')}<input value={item.priceSource || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, priceSource: event.target.value }))} /></label><label>{t('estimateEditor.priceDate')}<input type="date" value={item.priceDate || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, priceDate: event.target.value }))} /></label><label className="estimate-checkbox"><input type="checkbox" checked={Boolean(item.needsReview)} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, needsReview: event.target.checked }))} />{t('estimateEditor.needsReview')}</label><div className="estimate-detail-actions"><button disabled={itemIndex === 0} onClick={() => updateSection(section.id, (row) => ({ ...row, items: moveInArray(row.items, itemIndex, -1) }))}>{t('estimateEditor.moveUp')}</button><button disabled={itemIndex === section.items.length - 1} onClick={() => updateSection(section.id, (row) => ({ ...row, items: moveInArray(row.items, itemIndex, 1) }))}>{t('estimateEditor.moveDown')}</button><button onClick={() => updateSection(section.id, (row) => ({ ...row, items: [...row.items.slice(0, itemIndex + 1), { ...structuredClone(item), id: crypto.randomUUID() }, ...row.items.slice(itemIndex + 1)] }))}>{t('estimateEditor.duplicate')}</button><button onClick={() => updateSection(section.id, (row) => ({ ...row, items: row.items.filter((entry) => entry.id !== item.id) }))}>{t('estimateEditor.delete')}</button></div></div>}</div>)}
-              <button className="estimate-add-item" onClick={() => updateSection(section.id, (row) => ({ ...row, items: [...row.items, newItem()] }))}><Plus size={16} />{t('estimateEditor.addItem')}</button></>}
+              </div>{detailId === item.id && <div className="estimate-item-detail"><label>{t('estimateEditor.notes')}<textarea value={item.notes || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, notes: event.target.value }))} /></label><label>{t('estimateEditor.priceSource')}<input value={item.priceSource || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, priceSource: event.target.value }))} /></label><label>{t('estimateEditor.priceDate')}<input type="date" value={item.priceDate || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, priceDate: event.target.value }))} /></label><label className="estimate-checkbox"><input type="checkbox" checked={Boolean(item.needsReview)} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, needsReview: event.target.checked }))} />{t('estimateEditor.needsReview')}</label><label>{a('markup')}<input type="number" min="0" max="1000" step="0.01" value={item.markupBps == null ? '' : item.markupBps / 100} placeholder={String(draft.markup_bps / 100)} onChange={event => updateItem(section.id, item.id, row => ({ ...row, markupBps: event.target.value === '' ? null : Math.round(Number(event.target.value) * 100) }))} /></label><div className="estimate-detail-actions"><button disabled={itemIndex === 0} onClick={() => updateSection(section.id, (row) => ({ ...row, items: moveInArray(row.items, itemIndex, -1) }))}>{t('estimateEditor.moveUp')}</button><button disabled={itemIndex === section.items.length - 1} onClick={() => updateSection(section.id, (row) => ({ ...row, items: moveInArray(row.items, itemIndex, 1) }))}>{t('estimateEditor.moveDown')}</button><button onClick={() => updateSection(section.id, (row) => ({ ...row, items: [...row.items.slice(0, itemIndex + 1), { ...structuredClone(item), id: crypto.randomUUID() }, ...row.items.slice(itemIndex + 1)] }))}>{t('estimateEditor.duplicate')}</button><button onClick={() => updateSection(section.id, (row) => ({ ...row, items: row.items.filter((entry) => entry.id !== item.id) }))}>{t('estimateEditor.delete')}</button></div></div>}</div>)}
+              <button className="estimate-add-item" onClick={() => updateSection(section.id, (row) => ({ ...row, items: [...row.items, { ...newItem(), ...(draft.document.scope ? { taskId: section.id, origin: 'manual' } : {}) }] }))}><Plus size={16} />{t('estimateEditor.addItem')}</button></>}
           </section>)}
           <div className="estimate-summary"><label>{t('estimateEditor.markupRate')}<span className="estimate-markup-input"><input type="number" min="0" max="1000" step="0.1" value={draft.markup_bps / 100} onChange={(event) => edit((current) => ({ ...current, markup_bps: Math.round(Number(event.target.value) * 100) }))} />%</span></label><dl><div><dt>{t('estimateEditor.costTotal')}</dt><dd>{money(totals.costCents)}</dd></div><div><dt>{t('estimateEditor.markup')}</dt><dd>{money(totals.markupCents)}</dd></div><div><dt>{t('estimateEditor.profit')}</dt><dd>{money(totals.profitCents)}</dd></div><div className="grand"><dt>{t('estimateEditor.salePrice')}</dt><dd>{money(totals.priceCents)}</dd></div></dl><small>{t('estimateEditor.marginInfo', { value: totals.marginPercent.toFixed(1) })}</small></div>
-        </> : <div className="estimate-proposal"><div className="estimate-proposal-actions"><h2>{t('estimateEditor.proposal')}</h2><button className="btn btn-ghost" onClick={previewPdf}><Eye size={16} />{t('estimateEditor.previewPdf')}</button><button className="btn btn-primary" onClick={downloadPdf}><Download size={16} />{t('estimateEditor.downloadPdf')}</button></div>
+        </> : draft.document.scope ? <ApprovedProposal estimate={pdfRecord} saved={saveStatus === 'saved' && !conflict} onLanguage={language => updateDocument(doc => ({ ...doc, language }))} /> : <div className="estimate-proposal"><div className="estimate-proposal-actions"><h2>{t('estimateEditor.proposal')}</h2><button className="btn btn-ghost" onClick={previewPdf}><Eye size={16} />{t('estimateEditor.previewPdf')}</button><button className="btn btn-primary" onClick={downloadPdf}><Download size={16} />{t('estimateEditor.downloadPdf')}</button></div>
           <p className="muted">{t('estimateEditor.englishDocument')}</p><div className="proposal-fields">{['intro', 'scope', 'notes', 'exclusions', 'terms'].map((key) => <label key={key}>{t(`estimateEditor.proposalFields.${key}`)}<textarea value={proposal[key] || ''} onChange={(event) => updateDocument((doc) => ({ ...doc, proposal: { ...doc.proposal, [key]: event.target.value } }))} rows={key === 'scope' ? 4 : 2} /></label>)}</div>
           <article className="proposal-preview"><div className="proposal-brand">ONE STOP <small>Building & Remodeling · Los Angeles, CA</small></div><p className="proposal-kicker">ESTIMATE & CLIENT PROPOSAL</p><h2>{draft.title}</h2><p><b>Prepared for:</b> {client?.name || 'Client to be confirmed'}</p><p><b>Job address:</b> {project?.address || client?.address || 'To be confirmed'}</p>
             {proposal.intro && <section><h3>Introduction</h3><p>{proposal.intro}</p></section>}{proposal.scope && <section><h3>Scope of work</h3><p>{proposal.scope}</p></section>}

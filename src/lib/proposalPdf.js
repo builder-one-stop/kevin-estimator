@@ -1,9 +1,11 @@
+import { buildApprovedPdf } from './approvedProposalPdf.js'
 import { jsPDF } from 'jspdf'
 import { calculateEstimate, proposalPrices } from './estimateDocument.js'
 
 const usd = (cents) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(cents / 100)
 
 export function buildProposalPdf(estimate) {
+  if (estimate.document.scope) return buildApprovedPdf(estimate)
   const pdf = new jsPDF({ unit: 'pt', format: 'letter' })
   const width = pdf.internal.pageSize.getWidth()
   const height = pdf.internal.pageSize.getHeight()
