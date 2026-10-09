@@ -3,37 +3,70 @@
   "provider": "real OpenAI Responses API",
   "checks": [
     "Temporary account authenticated in real Chrome at localhost:5173; no email delivered",
-    "Browser displays the specific exhausted-credit error and preserves the conversation"
+    "Real model answered “hola” through the browser and persisted its response",
+    "Real model produced an editable plan with scope and exclusions; material questions resolved",
+    "Approved plan generated and persisted an estimate with the real model",
+    "Estimate reopened, edited, saved and reopened again with the new quantity"
   ],
-  "errors": [
-    "Run real hello: Error"
-  ],
-  "failedRun": {
-    "code": "OPENAI_CREDIT_EXHAUSTED",
-    "metrics": {
-      "model": "gpt-6.1-sol",
-      "usage": {
-        "input_tokens": 0,
-        "cached_tokens": 0,
-        "output_tokens": 0
-      },
-      "effort": "medium",
-      "durationMs": 2557,
-      "promptVersion": "estimator-2026-10-07.1",
-      "responseModels": [],
-      "estimatedCostUsd": null
+  "errors": [],
+  "hello": {
+    "model": "gpt-6.1-sol",
+    "usage": {
+      "input_tokens": 3365,
+      "cached_tokens": 0,
+      "output_tokens": 55
+    },
+    "effort": "medium",
+    "durationMs": 3210,
+    "promptVersion": "estimator-2026-10-09.3",
+    "responseModels": [
+      "gpt-6.1-sol"
+    ],
+    "estimatedCostUsd": 0.00728
+  },
+  "planAttempts": [
+    {
+      "taskCount": 1,
+      "pending": [],
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "usage": {
+          "input_tokens": 3560,
+          "cached_tokens": 3362,
+          "output_tokens": 1541
+        },
+        "effort": "medium",
+        "durationMs": 27607,
+        "promptVersion": "estimator-2026-10-09.3",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "estimatedCostUsd": 0.016142200000000002
+      }
     }
+  ],
+  "generation": {
+    "model": "gpt-6.1-sol",
+    "usage": {
+      "input_tokens": 5087,
+      "cached_tokens": 0,
+      "output_tokens": 1024
+    },
+    "effort": "medium",
+    "durationMs": 17192,
+    "promptVersion": "estimator-2026-10-09.3",
+    "responseModels": [
+      "gpt-6.1-sol"
+    ],
+    "estimatedCostUsd": 0.020414
   },
-  "apiVerification": {
-    "modelLookup": "gpt-6.1-sol",
-    "responsesHttpStatus": 429,
-    "responsesErrorCode": "credit_balance_exhausted",
-    "responsesErrorType": "insufficient_quota",
-    "successfulModelResponse": false
+  "estimateId": "3f34d3e1-a816-4774-9d65-0a1ad54c6ee2",
+  "estimate": {
+    "lineCount": 3,
+    "originalSaleCents": 51680,
+    "editedSaleCents": 60520,
+    "originalQuantity": 2,
+    "editedQuantity": 3
   },
-  "remoteCleanupVerification": {
-    "temporaryUsers": 0,
-    "aiConversations": 0,
-    "preExistingEstimates": 2
-  }
+  "cleanup": "Temporary auth account and its records deleted after validation"
 }
