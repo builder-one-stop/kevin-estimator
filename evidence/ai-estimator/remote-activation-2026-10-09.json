@@ -1,0 +1,22 @@
+{
+  "project": "kevin-estimator",
+  "ref": "vtpciccluvpaclbeqxih",
+  "migration": "20261007120000_ai_estimator.sql",
+  "dryRunPendingMigrations": ["20261007120000_ai_estimator.sql"],
+  "applied": true,
+  "migrationHistoryAligned": true,
+  "preExistingEstimatesBefore": 2,
+  "preExistingEstimatesAfter": 2,
+  "newConversationsAfter": 0,
+  "newRevisionsAfter": 0,
+  "evidenceBucketPublic": false,
+  "restrictiveStoragePolicyPresent": true,
+  "commitRpcPresent": true,
+  "newTablesWithRls": 4,
+  "anonymousConversationReadGrant": false,
+  "authenticatedConversationInsertGrant": false,
+  "authenticatedCommitRpcGrant": false,
+  "serviceCommitRpcGrant": true,
+  "backup": "Private local pre-apply JSON backup of existing public records; excluded from Git",
+  "openAiLiveTest": "Pending fresh API key in ignored server environment file"
+}

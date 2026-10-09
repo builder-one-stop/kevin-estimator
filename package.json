@@ -12,6 +12,7 @@
     "test:browser": "node scripts/browser-smoke.mjs && node scripts/validate-browser.mjs && node scripts/browser-errors.mjs",
     "dev:api": "node --env-file=.env.server.local server/index.js",
     "test:ai:browser": "node scripts/ai-browser.mjs",
+    "test:ai:real-browser": "node scripts/ai-real-browser.mjs",
     "dev:ai:fixture": "node scripts/ai-local-harness.mjs"
   },
   "dependencies": {
