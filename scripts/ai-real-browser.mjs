@@ -40,6 +40,7 @@ try {
     await context.addInitScript(() => localStorage.setItem('os-lang', 'en'))
     const page = await context.newPage()
     page.on('pageerror', error => report.errors.push(error.name))
+    let conversationId = null
     let stage = 'Open sign-in link'
     try {
       await page.goto(actionLink)
@@ -56,6 +57,7 @@ try {
       await page.getByRole('button', { name: 'New conversation' }).click()
       await expect(page.getByRole('heading', { name: 'New conversation' })).toBeVisible()
       const id = page.url().split('/').at(-1)
+      conversationId = id
       stage = 'Verify real provider configuration'
       const status = await page.evaluate(async () => {
         const key = Object.keys(localStorage).find(name => name.startsWith('sb-') && name.endsWith('-auth-token'))
@@ -107,6 +109,16 @@ try {
       await page.screenshot({ path: `${output}/estimate.png`, fullPage: true })
     } catch (error) {
       report.errors.push(`${stage}: ${error.name}`)
+      if (conversationId) {
+        const row = await readConversation(page, conversationId).catch(() => null)
+        if (row?.state.run?.status === 'error') {
+          report.failedRun = { code: row.state.run.error, metrics: row.state.run.metrics || null }
+          if (row.state.run.error === 'OPENAI_CREDIT_EXHAUSTED') {
+            await expect(page.getByRole('alert').filter({ hasText: 'OpenAI API credit is exhausted' })).toBeVisible({ timeout: 10000 })
+            report.checks.push('Browser displays the specific exhausted-credit error and preserves the conversation')
+          }
+        }
+      }
       await page.screenshot({ path: `${output}/failure.png`, fullPage: true }).catch(() => {})
       throw error
     } finally {

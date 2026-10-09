@@ -1,0 +1,39 @@
+{
+  "origin": "http://localhost:5173",
+  "provider": "real OpenAI Responses API",
+  "checks": [
+    "Temporary account authenticated in real Chrome at localhost:5173; no email delivered",
+    "Browser displays the specific exhausted-credit error and preserves the conversation"
+  ],
+  "errors": [
+    "Run real hello: Error"
+  ],
+  "failedRun": {
+    "code": "OPENAI_CREDIT_EXHAUSTED",
+    "metrics": {
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 0,
+        "cached_tokens": 0,
+        "output_tokens": 0
+      },
+      "effort": "medium",
+      "durationMs": 2557,
+      "promptVersion": "estimator-2026-10-07.1",
+      "responseModels": [],
+      "estimatedCostUsd": null
+    }
+  },
+  "apiVerification": {
+    "modelLookup": "gpt-6.1-sol",
+    "responsesHttpStatus": 429,
+    "responsesErrorCode": "credit_balance_exhausted",
+    "responsesErrorType": "insufficient_quota",
+    "successfulModelResponse": false
+  },
+  "remoteCleanupVerification": {
+    "temporaryUsers": 0,
+    "aiConversations": 0,
+    "preExistingEstimates": 2
+  }
+}
