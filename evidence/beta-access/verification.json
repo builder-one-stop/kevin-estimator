@@ -30,14 +30,16 @@
     "errors": [],
     "cleanup": "Ephemeral local database closed; no remote/customer records used"
   },
-  "liveAuthentication": "pending hidden local password entry",
+  "liveAuthentication": "Real Chrome: both approved accounts on localhost and beta passed password login, EN/ES login interface, reload, full browser reopen, local sign-out, rejected bearer replay and logged-out reload; tested commit fedf62fa8bc7e9bfd27771742425b2c3ffae9745",
   "naturalSessionExpiry": "not waited out in a browser; active, expired and revoked session checks covered by migrated SQL tests",
   "liveUnauthorizedAccess": "Real Chrome + remote Supabase: rejected locally and online; direct public/recovery password updates blocked, original temporary password preserved; temporary fixture cleanup verified",
-  "initialAdministrationPassword": "Explicitly requested initial setup; preserves existing Auth ID, metadata, grants and data; pending hidden local input",
+  "initialAdministrationPassword": "Configured through explicitly authorized service-only initialization; existing Auth identity, metadata and role verified unchanged. Missing operator created with confirmed initial password. Both accounts retained.",
   "hiddenInputRegression": {
     "before": "Actual isolated Chrome form POST reproduced HTTP 403 with Origin: null under no-referrer",
     "after": "Actual isolated Chrome form POST succeeds with strict matching Origin under same-origin referrer policy",
     "protections": "Loopback binding, exact Host and Origin, one-use nonce, CSP, no-store, password confirmations and size limits retained and tested",
     "accountPreflight": "Rejected submission never resolved the input promise, so this run performed no password writes; existing administration identity/grant preserved and operator still absent before corrected retry"
-  }
+  },
+  "liveReview": "Real empty operator history and read-only list verified locally and online; operator denied review, admin mutation rejected. Live detail was not exercised because operator has zero conversations; detailed review covered by isolated controlled Chrome test.",
+  "liveAi": "Real online Responses API confirmed gpt-6.1-sol / medium for hello, approved plan and generation; editable 3-line estimate persisted/reloaded, proposal and valid 7284-byte PDF; only synthetic development records, exact-ID cleanup passed. Metrics in browser-results.json."
 }

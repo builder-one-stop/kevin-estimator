@@ -1,0 +1,76 @@
+{
+  "project": "vtpciccluvpaclbeqxih",
+  "checks": [
+    "Exactly the two approved identities hold beta grants; existing administration identity preserved",
+    "Kevin has no administrative review access at http://localhost:5173; no Kevin test content created",
+    "operator: password login EN/ES, reload, browser reopen, local sign-out and rejected token replay at http://localhost:5173",
+    "Admin read-only review and separate development workspace at http://localhost:5173",
+    "admin: password login EN/ES, reload, browser reopen, local sign-out and rejected token replay at http://localhost:5173",
+    "Kevin has no administrative review access at https://onestop-beta.netlify.app; no Kevin test content created",
+    "operator: password login EN/ES, reload, browser reopen, local sign-out and rejected token replay at https://onestop-beta.netlify.app",
+    "Admin read-only review and separate development workspace at https://onestop-beta.netlify.app",
+    "Real online AI: hello, approved plan, persisted editable estimate, reload, proposal and PDF; synthetic content only in development account",
+    "admin: password login EN/ES, reload, browser reopen, local sign-out and rejected token replay at https://onestop-beta.netlify.app",
+    "Direct signup rejected; unauthorized authenticated identity and forged admin metadata cannot read/write data, review or use AI; direct password update rejected and original password preserved"
+  ],
+  "errors": [],
+  "accounts": {
+    "admin": "Initial password configured administratively; existing identity, metadata, data and permissions preserved",
+    "operator": "Created missing authorized identity with initial password"
+  },
+  "realQuote": {
+    "hello": {
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 3365,
+        "cached_tokens": 0,
+        "output_tokens": 33
+      },
+      "effort": "medium",
+      "durationMs": 3374,
+      "promptVersion": "estimator-2026-10-09.3",
+      "responseModels": [
+        "gpt-6.1-sol"
+      ],
+      "estimatedCostUsd": 0.00706
+    },
+    "plan": {
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 3547,
+        "cached_tokens": 3362,
+        "output_tokens": 1390
+      },
+      "effort": "medium",
+      "durationMs": 21714,
+      "promptVersion": "estimator-2026-10-09.3",
+      "responseModels": [
+        "gpt-6.1-sol"
+      ],
+      "estimatedCostUsd": 0.014606200000000001
+    },
+    "generation": {
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 4923,
+        "cached_tokens": 0,
+        "output_tokens": 965
+      },
+      "effort": "medium",
+      "durationMs": 13202,
+      "promptVersion": "estimator-2026-10-09.3",
+      "responseModels": [
+        "gpt-6.1-sol"
+      ],
+      "estimatedCostUsd": 0.019496
+    },
+    "lineCount": 3,
+    "editedTotalCents": 60520,
+    "pdfBytes": 7284
+  },
+  "testedCommit": "fedf62fa8bc7e9bfd27771742425b2c3ffae9745",
+  "cleanup": {
+    "errors": [],
+    "scope": "Only exact synthetic development conversation/estimate IDs and the temporary outsider created by this run; authorized users retained; no Kevin test content"
+  }
+}
