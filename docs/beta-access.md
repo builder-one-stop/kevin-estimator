@@ -78,3 +78,13 @@ Messages appear locally as soon as Send is pressed, with one retained request ID
 Run `npm run test:chat:browser` for the isolated visual checks (requires installed Playwright WebKit and Chrome). For a real development-account-only local/beta validation, use `npm run test:beta:browser -- --admin-only`; it requests the current administrator password and never resets passwords. `--wait-for-publish` can hold it in memory until a subsequent reviewed commit is available on the connected beta. Evidence is kept under `evidence/chat-experience/`. SafariDriver was initially blocked by disabled remote automation; WebKit verification alone must not be described as verification in the installed Safari application.
 
 Protocol reference: [OpenAI streaming responses](https://developers.openai.com/api/docs/guides/streaming-responses).
+
+### Live follow-up after current password entry
+
+The administration-only runner completed against the published implementation `ba990bff7fbf0363827a347101a9729cc42e57d5`: seven checks, zero execution errors and zero cleanup errors. Actual isolated Chrome passed local and beta password access, reload/reopening and sign-out. The real beta journey passed hello, plan, explicit approval, a three-line editable estimate, quantity edit with Saved confirmation, reload preserving that quantity, visible client proposal and PDF download. The edited total was $605.20. The downloaded PDF was 7,201 bytes and passed signature/size validation; this run did not render it for visual inspection.
+
+All three responses reported `gpt-6.1-sol`, effort `medium`. Hello used 3,365 input / 32 output tokens in 3.070 s; plan used 3,546 input / 1,375 output in 20.747 s; generation used 4,907 input / 883 output in 12.261 s. The combined configured-rate estimate was $0.0401482, not a billing receipt. First public text arrived at the server in 2.923 s, 2.015 s and 2.976 s respectively.
+
+The live runner observed owner-authorized API preview snapshots growing from 8 to 269 characters during planning and a 314-character preview during generation. These are actual server responses before completion. It did not independently assert the live preview element's visibility: that UI behavior is covered by the controlled Chrome/WebKit desktop/mobile tests. The live test did not repeat Kevin's password login or installed Safari; Kevin's earlier login evidence remains in `evidence/beta-access/`.
+
+Cleanup verified deletion only of this run's exact synthetic development conversation, estimate and temporary unauthorized identity. Both approved identities and passwords were retained. No new database migration was required. See `evidence/chat-experience/browser-results.json` and `verification.json` for scoped evidence.

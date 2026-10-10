@@ -10,7 +10,16 @@
   "migrations": "none required; progress uses existing owner-scoped JSON state",
   "visual": "Chrome and Playwright WebKit desktop/mobile; see visual-results.json and PNGs",
   "regression": "Controlled Chrome plan/approval/estimate/edit/reload/PDF/isolation/admin review; see regression-results.json",
-  "realBeta": "pending current administration password entry",
-  "safari": "SafariDriver session rejected: remote automation disabled; authorization requested",
+  "realBeta": {
+    "result": "passed: 7 checks, zero errors and zero cleanup errors",
+    "testedCommit": "ba990bff7fbf0363827a347101a9729cc42e57d5",
+    "browser": "Isolated installed Google Chrome, administration development account; localhost and deployed beta",
+    "journey": "Password login EN/ES; hello; plan; explicit approval; generated editable estimate; quantity edit; Saved; reload preserves quantity; client proposal visible; PDF download; browser reopen; sign-out and rejected token replay",
+    "progress": "Real beta API snapshots observed public preview growth during planning (8 to 269 characters) and preview during generation. This live runner did not separately assert preview DOM visibility; visible progress, scrolling and partial-output approval gates were checked with the controlled Chrome/WebKit browser suite.",
+    "pdf": "Downloaded 7201 bytes; PDF signature and minimum size validated. This run did not render the downloaded PDF for visual inspection.",
+    "cleanup": "Exact test conversation/estimate and temporary unauthorized account deletion verified; approved accounts, passwords and existing customer data retained",
+    "evidence": "browser-results.json"
+  },
+  "safari": "Installed Safari could not be verified: SafariDriver remote automation disabled. Playwright WebKit desktop/mobile passed; not equivalent to installed Safari.",
   "autofill": "Chrome autofill pseudo-state forced through CDP; existing personal saved credentials were not accessed"
 }
