@@ -8,7 +8,7 @@ export const ref = 'vtpciccluvpaclbeqxih'
 // Only this Node process sees the admin key. Chrome authenticates as a temporary
 // normal user through a real one-time link. generateLink never sends an email.
 export async function withFixture(run, { origin = 'http://127.0.0.1:5173' } = {}) {
-  if (!['http://127.0.0.1:5173', 'http://localhost:5173'].includes(origin)) throw new Error('Unexpected local browser origin')
+  if (!['http://127.0.0.1:5173', 'http://localhost:5173', 'https://onestop-beta.netlify.app'].includes(origin)) throw new Error('Unexpected browser origin')
   const env = loadEnv('development', process.cwd())
   const url = env.VITE_SUPABASE_URL.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')
   if (new URL(url).hostname !== `${ref}.supabase.co`) throw new Error('Unexpected Supabase project')

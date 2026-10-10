@@ -2,7 +2,9 @@ import { chromium, expect } from '@playwright/test'
 import { writeFile } from 'node:fs/promises'
 import { withFixture } from './browser-fixture.mjs'
 
-const origin = 'http://localhost:5173'
+const origin = process.env.AUTH_BROWSER_ORIGIN || 'http://localhost:5173'
+if (!['http://localhost:5173', 'https://onestop-beta.netlify.app'].includes(origin)) throw new Error('Unexpected browser origin')
+const output = origin.startsWith('https://') ? 'evidence/browser-validation/password-access-online.json' : 'evidence/browser-validation/password-access.json'
 const result = { origin, project: 'vtpciccluvpaclbeqxih', checks: [], errors: [] }
 let stage = 'Open temporary link'
 
@@ -51,13 +53,13 @@ try {
       result.checks.push('The same account signed in with email/password and retained the Spanish interface')
     } catch (error) {
       result.failureDetail = String(error.message || '').split('\n')[0].replaceAll(email, '[test address]').replaceAll(password, '[test password]').slice(0, 240)
-      await page.screenshot({ path: 'evidence/browser-validation/password-failure.png', fullPage: true }).catch(() => {})
+      await page.screenshot({ path: origin.startsWith('https://') ? 'evidence/browser-validation/password-online-failure.png' : 'evidence/browser-validation/password-failure.png', fullPage: true }).catch(() => {})
       throw error
     } finally { await browser.close() }
   }, { origin })
   result.cleanup = 'Temporary account and records deleted by fixture'
 } catch (error) { result.errors.push(`${stage}: ${error.errors?.[0]?.name || error.name}`); process.exitCode = 1 }
 finally {
-  await writeFile('evidence/browser-validation/password-access.json', `${JSON.stringify(result, null, 2)}\n`)
+  await writeFile(output, `${JSON.stringify(result, null, 2)}\n`)
   console.info(JSON.stringify({ checks: result.checks.length, errors: result.errors, detail: result.failureDetail, cleanup: result.cleanup || 'see fixture cleanup' }))
 }

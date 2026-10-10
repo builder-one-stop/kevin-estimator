@@ -1,0 +1,72 @@
+{
+  "origin": "https://onestop-beta.netlify.app",
+  "provider": "real OpenAI Responses API",
+  "checks": [
+    "Temporary account authenticated in real Chrome at https://onestop-beta.netlify.app; no email delivered",
+    "Real model answered “hola” through the browser and persisted its response",
+    "Real model produced an editable plan with scope and exclusions; material questions resolved",
+    "Approved plan generated and persisted an estimate with the real model",
+    "Estimate reopened, edited, saved and reopened again with the new quantity"
+  ],
+  "errors": [],
+  "hello": {
+    "model": "gpt-6.1-sol",
+    "usage": {
+      "input_tokens": 3365,
+      "cached_tokens": 0,
+      "output_tokens": 32
+    },
+    "effort": "medium",
+    "durationMs": 3943,
+    "promptVersion": "estimator-2026-10-09.3",
+    "responseModels": [
+      "gpt-6.1-sol"
+    ],
+    "estimatedCostUsd": 0.00705
+  },
+  "planAttempts": [
+    {
+      "taskCount": 1,
+      "pending": [],
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "usage": {
+          "input_tokens": 3549,
+          "cached_tokens": 3362,
+          "output_tokens": 1753
+        },
+        "effort": "medium",
+        "durationMs": 29057,
+        "promptVersion": "estimator-2026-10-09.3",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "estimatedCostUsd": 0.0182402
+      }
+    }
+  ],
+  "generation": {
+    "model": "gpt-6.1-sol",
+    "usage": {
+      "input_tokens": 5090,
+      "cached_tokens": 0,
+      "output_tokens": 946
+    },
+    "effort": "medium",
+    "durationMs": 13975,
+    "promptVersion": "estimator-2026-10-09.3",
+    "responseModels": [
+      "gpt-6.1-sol"
+    ],
+    "estimatedCostUsd": 0.01964
+  },
+  "estimateId": "02f03881-f4f3-4186-93b1-a7cf674bcec5",
+  "estimate": {
+    "lineCount": 3,
+    "originalSaleCents": 51680,
+    "editedSaleCents": 60520,
+    "originalQuantity": 2,
+    "editedQuantity": 3
+  },
+  "cleanup": "Temporary auth account and its records deleted after validation"
+}

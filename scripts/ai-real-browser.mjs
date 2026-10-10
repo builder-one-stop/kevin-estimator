@@ -3,8 +3,9 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { withFixture } from './browser-fixture.mjs'
 import { calculateEstimate } from '../src/lib/estimateDocument.js'
 
-const origin = 'http://localhost:5173'
-const output = 'evidence/ai-estimator-live'
+const origin = process.env.AI_BROWSER_ORIGIN || 'http://localhost:5173'
+if (!['http://localhost:5173', 'https://onestop-beta.netlify.app'].includes(origin)) throw new Error('Unexpected browser origin')
+const output = origin.startsWith('https://') ? 'evidence/ai-estimator-online' : 'evidence/ai-estimator-live'
 const report = { origin, provider: 'real OpenAI Responses API', checks: [], errors: [] }
 await mkdir(output, { recursive: true })
 
@@ -64,7 +65,7 @@ try {
       stage = 'Load authenticated conversation history'
       await page.goto(`${origin}/chat`)
       await expect(page.getByRole('heading', { name: 'Conversations' })).toBeVisible({ timeout: 20000 })
-      report.checks.push('Temporary account authenticated in real Chrome at localhost:5173; no email delivered')
+      report.checks.push(`Temporary account authenticated in real Chrome at ${origin}; no email delivered`)
 
       await page.getByRole('button', { name: 'New conversation' }).click()
       await expect(page.getByRole('heading', { name: 'New conversation' })).toBeVisible()
