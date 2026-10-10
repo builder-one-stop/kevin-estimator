@@ -33,6 +33,8 @@ npm run admin:password -- operator
 
 Open the displayed localhost URL in Chrome and enter the new password and confirmation. The process binds only loopback, validates Host/Origin and a one-use nonce, hashes with bcrypt in memory, and sends only the hash to a service-only RPC. No plaintext password is written to a file, argv, Git, screenshots or application logs. Auth necessarily stores its password hash. The setter clears pending Auth tokens and revokes the account's sessions. It is never imported by the deployed app and has no public HTTP route. This utility is not a testing shortcut for changing a real user's password.
 
+The local input uses `Referrer-Policy: same-origin`: Chrome sends a normal matching Origin for the form POST, while external destinations receive no referrer. `no-referrer` would cause Chrome to send `Origin: null`, correctly rejected by the strict origin guard. A real isolated Chrome regression test exercises form submission; rejected requests do not resolve the input promise or initiate account changes.
+
 ## Verification commands
 
 ```sh

@@ -1,8 +1,8 @@
 {
   "automated": {
     "command": "npm test",
-    "files": 18,
-    "passed": 93
+    "files": 19,
+    "passed": 95
   },
   "lint": "passed",
   "build": "passed; existing chunk-size warning",
@@ -33,5 +33,11 @@
   "liveAuthentication": "pending hidden local password entry",
   "naturalSessionExpiry": "not waited out in a browser; active, expired and revoked session checks covered by migrated SQL tests",
   "liveUnauthorizedAccess": "Real Chrome + remote Supabase: rejected locally and online; direct public/recovery password updates blocked, original temporary password preserved; temporary fixture cleanup verified",
-  "initialAdministrationPassword": "Explicitly requested initial setup; preserves existing Auth ID, metadata, grants and data; pending hidden local input"
+  "initialAdministrationPassword": "Explicitly requested initial setup; preserves existing Auth ID, metadata, grants and data; pending hidden local input",
+  "hiddenInputRegression": {
+    "before": "Actual isolated Chrome form POST reproduced HTTP 403 with Origin: null under no-referrer",
+    "after": "Actual isolated Chrome form POST succeeds with strict matching Origin under same-origin referrer policy",
+    "protections": "Loopback binding, exact Host and Origin, one-use nonce, CSP, no-store, password confirmations and size limits retained and tested",
+    "accountPreflight": "Rejected submission never resolved the input promise, so this run performed no password writes; existing administration identity/grant preserved and operator still absent before corrected retry"
+  }
 }

@@ -3,16 +3,19 @@ import { randomUUID } from 'node:crypto'
 import { validHiddenFields } from './beta-password-setup.mjs'
 
 // Loopback-only, one-use hidden input. No password files, argv, screenshots or logs.
-export async function hiddenInput(fields) {
+export async function hiddenInput(fields, { port = 8791, onReady } = {}) {
   const nonce = randomUUID()
-  const origin = 'http://localhost:8791'
+  let origin
   return new Promise((resolve, reject) => {
     const server = createServer(async (request, response) => {
       response.setHeader('Cache-Control', 'no-store')
-      response.setHeader('Referrer-Policy', 'no-referrer')
+      // Chrome sends Origin: null for form POSTs under no-referrer. Preserve
+      // same-origin metadata so the strict POST origin check remains usable;
+      // external destinations still receive no referrer.
+      response.setHeader('Referrer-Policy', 'same-origin')
       response.setHeader('X-Content-Type-Options', 'nosniff')
       response.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'")
-      if (request.headers.host !== 'localhost:8791') { response.writeHead(403); response.end(); return }
+      if (request.headers.host !== new URL(origin).host) { response.writeHead(403); response.end(); return }
       if (request.method === 'GET' && request.url === '/') {
         response.setHeader('Content-Type', 'text/html; charset=utf-8')
         response.end(`<!doctype html><html lang="es"><meta charset="utf-8"><title>One Stop — entrada local protegida</title><style>body{font:16px system-ui;background:#1a1a1a;color:#eee;max-width:560px;margin:50px auto;padding:24px}form,label{display:grid;gap:12px}form{gap:24px}input,button{padding:12px;font:inherit}input{background:#292929;color:#eee;border:1px solid #777}button{background:#f07a22;border:0}</style><h1>One Stop — entrada local</h1><p>Los valores permanecerán en memoria durante la preparación y la prueba. No se guardarán en archivos ni registros. Usa esta página solo en Chrome.</p><form method="post" action="/submit"><input type="hidden" name="nonce" value="${nonce}">${fields.map(field => `<label>${field.label}<input type="password" name="${field.name}" required minlength="${field.minimum || 1}" autocomplete="off"></label>`).join('')}<button>Continuar</button></form></html>`)
@@ -29,6 +32,10 @@ export async function hiddenInput(fields) {
       server.close(() => resolve(result))
     })
     server.on('error', () => reject(new Error('Hidden local input could not start')))
-    server.listen(8791, '127.0.0.1', () => console.info('Hidden local input ready: http://localhost:8791'))
+    server.listen(port, '127.0.0.1', () => {
+      origin = `http://localhost:${server.address().port}`
+      if (onReady) onReady(origin, server)
+      else console.info(`Hidden local input ready: ${origin}`)
+    })
   })
 }
