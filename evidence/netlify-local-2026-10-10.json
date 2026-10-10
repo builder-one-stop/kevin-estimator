@@ -1,0 +1,17 @@
+{
+  "localDate": "2026-10-10",
+  "origin": "http://localhost:5173",
+  "realProvider": "real OpenAI Responses API",
+  "model": "gpt-6.1-sol",
+  "effort": "medium",
+  "checks": [
+    "Temporary account authenticated in real Chrome at localhost:5173; no email delivered",
+    "Real model answered \u201chola\u201d through the browser and persisted its response",
+    "Real model produced an editable plan with scope and exclusions; material questions resolved",
+    "Approved plan generated and persisted an estimate with the real model",
+    "Estimate reopened, edited, saved and reopened again with the new quantity"
+  ],
+  "errors": [],
+  "cleanup": "Temporary auth account and its records deleted after validation",
+  "refactorValidation": true
+}

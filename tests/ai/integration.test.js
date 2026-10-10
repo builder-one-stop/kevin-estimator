@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import sharp from 'sharp'
 import { localDatabase,LocalRepository,A,B } from './localRepository.js'
 import { ControlledProvider } from './controlledProvider.js'
-import { createEstimatorServer } from '../../server/http.js'
+import { createEstimatorServer, createEstimatorHandler } from '../../server/http.js'
 import { ResponsesProvider } from '../../server/openai.js'
 import { defaultSettings } from '../../shared/aiSchemas.js'
 let db,repo,provider,server,url
@@ -16,6 +16,40 @@ async function settled(id){for(let n=0;n<100;n++){const r=await repo.get(A,id);i
 async function approved(){let row=await create();row=(await cmd(row,'message',{content:'Reference rooms'})).data;row=await settled(row.id);row=(await cmd(row,'message',{content:'Confirm explicit height assumption'})).data;row=await settled(row.id);row=(await cmd(row,'approve',{revision:row.state.planRevision})).data;return row}
 async function generated(){let row=await approved();row=(await cmd(row,'generate')).data;row=await settled(row.id);expect(row.state.run.status).toBe('ready');expect(row.estimate_id).toBeTruthy();return row}
 describe('real HTTP + migrated PostgreSQL, controlled model',()=>{
+ it('queues a Netlify-style request once, authenticates it and commits only after background execution',async()=>{
+  const launched=[]
+  const {handle,engine}=createEstimatorHandler({repo,provider,runMode:'deferred',origin:'https://onestop-beta.netlify.app',dispatch:async item=>launched.push(item),logger:()=>{}})
+  const send=async(path,body,token='fixture-a')=>{
+   const response=await handle(new Request(`https://onestop-beta.netlify.app/.netlify/functions/ai/${path}`,{method:body?'POST':'GET',headers:{Authorization:`Bearer ${token}`,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})}))
+   return {status:response.status,data:await response.json()}
+  }
+  expect((await send('status',undefined,'forged')).status).toBe(401)
+  const created=await send('conversations',{id:randomUUID(),title:'Netlify test',language:'en'})
+  expect(created.status).toBe(200)
+  const first=await send(`conversations/${created.data.id}/commands`,{requestId:randomUUID(),version:created.data.version,action:'message',content:'Paint test walls'})
+  expect(first.data.state.run.stage).toBe('queued')
+  expect(launched).toHaveLength(1)
+  const runId=first.data.state.run.id
+  const [claimed,duplicate]=await Promise.all([engine.performQueued(A,created.data.id,runId),engine.performQueued(A,created.data.id,runId)])
+  expect([claimed,duplicate].filter(Boolean)).toHaveLength(1)
+  const ready=await repo.get(A,created.data.id)
+  expect(ready.state.run.status).toBe('ready')
+  expect(ready.state.messages.at(-1).role).toBe('assistant')
+  expect(await engine.performQueued(A,created.data.id,runId)).toBe(false)
+  expect((await send(`conversations/${created.data.id}`,undefined,'fixture-b')).status).toBe(404)
+ })
+ it('persists a visible error if Netlify cannot start the background worker',async()=>{
+  const {handle}=createEstimatorHandler({repo,provider,runMode:'deferred',dispatch:async()=>{throw Error('offline')},logger:()=>{}})
+  const send=async(path,body)=>{
+   const response=await handle(new Request(`https://onestop-beta.netlify.app/api/ai/${path}`,{method:'POST',headers:{Authorization:'Bearer fixture-a','Content-Type':'application/json'},body:JSON.stringify(body)}))
+   return response.json()
+  }
+  const row=await send('conversations',{id:randomUUID(),title:'Dispatch test',language:'en'})
+  const result=await send(`conversations/${row.id}/commands`,{requestId:randomUUID(),version:row.version,action:'message',content:'Paint test walls'})
+  expect(result.state.run.status).toBe('error')
+  expect(result.state.run.error).toBe('DISPATCH_UNAVAILABLE')
+  expect(result.state.messages[0].content).toBe('Paint test walls')
+ })
  it('rejects anonymous and forged auth on every route, including attachments/settings',async()=>{for(const path of ['conversations','settings','status',`assets/${randomUUID()}`]){expect((await request(path,undefined,'')).status).toBe(401);expect((await request(path,undefined,'forged')).status).toBe(401)}})
  it('isolates conversations, links and all private images between users',async()=>{
   const row=await create();expect((await request(`conversations/${row.id}`,undefined,'fixture-b')).status).toBe(404)

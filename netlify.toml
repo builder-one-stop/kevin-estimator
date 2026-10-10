@@ -1,0 +1,18 @@
+[build]
+command = "npm run build"
+publish = "dist"
+
+[functions]
+directory = "netlify/functions"
+external_node_modules = ["sharp"]
+
+[[redirects]]
+from = "/api/ai/*"
+to = "/.netlify/functions/ai/:splat"
+status = 200
+force = true
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200

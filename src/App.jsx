@@ -17,6 +17,7 @@ import Settings from './pages/Settings.jsx'
 import Chats from './pages/Chats.jsx'
 import AiChat from './pages/AiChat.jsx'
 import AiSettings from './pages/AiSettings.jsx'
+import PasswordSetup from './pages/PasswordSetup.jsx'
 
 function EstimateWorkspaceRoute() {
   const { id } = useParams()
@@ -34,6 +35,7 @@ export default function App() {
   return (
     <Routes>
       <Route element={<AppShell />}>
+        <Route path="/account/password" element={<PasswordSetup />} />
         <Route element={<AuthenticatedRoutes />}>
           <Route path="/" element={<Home />} />
           <Route path="/chat" element={<Chats />} />

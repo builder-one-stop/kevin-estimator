@@ -48,7 +48,7 @@ export default function AiChat(){
   try{const next=await command({...row,version},action,body,requestRef.current.id);setRow(next);requestRef.current=null;return true}
   catch(e){setError(e.code);return false}finally{setBusy(false)}
  }
- async function upload(e){const file=e.target.files?.[0];e.target.value='';if(!file)return;if(file.size>5242880){setError('IMAGE_SIZE');return}setBusy(true)
+ async function upload(e){const file=e.target.files?.[0];e.target.value='';if(!file)return;if(file.size>4194304){setError('IMAGE_SIZE');return}setBusy(true)
   try{const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(file)})
    await aiRequest(`conversations/${id}/assets`,{data});setAssetTick(x=>x+1);await refresh()
   }catch(e){setError(e.code||'UPLOAD_FAILED')}finally{setBusy(false)}

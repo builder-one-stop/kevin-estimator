@@ -1,0 +1,16 @@
+{
+  "checkedAtLocalDate": "2026-10-10",
+  "branch": "feat/ai-estimator-approved-plan",
+  "localHeadBeforeChanges": "43831b5377eaf032fe4c8682ba1562ec6f31ac65",
+  "githubBranchHeadBeforeChanges": "43831b5377eaf032fe4c8682ba1562ec6f31ac65",
+  "site": "https://onestop-beta.netlify.app",
+  "netlifyPublishedCommitBeforeChanges": "43831b5377eaf032fe4c8682ba1562ec6f31ac65",
+  "netlifyDeployStateBeforeChanges": "ready",
+  "observedHttpBeforeChanges": {
+    "/": 200,
+    "/chat": 404,
+    "/api/ai/status": 404
+  },
+  "untrackedExistingDirectoryPreserved": "design/",
+  "credentialsIncluded": false
+}

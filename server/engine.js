@@ -6,7 +6,7 @@ const bodySchema=z.object({requestId:z.string().uuid(),version:z.number().int().
   content:z.string().max(8000).optional(),plan:planSchema.optional(),revision:z.number().int().optional(),language:z.enum(['en','es']).optional(),
   clientId:z.string().uuid().nullable().optional(),projectId:z.string().uuid().nullable().optional(),estimateVersion:z.number().int().optional(),restoreVersion:z.number().int().optional()}).strict()
 export class EstimatorEngine {
- constructor(repo,provider,{logger=console.info}={}) { this.repo=repo;this.provider=provider;this.active=new Map();this.logger=logger }
+ constructor(repo,provider,{logger=console.info,runMode='inline'}={}) { this.repo=repo;this.provider=provider;this.active=new Map();this.logger=logger;this.runMode=runMode }
  async create(owner,body) {
   const input=z.object({id:z.string().uuid(),title:z.string().min(1).max(160),language:z.enum(['en','es'])}).strict().parse(body)
   try{return await this.repo.get(owner,input.id)}catch(e){if(e.status!==404)throw e}
@@ -20,7 +20,7 @@ export class EstimatorEngine {
   const project=projectId ? await this.repo.owned(owner,'projects',projectId):null
   return {plan:row.state.plan,pendingPlan:row.state.run?.contextPlan||row.state.pending?.plan||null,approvedRevision:row.state.approvedRevision,estimate,client,project,documentLanguage:row.state.documentLanguage}
  }
- async command(owner,id,input) {
+ async command(owner,id,input,{dispatch}={}) {
   const body=bodySchema.parse(input); await this.repo.expire(owner)
   let row=await this.repo.get(owner,id)
   if(row.state.receipts.includes(body.requestId))return row
@@ -77,17 +77,37 @@ export class EstimatorEngine {
    if(body.content && !s.messages.length)row.title=body.content.slice(0,160)
    if(body.content)s.messages.push({id:body.requestId,role:'user',content:body.content,createdAt:new Date().toISOString()})
    if(mode==='plan')s.approvedRevision=null
-   s.run={id:randomUUID(),status:'working',stage:'preparing',mode,contextPlan:s.pending?.plan||null,startedAt:new Date().toISOString()}
+   s.run={id:randomUUID(),status:'working',stage:this.runMode==='deferred'?'queued':'preparing',mode,contextPlan:s.pending?.plan||null,startedAt:new Date().toISOString()}
    s.pending=null
   }
   s.receipts=[...s.receipts,body.requestId].slice(-200)
   row=await this.repo.commit(owner,row,row.version,estimate,estimateVersion,origin)
   if(['message','retry','generate'].includes(body.action)) {
-   const controller=new AbortController();this.active.set(row.state.run.id,controller)
-   // A persisted lease allows reloading the UI while work continues. No success is sent before commit.
-   this.perform(owner,row,controller).catch(()=>{}).finally(()=>this.active.delete(row.state.run.id))
+   if(this.runMode==='deferred') {
+    try { if(!dispatch)throw fail('DISPATCH_UNAVAILABLE',503);await dispatch({owner,id,runId:row.state.run.id}) }
+    catch {
+     const latest=await this.repo.get(owner,id)
+     if(latest.state.run?.id===row.state.run.id && latest.state.run.status==='working') {
+      latest.state.run={...latest.state.run,status:'error',error:'DISPATCH_UNAVAILABLE'}
+      try{row=await this.repo.commit(owner,latest,latest.version)}catch{row=await this.repo.get(owner,id)}
+     }
+    }
+   } else {
+    const controller=new AbortController();this.active.set(row.state.run.id,controller)
+    // A persisted lease allows reloading the UI while work continues. No success is sent before commit.
+    this.perform(owner,row,controller).catch(()=>{}).finally(()=>this.active.delete(row.state.run.id))
+   }
   }
   return row
+ }
+ async performQueued(owner,id,runId) {
+  if(this.runMode!=='deferred')throw fail('DISPATCH_UNAVAILABLE',503)
+  let row=await this.repo.get(owner,id)
+  if(row.state.run?.id!==runId || row.state.run.status!=='working' || row.state.run.stage!=='queued')return false
+  row.state.run={...row.state.run,stage:'preparing',startedAt:new Date().toISOString()}
+  try{row=await this.repo.commit(owner,row,row.version)}catch(e){if(e.code==='CONFLICT')return false;throw e}
+  await this.perform(owner,row,new AbortController())
+  return true
  }
  async perform(owner,initial,controller) {
   let row=initial;const runId=row.state.run.id;const start=Date.now()
