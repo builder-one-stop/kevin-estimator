@@ -1,10 +1,15 @@
 {
+  "origins": [
+    "http://localhost:5173",
+    "https://onestop-beta.netlify.app"
+  ],
   "project": "vtpciccluvpaclbeqxih",
   "checks": [
     "Real Supabase: unauthorized password session and forged admin metadata denied all data tables, including its own preserved fixture; writes/grant/review RPC denied",
     "Direct Supabase password update rejected; original temporary password still works; local AI denies unauthorized identity",
     "Real recovery session generated without sending email: no beta access, password update blocked and original password preserved",
-    "Real Chrome + Supabase password login: unauthorized fixture sees access-denied message, no modules, cleared password and logged-out reload"
+    "Real Chrome + Supabase password login at http://localhost:5173: unauthorized fixture sees access-denied message, no modules, cleared password and logged-out reload",
+    "Real Chrome + Supabase password login at https://onestop-beta.netlify.app: unauthorized fixture sees access-denied message, no modules, cleared password and logged-out reload"
   ],
   "errors": [],
   "cleanup": {

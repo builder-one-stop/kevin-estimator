@@ -14,7 +14,8 @@
     "Visible persisted loading/error, retained estimate and successful explicit retry after provider failure",
     "Database confirms generated estimate kept the authorized contact/project links",
     "Dashboard starts a persisted AI conversation; Estimates navigation/history search reopens the existing result",
-    "Reopen existing conversation and estimate after reload without duplicate creation"
+    "Reopen existing conversation and estimate after reload without duplicate creation",
+    "Separate admin Chrome context reviews synthetic operator questions, answers, plan and estimate read-only; mutation denied and own history remains separate"
   ],
   "errors": [],
   "estimateCount": 1,

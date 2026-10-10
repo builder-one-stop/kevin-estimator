@@ -1,16 +1,18 @@
 import { chromium, expect } from '@playwright/test'
 import { mkdir } from 'node:fs/promises'
+const origin = process.env.AUTH_BROWSER_ORIGIN || 'http://localhost:5173'
+if (!['http://localhost:5173', 'https://onestop-beta.netlify.app'].includes(origin)) throw new Error('Unexpected browser origin')
 const browser = await chromium.launch({ channel: 'chrome', headless: true })
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } })
 try {
  await mkdir('evidence/beta-access', { recursive: true })
  for (const path of ['/', '/chat', '/contacts', '/projects', '/estimates', '/admin/review', '/account/password']) {
-   await page.goto(`http://localhost:5173${path}`)
+   await page.goto(`${origin}${path}`)
    await expect(page.getByRole('heading', { name: 'Sign in to One Stop' })).toBeVisible()
    await expect(page.locator('.sidebar')).toHaveCount(0)
  }
  await expect(page.getByRole('link')).toHaveCount(0)
- await page.screenshot({ path: 'evidence/beta-access/login-local.png', fullPage: true })
+ await page.screenshot({ path: `evidence/beta-access/login-${origin.startsWith('https:') ? 'online' : 'local'}.png`, fullPage: true })
  await page.getByRole('button', { name: 'Español' }).click()
  await expect(page.getByText('Contacta al administrador')).toBeVisible()
  await page.getByRole('button', { name: 'English' }).click()

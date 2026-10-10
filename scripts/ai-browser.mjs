@@ -1,6 +1,7 @@
 import { chromium,expect } from '@playwright/test'
 import { mkdir,writeFile } from 'node:fs/promises'
 import sharp from 'sharp'
+import { B } from '../tests/ai/localRepository.js'
 import { startHarness } from './ai-local-harness.mjs'
 const h=await startHarness(),out='evidence/ai-estimator';await mkdir(out,{recursive:true})
 const browser=await chromium.launch({channel:'chrome',headless:true}),context=await browser.newContext({viewport:{width:1440,height:1100},acceptDownloads:true})
@@ -113,6 +114,26 @@ try{
  await expect(page.getByTestId('estimate-result')).toContainText('$4,008.60')
  report.checks.push('Dashboard starts a persisted AI conversation; Estimates navigation/history search reopens the existing result')
  report.checks.push('Reopen existing conversation and estimate after reload without duplicate creation')
+ // Exercise read-only administrative detail with synthetic operator data only.
+ const adminContext=await browser.newContext({viewport:{width:1440,height:1000}})
+ try {
+  await adminContext.addInitScript(({user})=>{localStorage.setItem('sb-127-auth-token',JSON.stringify({access_token:'fixture-b',refresh_token:'fixture-refresh',token_type:'bearer',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,user:{id:user,email:'admin-fixture@example.invalid',aud:'authenticated',role:'authenticated'}}));localStorage.setItem('os-lang','en')},{user:B})
+  const adminPage=await adminContext.newPage()
+  await adminPage.goto(h.url+'/admin/review/'+chatUrl.split('/').at(-1))
+  await expect(adminPage.getByText('Reviewing Kevin — read only')).toBeVisible()
+  await expect(adminPage.getByRole('heading',{name:'Questions and AI responses'})).toBeVisible()
+  await expect(adminPage.getByTestId('review-estimate')).toBeVisible()
+  await expect(adminPage.locator('.admin-review').getByRole('textbox')).toHaveCount(0)
+  await expect(adminPage.locator('.admin-review').getByRole('button',{name:/approve|generate|send|delete|save|restore|edit/i})).toHaveCount(0)
+  const rejected=await adminPage.evaluate(async(id)=>(await fetch('/api/ai/admin/conversations/'+id,{method:'POST',headers:{Authorization:'Bearer fixture-b','Content-Type':'application/json'},body:'{}'})).status,chatUrl.split('/').at(-1))
+  if(rejected!==405)throw new Error('Administrative review mutation was accepted')
+  await mkdir('evidence/beta-access',{recursive:true})
+  await adminPage.screenshot({path:'evidence/beta-access/admin-review-controlled.png',fullPage:true})
+  await adminPage.getByRole('link',{name:'Return to my conversations'}).click()
+  await expect(adminPage.getByRole('heading',{name:'Conversations',exact:true})).toBeVisible()
+  await expect(adminPage.locator('.ai-history-row')).toHaveCount(0)
+  report.checks.push('Separate admin Chrome context reviews synthetic operator questions, answers, plan and estimate read-only; mutation denied and own history remains separate')
+ } finally {await adminContext.close()}
  await second.close()
 }catch(e){report.errors.push(e.message);await page.screenshot({path:out+'/failure.png',fullPage:true});throw e}
 finally{report.estimateCount=(await h.repo.query('select count(*)::int as count from estimates'))[0].count;report.cleanup='Ephemeral local database closed; no remote/customer records used';await writeFile(out+'/browser-results.json',JSON.stringify(report,null,2)+'\n');await browser.close();await h.close()}

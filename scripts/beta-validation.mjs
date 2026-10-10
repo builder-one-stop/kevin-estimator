@@ -133,7 +133,7 @@ async function browser(origin, role, owner) {
       if (review.data.length) {
         await page.goto(`${origin}/admin/review/${review.data[0].id}`)
         await expect(page.getByRole('heading', { name: 'Questions and AI responses' })).toBeVisible()
-        assert(await page.getByRole('textbox').count() === 0, 'ADMIN_REVIEW_EDITABLE')
+        assert(await page.locator('.admin-review').getByRole('textbox').count() === 0, 'ADMIN_REVIEW_EDITABLE')
       } else await expect(page.getByText('Kevin has no conversations yet.')).toBeVisible()
       assert((await api(page, 'admin/conversations', { action: 'message' })).status === 405, 'REVIEW_MUTATION_ALLOWED')
       report.checks.push(`Admin read-only review and separate development workspace at ${origin}`)
