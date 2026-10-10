@@ -20,7 +20,7 @@ The administrator's regular chat, contact, project and estimate lists remain own
 
 ## Password administration
 
-Existing passwords are not changed during validation. Missing approved accounts are created administratively with an initial password entered through the one-use localhost form.
+Ordinary validation never changes an existing password. Missing approved accounts are created administratively with an initial password entered through the one-use localhost form. The administrator previously used email links; on the user’s explicit request, `--initialize-admin` configures its initial password through the existing service-only setter, preserving the Auth ID, metadata, grants and customer data. This is a one-time authorized setup step, separate from ordinary password testing. It revokes old sessions and tokens; subsequent validation uses the current password without changing it.
 
 Direct password updates through Supabase Auth are blocked by an `auth.users` password-update trigger, including updates initiated through the public recovery API. Hiding the UI alone would not provide this protection. Direct recovery-email requests are not claimed to be disabled: even if Supabase sends an email, its recovery/OTP session fails the application's password gate and its password update is rejected.
 
@@ -44,6 +44,9 @@ npm run test:browser
 node --env-file=.env.server.local scripts/beta-api-validation.mjs
 # Real authorized accounts, localhost + beta + real online IA/proposal/PDF:
 npm run test:beta:browser
+# Only when explicitly requested: initialize the existing administrator password
+# and confirm both initial passwords in the local form before real validation:
+npm run test:beta:browser -- --initialize-admin
 ```
 
 The real validation requires local server-only `.env.server.local`, the public Vite configuration, localhost Vite/API services and a correctly authenticated Netlify CLI. Neither env file belongs in Git. Passwords are entered in the hidden local form, retained only for the lifetime of the test process, and never recorded. Legacy real-IA/auth aliases point to the closed-beta runner; temporary magic-link fixtures are disabled against a database with `beta_accounts`.

@@ -96,6 +96,27 @@ describe('beta identity and read-only review in migrated PostgreSQL', () => {
     await db.exec('reset role')
     await db.query('insert into auth.sessions(id,user_id) values($1,$1)', [A])
   })
+  it('initializes administration password without recreating its identity or changing grants or data', async () => {
+    const identity = (await db.query('select id,email,raw_app_meta_data from auth.users where id=$1', [B])).rows[0]
+    const grant = (await db.query('select * from beta_accounts where user_id=$1', [B])).rows[0]
+    const clients = (await db.query('select * from clients order by id')).rows
+    const conversations = (await db.query('select * from ai_conversations order by id')).rows
+    const estimates = (await db.query('select * from estimates order by id')).rows
+    const operator = (await db.query('select encrypted_password from auth.users where id=$1', [A])).rows[0]
+    const hash = await bcrypt.hash('synthetic-initial-admin', 10)
+    await db.exec('set role service_role')
+    await db.query('select beta_admin_set_password($1,$2)', [B, hash])
+    await db.exec('reset role')
+    expect((await db.query('select id,email,raw_app_meta_data from auth.users where id=$1', [B])).rows[0]).toEqual(identity)
+    expect((await db.query('select * from beta_accounts where user_id=$1', [B])).rows[0]).toEqual(grant)
+    expect((await db.query('select * from clients order by id')).rows).toEqual(clients)
+    expect((await db.query('select * from ai_conversations order by id')).rows).toEqual(conversations)
+    expect((await db.query('select * from estimates order by id')).rows).toEqual(estimates)
+    expect((await db.query('select encrypted_password from auth.users where id=$1', [A])).rows[0]).toEqual(operator)
+    expect(await bcrypt.compare('synthetic-initial-admin', (await db.query('select encrypted_password from auth.users where id=$1', [B])).rows[0].encrypted_password)).toBe(true)
+    expect((await db.query('select * from auth.sessions where user_id=$1', [B])).rows).toEqual([])
+    await db.query('insert into auth.sessions(id,user_id) values($1,$1)', [B])
+  })
   it('blocks direct password changes and allows only the service-only administrative hash setter', async () => {
     await db.exec('create role supabase_auth_admin; grant usage on schema auth to supabase_auth_admin; grant select,update on auth.users to supabase_auth_admin; set role supabase_auth_admin')
     await expect(db.query('update auth.users set encrypted_password=$1 where id=$2', ['forged', C])).rejects.toThrow('BETA_PASSWORD_ADMIN_ONLY')

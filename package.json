@@ -17,7 +17,7 @@
     "test:auth:browser": "npm run test:beta:browser",
     "test:auth:online-browser": "npm run test:beta:browser",
     "dev:ai:fixture": "node scripts/ai-local-harness.mjs",
-    "test:beta:browser": "BETA_ALREADY_PUBLISHED=1 node --env-file=.env.server.local scripts/beta-validation.mjs",
+    "test:beta:browser": "node --env-file=.env.server.local scripts/beta-validation.mjs",
     "admin:password": "node --env-file=.env.server.local scripts/beta-admin-password.mjs"
   },
   "dependencies": {

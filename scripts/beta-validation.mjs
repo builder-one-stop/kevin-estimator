@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { hiddenInput } from './hidden-beta-input.mjs'
+import { passwordFields, initializeExistingAdmin } from './beta-password-setup.mjs'
 import { calculateEstimate } from '../src/lib/estimateDocument.js'
 
 const project = 'vtpciccluvpaclbeqxih', beta = 'https://onestop-beta.netlify.app'
@@ -166,25 +167,41 @@ try {
   const list = await db.auth.admin.listUsers({ page: 1, perPage: 1000 })
   assert(!list.error, 'ACCOUNT_LOOKUP_FAILED')
   const accounts = Object.fromEntries(Object.entries(roles).map(([role, email]) => [role, list.data.users.find(u => u.email?.toLowerCase() === email)]))
-  credentials = await hiddenInput([{ name: 'operator', label: accounts.operator ? 'Kevin — contraseña actual (no se cambiará)' : 'Kevin — contraseña inicial', minimum: accounts.operator ? 1 : 8 },
-    ...(!accounts.operator ? [{ name: 'confirm', label: 'Confirma la contraseña inicial de Kevin', minimum: 8 }] : []),
-    { name: 'admin', label: 'Administración — contraseña actual (no se cambiará)' }])
-  if (!accounts.operator) assert(credentials.operator === credentials.confirm && Buffer.byteLength(credentials.operator) <= 72, 'INITIAL_PASSWORD_CONFIRMATION')
+  const initializeAdmin = process.argv.includes('--initialize-admin')
+  credentials = await hiddenInput(passwordFields(accounts, initializeAdmin))
+  // Refresh identity snapshots after hidden input; never recreate a user that
+  // appeared while the form was open or replace an existing account's owner.
+  const latest = await db.auth.admin.listUsers({ page: 1, perPage: 1000 })
+  assert(!latest.error, 'ACCOUNT_LOOKUP_FAILED')
+  for (const [role, email] of Object.entries(roles)) {
+    const existing = latest.data.users.find(u => u.email?.toLowerCase() === email)
+    assert(!accounts[role] || existing?.id === accounts[role].id, 'ACCOUNT_IDENTITY_CHANGED')
+    accounts[role] = existing
+  }
+  stage = 'Authorized initial administration password setup'
+  if (!accounts.admin) {
+    const created = await db.auth.admin.createUser({ email: roles.admin, password: credentials.admin, email_confirm: true })
+    assert(!created.error, 'ADMIN_ACCOUNT_CREATION_FAILED'); accounts.admin = created.data.user
+    report.accounts.admin = 'Created missing authorized administration identity with initial password'
+  } else {
+    const registered = await db.rpc('beta_register_accounts'); assert(!registered.error, 'ACCOUNT_GRANTS_FAILED')
+    const initialized = await initializeExistingAdmin(db, accounts.admin, credentials, initializeAdmin)
+    report.accounts.admin = initialized ? 'Initial password configured administratively; existing identity, metadata, data and permissions preserved' : 'Existing identity and password preserved'
+  }
+  stage = 'Verify administration password before preparing operator'
   const adminLogin = await auth(roles.admin, credentials.admin)
-  assert(adminLogin.session.user.id === accounts.admin?.id, 'ADMIN_IDENTITY_MISMATCH')
+  assert(adminLogin.session.user.id === accounts.admin.id, 'ADMIN_IDENTITY_MISMATCH')
   await adminLogin.client.auth.signOut({ scope: 'local' })
   if (!accounts.operator) {
     const result = await db.auth.admin.createUser({ email: roles.operator, password: credentials.operator, email_confirm: true })
     assert(!result.error, 'ACCOUNT_CREATION_FAILED'); accounts.operator = result.data.user; report.accounts.operator = 'Created missing authorized identity with initial password'
   } else report.accounts.operator = 'Existing identity and password preserved'
-  report.accounts.admin = 'Existing identity and password preserved'
   const register = await db.rpc('beta_register_accounts'); assert(!register.error, 'ACCOUNT_GRANTS_FAILED')
   const membership = await db.from('beta_accounts').select('user_id,role')
   assert(!membership.error && membership.data.length === 2 && membership.data.every(x => accounts[x.role]?.id === x.user_id), 'AUTHORIZED_IDENTITIES_MISMATCH')
   report.checks.push('Exactly the two approved identities hold beta grants; existing administration identity preserved')
   for (const role of ['operator', 'admin']) await browser('http://localhost:5173', role, accounts[role].id)
   console.info('PASS: both local password journeys. Waiting for the beta implementation commit if needed.')
-  const initialHead = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
   // During development this process holds credentials only in memory while the
   // agent commits/pushes the implementation. No further password entry is needed.
   for (;;) {
@@ -192,7 +209,7 @@ try {
     const cli = process.env.NETLIFY_CLI || 'netlify'
     let deployed
     try { const site = JSON.parse(execFileSync(cli, ['api', 'getSite', '--data', JSON.stringify({ site_id: 'ce81887b-c941-40c3-8da4-13d6fc833290' })], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })); deployed = site.published_deploy?.commit_ref } catch { /* retry without exposing API output */ }
-    if (deployed === localHead && (localHead !== initialHead || process.env.BETA_ALREADY_PUBLISHED === '1')) { report.testedCommit = localHead; break }
+    if (deployed === localHead) { report.testedCommit = localHead; break }
     await new Promise(resolve => setTimeout(resolve, 10000))
   }
   for (const role of ['operator', 'admin']) await browser(beta, role, accounts[role].id)

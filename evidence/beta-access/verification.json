@@ -1,8 +1,8 @@
 {
   "automated": {
     "command": "npm test",
-    "files": 17,
-    "passed": 88
+    "files": 18,
+    "passed": 93
   },
   "lint": "passed",
   "build": "passed; existing chunk-size warning",
@@ -14,7 +14,7 @@
       "Explicit local test-session entry works; email delivery/authentication was not retested",
       "Created identifiable local test contact and linked project through existing UI",
       "Text + real uploaded private photo; pending-height question blocks approval",
-      "Editable plan → exact revision approval → persisted 29-line $4,008.60 card",
+      "Editable plan \u2192 exact revision approval \u2192 persisted 29-line $4,008.60 card",
       "Two Chrome tabs: pending chat change refuses newer manual estimate version",
       "Reviewed limited change applies once; manual quantities preserved after reload",
       "Independent EN/ES document selection; coherent preview; actual proposal and detailed PDF downloads",
@@ -32,5 +32,6 @@
   },
   "liveAuthentication": "pending hidden local password entry",
   "naturalSessionExpiry": "not waited out in a browser; active, expired and revoked session checks covered by migrated SQL tests",
-  "liveUnauthorizedAccess": "Real Chrome + remote Supabase: rejected locally and online; direct public/recovery password updates blocked, original temporary password preserved; temporary fixture cleanup verified"
+  "liveUnauthorizedAccess": "Real Chrome + remote Supabase: rejected locally and online; direct public/recovery password updates blocked, original temporary password preserved; temporary fixture cleanup verified",
+  "initialAdministrationPassword": "Explicitly requested initial setup; preserves existing Auth ID, metadata, grants and data; pending hidden local input"
 }

@@ -1,5 +1,6 @@
 import { createServer } from 'node:http'
 import { randomUUID } from 'node:crypto'
+import { validHiddenFields } from './beta-password-setup.mjs'
 
 // Loopback-only, one-use hidden input. No password files, argv, screenshots or logs.
 export async function hiddenInput(fields) {
@@ -21,7 +22,7 @@ export async function hiddenInput(fields) {
       const chunks = []; let size = 0
       for await (const chunk of request) { size += chunk.length; if (size > 4096) { response.writeHead(413); response.end(); return } chunks.push(chunk) }
       const values = new URLSearchParams(Buffer.concat(chunks).toString())
-      if (values.get('nonce') !== nonce || fields.some(field => !values.get(field.name) || values.get(field.name).length < (field.minimum || 1))) { response.writeHead(400); response.end('Entrada no válida. Vuelve atrás para corregirla.'); return }
+      if (values.get('nonce') !== nonce || !validHiddenFields(fields, values)) { response.setHeader('Content-Type', 'text/plain; charset=utf-8'); response.writeHead(400); response.end('Entrada no válida. Las contraseñas nuevas deben coincidir con su confirmación, tener al menos 8 caracteres y usar como máximo 72 bytes. Vuelve atrás para corregirlas.'); return }
       const result = Object.fromEntries(fields.map(field => [field.name, values.get(field.name)]))
       response.setHeader('Content-Type', 'text/html; charset=utf-8')
       response.end('<!doctype html><html lang="es"><meta charset="utf-8"><title>One Stop</title><p>Entrada recibida. Puedes cerrar esta pestaña y volver a Codex.</p></html>')
