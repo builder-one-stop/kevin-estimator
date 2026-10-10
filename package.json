@@ -12,6 +12,7 @@
     "test:browser": "node scripts/browser-smoke.mjs && node scripts/ai-browser.mjs",
     "dev:api": "node --env-file=.env.server.local server/index.js",
     "test:ai:browser": "node scripts/ai-browser.mjs",
+    "test:chat:browser": "node scripts/chat-experience-browser.mjs",
     "test:ai:real-browser": "npm run test:beta:browser",
     "test:ai:online-browser": "npm run test:beta:browser",
     "test:auth:browser": "npm run test:beta:browser",

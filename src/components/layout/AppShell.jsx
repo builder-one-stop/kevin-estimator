@@ -9,7 +9,9 @@ import { useBetaAccess } from '../auth/BetaAccessContext.jsx'
 export default function AppShell() {
   const { t } = useTranslation()
   const access = useBetaAccess()
-  const reviewing = useLocation().pathname.startsWith('/admin/review')
+  const pathname = useLocation().pathname
+  const reviewing = pathname.startsWith('/admin/review')
+  const chatting = /^\/chat\/[0-9a-f-]{36}$/i.test(pathname)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [toast, setToast] = useState('')
   const showToast = useCallback((message) => {
@@ -25,7 +27,7 @@ export default function AppShell() {
       <div className="main-wrap">
         <MobileBar label={t('a11y.menu')} onOpen={() => setDrawerOpen(true)} />
         {!reviewing && <div className="workspace-label">{t(access?.role === 'admin' ? 'beta.ownDevelopment' : 'beta.ownWorkspace')}</div>}
-        <main className="main"><Outlet context={{ showSoon, showToast }} /></main>
+        <main className={`main ${chatting ? 'chat-main' : ''}`}><Outlet context={{ showSoon, showToast }} /></main>
       </div>
       <Toast message={toast} />
     </div>

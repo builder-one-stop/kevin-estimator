@@ -1,4 +1,5 @@
 import OpenAI from 'openai'
+import { readPublicStream } from './publicText.js'
 import { outputSchema, toolDefinitions, toolOutputSchema, validateTool } from '../shared/aiSchemas.js'
 import { fail } from '../shared/aiDomain.js'
 export const PROMPT_VERSION = 'estimator-2026-10-09.3'
@@ -21,7 +22,7 @@ export class ResponsesProvider {
     this.client=env.OPENAI_API_KEY ? new OpenAI({apiKey:env.OPENAI_API_KEY,maxRetries:1,timeout:120000}) : null
     this.prices={input:env.OPENAI_INPUT_USD_PER_MILLION?.trim()?Number(env.OPENAI_INPUT_USD_PER_MILLION):NaN,cached:env.OPENAI_CACHED_USD_PER_MILLION?.trim()?Number(env.OPENAI_CACHED_USD_PER_MILLION):NaN,output:env.OPENAI_OUTPUT_USD_PER_MILLION?.trim()?Number(env.OPENAI_OUTPUT_USD_PER_MILLION):NaN}
   }
-  async run({mode,messages,context,settings,images,signal,onStage}) {
+  async run({mode,messages,context,settings,images,signal,onStage,onText}) {
     if(!this.client) throw fail('OPENAI_NOT_CONFIGURED',503)
     const contextText=JSON.stringify({mode,context})
     if(contextText.length+JSON.stringify(messages).length>150000) throw fail('CONTEXT_LIMIT')
@@ -34,9 +35,10 @@ export class ResponsesProvider {
       return {model:this.model,responseModels:[...responseModels],effort:this.effort,promptVersion:PROMPT_VERSION,durationMs:Date.now()-start,usage:{...usage},estimatedCostUsd}
     }
     try { for(let turn=0;turn<4;turn++) {
-      const response=await this.client.responses.create({model:this.model,reasoning:{effort:this.effort},instructions,
-        input,tools:toolDefinitions,parallel_tool_calls:false,max_output_tokens:12000,store:false,
+      let response=await this.client.responses.create({model:this.model,reasoning:{effort:this.effort},instructions,
+        input,tools:toolDefinitions,parallel_tool_calls:false,max_output_tokens:12000,store:false,...(onText?{stream:true}:{}),
         text:{format:{type:'json_schema',name:'estimate_result',strict:true,schema:toolOutputSchema}}}, {signal})
+      if(onText)response=await readPublicStream(response,mode,onText)
       if(typeof response.model==='string' && !responseModels.includes(response.model))responseModels.push(response.model)
       usage.input_tokens+=response.usage?.input_tokens || 0; usage.output_tokens+=response.usage?.output_tokens || 0
       usage.cached_tokens+=response.usage?.input_tokens_details?.cached_tokens || 0

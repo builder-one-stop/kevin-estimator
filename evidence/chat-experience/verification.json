@@ -1,0 +1,16 @@
+{
+  "automated": {
+    "command": "npm test",
+    "files": 20,
+    "passed": 99
+  },
+  "lint": "passed",
+  "build": "passed; existing bundle size warning",
+  "netlifyFunctions": "both functions bundled successfully",
+  "migrations": "none required; progress uses existing owner-scoped JSON state",
+  "visual": "Chrome and Playwright WebKit desktop/mobile; see visual-results.json and PNGs",
+  "regression": "Controlled Chrome plan/approval/estimate/edit/reload/PDF/isolation/admin review; see regression-results.json",
+  "realBeta": "pending current administration password entry",
+  "safari": "SafariDriver session rejected: remote automation disabled; authorization requested",
+  "autofill": "Chrome autofill pseudo-state forced through CDP; existing personal saved credentials were not accessed"
+}

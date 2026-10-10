@@ -17,7 +17,10 @@ if (env.VITE_SUPABASE_URL.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '') !== u
 const db = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
 const publicKey = env.VITE_SUPABASE_ANON_KEY
 const roles = { operator: 'homecolor45@gmail.com', admin: 'builderonestop44@gmail.com' }
-const report = { project, checks: [], errors: [], accounts: {}, realQuote: null }
+const adminOnly = process.argv.includes('--admin-only')
+const startingCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
+const evidenceDirectory = adminOnly ? 'evidence/chat-experience' : 'evidence/beta-access'
+const report = { project, checks: [], errors: [], accounts: {}, realQuote: null, progress: [] }
 const sessions = [], conversations = [], estimates = []
 let credentials, outsider, stage = 'Account preflight'
 function assert(ok, code) { if (!ok) throw Object.assign(new Error(code), { code }) }
@@ -47,6 +50,7 @@ async function runReady(page, id, previous = null) {
     const { status, data } = await api(page, `conversations/${id}`)
     assert(status === 200, 'CONVERSATION_READ_FAILED')
     if (data.state.run && data.state.run.id !== previous) {
+      if(data.state.run.status==='working' && data.state.run.preview)report.progress.push({mode:data.state.run.mode,characters:data.state.run.preview.length,stage:data.state.run.stage})
       assert(data.state.run.status !== 'error', data.state.run.error || 'MODEL_RUN_FAILED')
       if (data.state.run.status === 'ready') return data
     }
@@ -120,7 +124,7 @@ async function browser(origin, role, owner) {
     await page.getByRole('button', { name: 'Español' }).click()
     await expect(page.getByText('Contacta al administrador')).toBeVisible()
     await page.getByRole('button', { name: 'English' }).click()
-    if (origin === beta && role === 'admin') await page.screenshot({ path: 'evidence/beta-access/login-online.png', fullPage: true })
+    if (origin === beta && role === 'admin') await page.screenshot({ path: `${evidenceDirectory}/login-online.png`, fullPage: true })
     await page.getByLabel('Email').fill(roles[role])
     await page.getByLabel('Password', { exact: true }).fill(credentials[role])
     await page.getByRole('button', { name: 'Sign in', exact: true }).click()
@@ -163,12 +167,23 @@ async function browser(origin, role, owner) {
   } finally { await context?.close(); await rm(profile, { recursive: true, force: true }) }
 }
 try {
-  await mkdir('evidence/beta-access', { recursive: true })
+  await mkdir(evidenceDirectory, { recursive: true })
   const list = await db.auth.admin.listUsers({ page: 1, perPage: 1000 })
   assert(!list.error, 'ACCOUNT_LOOKUP_FAILED')
   const accounts = Object.fromEntries(Object.entries(roles).map(([role, email]) => [role, list.data.users.find(u => u.email?.toLowerCase() === email)]))
   const initializeAdmin = process.argv.includes('--initialize-admin')
-  credentials = await hiddenInput(passwordFields(accounts, initializeAdmin))
+  assert(!adminOnly || (accounts.admin && accounts.operator && !initializeAdmin), 'EXISTING_ACCOUNTS_REQUIRED')
+  credentials = await hiddenInput(passwordFields(accounts, initializeAdmin).filter(field => !adminOnly || field.name === 'admin'))
+  if(process.argv.includes('--wait-for-publish')) {
+    console.info('Input received; waiting for the reviewed implementation to be published.')
+    while(true){
+      const head=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()
+      let published
+      try{published=JSON.parse(execFileSync(process.env.NETLIFY_CLI||'netlify',['api','getSite','--data',JSON.stringify({site_id:'ce81887b-c941-40c3-8da4-13d6fc833290'})],{encoding:'utf8',stdio:['ignore','pipe','ignore']})).published_deploy?.commit_ref}catch{}
+      if(head!==startingCommit && head===published)break
+      await new Promise(resolve=>setTimeout(resolve,10000))
+    }
+  }
   // Refresh identity snapshots after hidden input; never recreate a user that
   // appeared while the form was open or replace an existing account's owner.
   const latest = await db.auth.admin.listUsers({ page: 1, perPage: 1000 })
@@ -200,8 +215,8 @@ try {
   const membership = await db.from('beta_accounts').select('user_id,role')
   assert(!membership.error && membership.data.length === 2 && membership.data.every(x => accounts[x.role]?.id === x.user_id), 'AUTHORIZED_IDENTITIES_MISMATCH')
   report.checks.push('Exactly the two approved identities hold beta grants; existing administration identity preserved')
-  for (const role of ['operator', 'admin']) await browser('http://localhost:5173', role, accounts[role].id)
-  console.info('PASS: both local password journeys. Waiting for the beta implementation commit if needed.')
+  for (const role of (adminOnly ? ['admin'] : ['operator', 'admin'])) await browser('http://localhost:5173', role, accounts[role].id)
+  console.info('PASS: selected local password journeys. Waiting for the beta implementation commit if needed.')
   // During development this process holds credentials only in memory while the
   // agent commits/pushes the implementation. No further password entry is needed.
   for (;;) {
@@ -212,7 +227,7 @@ try {
     if (deployed === localHead) { report.testedCommit = localHead; break }
     await new Promise(resolve => setTimeout(resolve, 10000))
   }
-  for (const role of ['operator', 'admin']) await browser(beta, role, accounts[role].id)
+  for (const role of (adminOnly ? ['admin'] : ['operator', 'admin'])) await browser(beta, role, accounts[role].id)
   stage = 'Direct unauthorized Auth and database checks'
   const outsiderPassword = `QA-${crypto.randomUUID()}!`, newPassword = `Rejected-${crypto.randomUUID()}!`
   const tempEmail = `qa-beta-${Date.now()}@example.invalid`
@@ -254,6 +269,6 @@ try {
   }
   report.cleanup = { errors: cleanupErrors, scope: 'Only exact synthetic development conversation/estimate IDs and the temporary outsider created by this run; authorized users retained; no Kevin test content' }
   if (cleanupErrors.length) process.exitCode = 1
-  await writeFile('evidence/beta-access/browser-results.json', JSON.stringify(report, null, 2) + '\n')
+  await writeFile(`${evidenceDirectory}/browser-results.json`, JSON.stringify(report, null, 2) + '\n')
   console.info(JSON.stringify({ checks: report.checks.length, errors: report.errors, cleanupErrors }))
 }

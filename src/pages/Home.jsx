@@ -4,7 +4,9 @@ import { ArrowRight, BriefcaseBusiness, FileText, Sparkles } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Composer from '../components/chat/Composer.jsx'
 import { LogoMark } from '../components/layout/Sidebar.jsx'
-import { PROFILE } from '../mocks/data.js'
+import { useBetaAccess } from '../components/auth/BetaAccessContext.jsx'
+import HistoryDrawer from '../components/ai/HistoryDrawer.jsx'
+import { compactTitle } from '../../shared/chatPresentation.js'
 import { getRecentProjects } from '../services/projects.js'
 import { createEstimate, listEstimates } from '../services/estimates.js'
 import { calculateEstimate } from '../lib/estimateDocument.js'
@@ -19,6 +21,9 @@ import StatusDot from '../components/ui/StatusDot.jsx'
 export default function Home() {
   const { t } = useTranslation()
   const { a, language } = useAiText()
+  const access = useBetaAccess()
+  const sendLock = useRef(false)
+  const sendAttempt = useRef(null)
   const navigate = useNavigate()
   const location = useLocation()
   const { showSoon } = useOutletContext()
@@ -36,11 +41,15 @@ export default function Home() {
   const [hour] = useState(() => new Date().getHours())
   const greeting = hour < 12 ? t('greet.morning') : hour < 19 ? t('greet.afternoon') : t('greet.evening')
   const send = async () => {
-    if (estimateBusy || !draft.trim()) return
+    if (sendLock.current || estimateBusy || !draft.trim()) return
+    sendLock.current = true
     setEstimateBusy(true)
-    try { const row = await createConversation(draft.trim().slice(0, 160), language); await command(row, 'message', { content: draft.trim() }); navigate(`/chat/${row.id}`) }
+    const content = draft.trim()
+    if (sendAttempt.current?.content !== content) sendAttempt.current = { content, id: crypto.randomUUID(), requestId: crypto.randomUUID() }
+    const attempt = sendAttempt.current
+    try { const row = await createConversation(compactTitle(content), language, attempt.id); await command(row, 'message', { content }, attempt.requestId); sendAttempt.current = null; navigate(`/chat/${row.id}`) }
     catch { setEstimateError(a('unavailable')); setEstimateState('error') }
-    finally { setEstimateBusy(false) }
+    finally { sendLock.current = false; setEstimateBusy(false) }
   }
 
   useEffect(() => {
@@ -87,12 +96,12 @@ export default function Home() {
 
   return (
     <div className="home home-dashboard">
+      <div className="home-top"><HistoryDrawer /></div>
       <section className="home-hero" aria-label={t('home.askTitle')}>
         <LogoMark size={42} />
-        <h1 className="greet">{t('home.greeting', { greeting, name: PROFILE.name.split(' ')[0] })}</h1>
+        <h1 className="greet">{access?.role === 'operator' ? t('home.greeting', { greeting, name: 'Kevin' }) : greeting}</h1>
         <p>{t('home.askTitle')}</p>
-        <Link to="/chat">{a('history')}</Link>
-        <Composer simple inputRef={composerRef} value={draft} onChange={setDraft} onSend={send} onSoon={showSoon} />
+        <Composer simple busy={estimateBusy} inputRef={composerRef} value={draft} onChange={setDraft} onSend={send} onSoon={showSoon} />
       </section>
       <div className="home-recent">
         <section className="home-section">

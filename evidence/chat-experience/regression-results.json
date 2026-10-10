@@ -1,0 +1,23 @@
+{
+  "environment": "Local Chrome + real migrated PostgreSQL/PGlite + HTTP API + explicitly controlled model; no remote data",
+  "checks": [
+    "Explicit local test-session entry works; email delivery/authentication was not retested",
+    "Created identifiable local test contact and linked project through existing UI",
+    "Text + real uploaded private photo; pending-height question blocks approval",
+    "Editable plan → exact revision approval → persisted 29-line $4,008.60 card",
+    "Two Chrome tabs: pending chat change refuses newer manual estimate version",
+    "Reviewed limited change applies once; manual quantities preserved after reload",
+    "Independent EN/ES document selection; coherent preview; actual proposal and detailed PDF downloads",
+    "UI EN/ES changes in place preserve unsent text and document language",
+    "Explicit restore creates a new revision and recovers the original total",
+    "Explicit preference and validated manual catalog import persist after reload",
+    "Visible persisted loading/error, retained estimate and successful explicit retry after provider failure",
+    "Database confirms generated estimate kept the authorized contact/project links",
+    "Dashboard starts a persisted AI conversation; Estimates navigation/history search reopens the existing result",
+    "Reopen existing conversation and estimate after reload without duplicate creation",
+    "Separate admin Chrome context reviews synthetic operator questions, answers, plan and estimate read-only; mutation denied and own history remains separate"
+  ],
+  "errors": [],
+  "estimateCount": 1,
+  "cleanup": "Ephemeral local database closed; no remote/customer records used"
+}

@@ -3,6 +3,7 @@ import { Link,useNavigate } from 'react-router-dom'
 import { aiRequest,createConversation } from '../services/ai.js'
 import { useAiText,errorText } from '../components/ai/strings.js'
 import '../styles/ai.css'
+import { compactTitle } from '../../shared/chatPresentation.js'
 export default function Chats(){
  const {a,language}=useAiText();const navigate=useNavigate();const [rows,setRows]=useState(null),[query,setQuery]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false)
  async function load(){try{setRows(await aiRequest('conversations'));setError('')}catch(e){setError(e.code)}}
@@ -12,6 +13,6 @@ export default function Chats(){
  <label>{a('search')}<input type="search" value={query} onChange={e=>setQuery(e.target.value)}/></label>
  {error&&<p role="alert">{errorText(error,a)} <button onClick={load}>{a('retry')}</button></p>}
  {!rows&&!error&&<p role="status">{a('loading')}</p>}
- {rows?.filter(x=>x.title.toLowerCase().includes(query.toLowerCase())).map(row=><Link className="ai-history-row" to={`/chat/${row.id}`} key={row.id}><b>{row.title}</b><time>{new Date(row.updated_at).toLocaleString(language)}</time></Link>)}
+ {rows?.filter(x=>x.title.toLowerCase().includes(query.toLowerCase())).map(row=><Link className="ai-history-row" to={`/chat/${row.id}`} key={row.id}><b>{compactTitle(row.title)}</b><time>{new Date(row.updated_at).toLocaleString(language)}</time></Link>)}
  </div>
 }

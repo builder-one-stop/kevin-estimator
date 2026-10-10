@@ -2,10 +2,10 @@ import { ArrowUp, MapPin, Mic, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import IconButton from '../ui/IconButton.jsx'
 
-export default function Composer({ value, onChange, onSend, compact = false, simple = false, onSoon, inputRef }) {
+export default function Composer({ value, onChange, onSend, compact = false, simple = false, busy = false, onSoon, inputRef }) {
   const { t } = useTranslation()
   const placeholder = compact ? t('replyPh') : t('composerPh')
-  const submit = () => value.trim() && onSend()
+  const submit = () => !busy && value.trim() && onSend()
 
   return (
     <div className="composer">
@@ -26,7 +26,7 @@ export default function Composer({ value, onChange, onSend, compact = false, sim
         )}
         <span className="spacer" />
         {!simple && <IconButton label={t('a11y.voice')} onClick={onSoon}><Mic size={18} /></IconButton>}
-        <button type="button" className="send" aria-label={t('a11y.send')} disabled={!value.trim()} onClick={submit}><ArrowUp size={20} /></button>
+        <button type="button" className="send" aria-label={t('a11y.send')} disabled={busy || !value.trim()} onClick={submit}>{busy ? <span className="activity-dots" aria-hidden="true"><i/><i/><i/></span> : <ArrowUp size={20} />}</button>
       </div>
     </div>
   )

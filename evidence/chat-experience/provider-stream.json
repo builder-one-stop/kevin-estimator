@@ -1,0 +1,77 @@
+{
+  "environment": "Real OpenAI API, synthetic greeting only; no Supabase or browser authentication involved",
+  "metrics": {
+    "model": "gpt-6.1-sol",
+    "responseModels": [
+      "gpt-6.1-sol"
+    ],
+    "effort": "medium",
+    "promptVersion": "estimator-2026-10-09.3",
+    "durationMs": 3212,
+    "usage": {
+      "input_tokens": 3365,
+      "output_tokens": 32,
+      "cached_tokens": 0
+    },
+    "estimatedCostUsd": 0.00705
+  },
+  "progress": [
+    {
+      "characters": 1,
+      "atMs": 2722,
+      "complete": false
+    },
+    {
+      "characters": 5,
+      "atMs": 2789,
+      "complete": false
+    },
+    {
+      "characters": 6,
+      "atMs": 2794,
+      "complete": false
+    },
+    {
+      "characters": 8,
+      "atMs": 2803,
+      "complete": false
+    },
+    {
+      "characters": 11,
+      "atMs": 2807,
+      "complete": false
+    },
+    {
+      "characters": 19,
+      "atMs": 2825,
+      "complete": false
+    },
+    {
+      "characters": 29,
+      "atMs": 2825,
+      "complete": false
+    },
+    {
+      "characters": 33,
+      "atMs": 2825,
+      "complete": false
+    },
+    {
+      "characters": 37,
+      "atMs": 2870,
+      "complete": false
+    },
+    {
+      "characters": 38,
+      "atMs": 2873,
+      "complete": false
+    },
+    {
+      "characters": 38,
+      "atMs": 2951,
+      "complete": true
+    }
+  ],
+  "finalMessageCharacters": 38,
+  "validStructuredResult": true
+}

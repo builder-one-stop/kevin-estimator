@@ -16,6 +16,25 @@ async function settled(id){for(let n=0;n<100;n++){const r=await repo.get(A,id);i
 async function approved(){let row=await create();row=(await cmd(row,'message',{content:'Reference rooms'})).data;row=await settled(row.id);row=(await cmd(row,'message',{content:'Confirm explicit height assumption'})).data;row=await settled(row.id);row=(await cmd(row,'approve',{revision:row.state.planRevision})).data;return row}
 async function generated(){let row=await approved();row=(await cmd(row,'generate')).data;row=await settled(row.id);expect(row.state.run.status).toBe('ready');expect(row.estimate_id).toBeTruthy();return row}
 describe('real HTTP + migrated PostgreSQL, controlled model',()=>{
+ it('persists owner-only progressive text without approving partial plans and clears it after cancellation',async()=>{
+  let release, previewed
+  const waiting=new Promise(resolve=>{release=resolve}),progress=new Promise(resolve=>{previewed=resolve})
+  const streaming={run:async input=>{await input.onText('A public response is arriving');previewed();await waiting;await input.onText('A public response is arriving now');return {result:{message:'Complete',plan:null,lines:[],changes:[]},metrics:{}}}}
+  const {engine}=createEstimatorHandler({repo,provider:streaming,logger:()=>{}})
+  const row=await engine.create(A,{id:randomUUID(),title:'Streaming test',language:'en'})
+  await engine.command(A,row.id,{requestId:randomUUID(),version:row.version,action:'message',content:'A public question'})
+  await progress
+  const partial=await repo.get(A,row.id)
+  expect(partial.state.run.preview).toBe('A public response is arriving')
+  expect(partial.state.plan).toBeNull();expect(partial.estimate_id).toBeNull()
+  expect((await request(`conversations/${row.id}`,undefined,'fixture-b')).status).toBe(404)
+  await expect(engine.command(A,row.id,{requestId:randomUUID(),version:partial.version,action:'approve',revision:0})).rejects.toMatchObject({code:'RUN_BUSY'})
+  const cancelled=await engine.command(A,row.id,{requestId:randomUUID(),version:partial.version,action:'cancel'})
+  expect(cancelled.state.run.preview).toBe('');release()
+  for(let n=0;n<30&&engine.active.size;n++)await new Promise(r=>setTimeout(r,10))
+  expect((await repo.get(A,row.id)).state.run.status).toBe('cancelled')
+ })
+
  it('queues a Netlify-style request once, authenticates it and commits only after background execution',async()=>{
   const launched=[]
   const {handle,engine}=createEstimatorHandler({repo,provider,runMode:'deferred',origin:'https://onestop-beta.netlify.app',dispatch:async item=>launched.push(item),logger:()=>{}})

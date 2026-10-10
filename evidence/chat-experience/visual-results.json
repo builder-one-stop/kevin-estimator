@@ -1,0 +1,15 @@
+{
+  "environment": "Isolated migrated database, controlled provider; no customer data",
+  "checks": [
+    "chrome desktop: light inputs, dark typed/password/placeholder text; Chrome forced autofill pseudo-state checked where applicable",
+    "Unsent message survives failure and reload; explicit retry commits once with original request ID",
+    "chrome desktop: history drawer/resume/Escape, correct admin greeting, immediate message, real controlled-server preview, single submit, no scroll jump, new-content notice, visible composer and pending EN/ES text",
+    "chrome mobile: light inputs, dark typed/password/placeholder text; Chrome forced autofill pseudo-state checked where applicable",
+    "chrome mobile: history drawer/resume/Escape, correct admin greeting, immediate message, real controlled-server preview, single submit, no scroll jump, new-content notice, visible composer and pending EN/ES text",
+    "webkit desktop: light inputs, dark typed/password/placeholder text; Chrome forced autofill pseudo-state checked where applicable",
+    "webkit desktop: history drawer/resume/Escape, correct admin greeting, immediate message, real controlled-server preview, single submit, no scroll jump, new-content notice, visible composer and pending EN/ES text",
+    "webkit mobile: light inputs, dark typed/password/placeholder text; Chrome forced autofill pseudo-state checked where applicable",
+    "webkit mobile: history drawer/resume/Escape, correct admin greeting, immediate message, real controlled-server preview, single submit, no scroll jump, new-content notice, visible composer and pending EN/ES text"
+  ],
+  "errors": []
+}

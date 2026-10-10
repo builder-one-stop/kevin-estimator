@@ -65,8 +65,8 @@ export default function EstimateAuth({ children }) {
       {loading ? <p role="status">{t('estimateEditor.loading')}</p> : <>
         <h1>{t('estimateEditor.signInTitle')}</h1>
         <form onSubmit={submit}>
-          <label>{t('estimateEditor.email')}<input type="email" required value={email} onChange={event => setEmail(event.target.value)} autoComplete="username" /></label>
-          <label>{t('auth.password')}<input type="password" required value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" /></label>
+          <label>{t('estimateEditor.email')}<input type="email" required placeholder={t('estimateEditor.email')} value={email} onChange={event => setEmail(event.target.value)} autoComplete="username" /></label>
+          <label>{t('auth.password')}<input type="password" required placeholder={t('auth.password')} value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" /></label>
           <button className="btn btn-primary" disabled={busy}>{busy ? t('auth.working') : t('auth.signIn')}</button>
         </form>
         {error && <p role="alert">{t(error)}</p>}

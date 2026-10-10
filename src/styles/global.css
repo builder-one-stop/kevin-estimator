@@ -402,3 +402,16 @@ button.list-item:hover { background: var(--card-hover); }
 .review-table-wrap { overflow-x: auto; }
 .admin-review table { width: 100%; text-align: left; border-collapse: collapse; }
 .admin-review td, .admin-review th { padding: 10px; border-bottom: 1px solid var(--line); }
+
+/* Explicit light controls remain legible in Chrome/Safari, including autofill. */
+.login-card input { color: #202020; -webkit-text-fill-color: #202020; background: #fff; caret-color: #202020; color-scheme: light; border: 1px solid #aaa; border-radius: 9px; padding: 12px 14px; font-size: 16px; }
+.login-card input::placeholder { color: #666; -webkit-text-fill-color: #666; opacity: 1; }
+.login-card input:autofill { color: #202020; background: #fff; box-shadow: 0 0 0 1000px #fff inset; }
+.login-card input:-webkit-autofill, .login-card input:-webkit-autofill:hover, .login-card input:-webkit-autofill:focus { -webkit-text-fill-color: #202020; caret-color: #202020; -webkit-box-shadow: 0 0 0 1000px #fff inset; }
+.login-card .auth-language { display: flex; gap: 8px; margin-top: 20px; }
+.auth-language button { padding: 7px 12px; border-radius: 8px; color: var(--muted); }
+.auth-language button[aria-pressed=true] { color: var(--orange); background: var(--orange-soft); }
+.main-wrap { min-height: 0; }
+.main.chat-main { overflow: hidden; }
+.sr-only { position: absolute!important; width: 1px!important; height: 1px!important; padding: 0!important; margin: -1px!important; overflow: hidden!important; clip: rect(0,0,0,0)!important; white-space: nowrap!important; border: 0!important; }
+.login-card input[type=password] { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }

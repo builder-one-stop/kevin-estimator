@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto'
+import { compactTitle } from '../shared/chatPresentation.js'
 import { z } from 'zod'
 import { assertPlan, assertDocument, documentFromLines, proposedChange, fail, localText } from '../shared/aiDomain.js'
 import { defaultSettings, outputSchema, planSchema } from '../shared/aiSchemas.js'
@@ -29,7 +30,7 @@ export class EstimatorEngine {
   if(working && body.action!=='cancel')throw fail('RUN_BUSY',409)
   let estimate=null,estimateVersion=null,origin='ai'
   if(body.action==='cancel') {
-   s.run={...s.run,status:'cancelled'};this.active.get(s.run.id)?.abort()
+   s.run={...s.run,status:'cancelled',preview:''};this.active.get(s.run.id)?.abort()
   } else if(body.action==='savePlan') {
    assertPlan(body.plan)
    if(row.estimate_id) {
@@ -74,7 +75,7 @@ export class EstimatorEngine {
    if(mode==='generate')assertPlan(s.plan,true)
    if(mode!=='generate' && body.action!=='retry' && !body.content?.trim())throw fail('EMPTY_MESSAGE')
    if(this.active.size>=8)throw fail('SERVER_BUSY',429)
-   if(body.content && !s.messages.length)row.title=body.content.slice(0,160)
+   if(body.content && !s.messages.length)row.title=compactTitle(body.content)
    if(body.content)s.messages.push({id:body.requestId,role:'user',content:body.content,createdAt:new Date().toISOString()})
    if(mode==='plan')s.approvedRevision=null
    s.run={id:randomUUID(),status:'working',stage:this.runMode==='deferred'?'queued':'preparing',mode,contextPlan:s.pending?.plan||null,startedAt:new Date().toISOString()}
@@ -113,6 +114,14 @@ export class EstimatorEngine {
   let row=initial;const runId=row.state.run.id;const start=Date.now()
   const timer=setTimeout(()=>controller.abort(),120000)
   const stage=async(value)=>{row.state.run.stage=value;row=await this.repo.commit(owner,row,row.version)}
+  let lastPreview=0,previewUpdates=0,firstTextMs=null
+  const onText=async(text,{complete=false}={})=>{
+   if(controller.signal.aborted)throw fail('CANCELLED')
+   if(firstTextMs===null)firstTextMs=Date.now()-start
+   if(!complete && lastPreview && Date.now()-lastPreview<700)return
+   row.state.run.preview=text;row=await this.repo.commit(owner,row,row.version)
+   lastPreview=Date.now();previewUpdates++
+  }
   try {
    const context=await this.context(owner,row)
    const settings=(await this.repo.settings(owner))?.data||defaultSettings()
@@ -120,13 +129,14 @@ export class EstimatorEngine {
    if(assets.length)await stage('images')
    const images=await Promise.all(assets.map(a=>this.repo.image(owner,a.id)))
    await stage(row.state.run.mode==='generate'?'generating':'planning')
-   const {result:raw,metrics}=await this.provider.run({mode:row.state.run.mode,messages:row.state.messages,context,settings,images,signal:controller.signal,onStage:stage})
+   const {result:raw,metrics}=await this.provider.run({mode:row.state.run.mode,messages:row.state.messages,context,settings,images,signal:controller.signal,onStage:stage,onText})
    if(controller.signal.aborted)throw fail('CANCELLED')
+   await stage('validating')
    const result=outputSchema.parse(raw);let estimate=null,estimateVersion=null
    const s=row.state
    if(s.run.mode==='plan') {
     if(result.lines.length||result.changes.length)throw fail('MODEL_INVALID_OUTPUT')
-    if(result.plan){assertPlan(result.plan);s.plan=result.plan;s.planRevision++;s.approvedRevision=null}
+    if(result.plan){assertPlan(result.plan);row.title=compactTitle(localText(result.plan.title,s.documentLanguage));s.plan=result.plan;s.planRevision++;s.approvedRevision=null}
    } else if(s.run.mode==='generate') {
     if(result.plan||result.changes.length)throw fail('MODEL_CHANGED_APPROVED_PLAN')
     const document={...documentFromLines(s.plan,result.lines,s.documentLanguage,settings.catalog,settings.business,s.planRevision), conversationId:row.id}
@@ -141,7 +151,7 @@ export class EstimatorEngine {
     }
    }
    s.messages.push({id:randomUUID(),role:'assistant',content:result.message,createdAt:new Date().toISOString()})
-   s.run={...s.run,status:'ready',stage:'ready',metrics};s.runs=[...s.runs,s.run].slice(-30)
+   s.run={...s.run,status:'ready',stage:'ready',preview:'',metrics:{...metrics,previewUpdates,firstTextMs}};s.runs=[...s.runs,s.run].slice(-30)
    row=await this.repo.commit(owner,row,row.version,estimate,estimateVersion,'ai-approved-plan')
    this.logger(JSON.stringify({event:'estimator_run',runId,...metrics,status:'ready'}))
   } catch(error) {
@@ -151,7 +161,7 @@ export class EstimatorEngine {
    try {
     const latest=await this.repo.get(owner,initial.id)
     if(latest.state.run?.id===runId && latest.state.run.status==='working') {
-     latest.state.run={...latest.state.run,status:'error',error:code,...(error.metrics?{metrics:error.metrics}:{})};latest.state.runs=[...latest.state.runs,latest.state.run].slice(-30)
+     latest.state.run={...latest.state.run,status:'error',preview:'',error:code,...(error.metrics?{metrics:error.metrics}:{})};latest.state.runs=[...latest.state.runs,latest.state.run].slice(-30)
      await this.repo.commit(owner,latest,latest.version)
     }
    } catch { /* A competing cancellation/recovery owns the newer state. */ }
