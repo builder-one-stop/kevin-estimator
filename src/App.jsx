@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useParams, Outlet, useOutletContext } from 'react-router-dom'
+import { Navigate, Route, Routes, useParams, Outlet } from 'react-router-dom'
 import AppShell from './components/layout/AppShell.jsx'
 import Home from './pages/Home.jsx'
 import Projects from './pages/Projects.jsx'
@@ -17,7 +17,7 @@ import Settings from './pages/Settings.jsx'
 import Chats from './pages/Chats.jsx'
 import AiChat from './pages/AiChat.jsx'
 import AiSettings from './pages/AiSettings.jsx'
-import PasswordSetup from './pages/PasswordSetup.jsx'
+import AdminReview from './pages/AdminReview.jsx'
 
 function EstimateWorkspaceRoute() {
   const { id } = useParams()
@@ -25,18 +25,17 @@ function EstimateWorkspaceRoute() {
 }
 
 function AiChatRoute() { const { id } = useParams(); return <AiChat key={id} /> }
+function AdminReviewRoute() { const { id } = useParams(); return <AdminReview key={id || 'history'} /> }
 
 function AuthenticatedRoutes() {
-  const context = useOutletContext()
-  return <EstimateAuth><Outlet context={context} /></EstimateAuth>
+  return <EstimateAuth><Outlet /></EstimateAuth>
 }
 
 export default function App() {
   return (
     <Routes>
-      <Route element={<AppShell />}>
-        <Route path="/account/password" element={<PasswordSetup />} />
-        <Route element={<AuthenticatedRoutes />}>
+      <Route element={<AuthenticatedRoutes />}>
+        <Route element={<AppShell />}>
           <Route path="/" element={<Home />} />
           <Route path="/chat" element={<Chats />} />
           <Route path="/chat/settings" element={<AiSettings />} />
@@ -50,12 +49,14 @@ export default function App() {
           <Route path="/estimates" element={<Estimates />} />
           <Route path="/estimates/:id" element={<EstimateWorkspaceRoute />} />
           <Route path="/contacts" element={<Contacts />} />
+          <Route path="/admin/review" element={<AdminReviewRoute />} />
+          <Route path="/admin/review/:id" element={<AdminReviewRoute />} />
+          <Route path="/invoices" element={<Invoices />} />
+          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/time" element={<TimeTracking />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
-        <Route path="/invoices" element={<Invoices />} />
-        <Route path="/schedule" element={<Schedule />} />
-        <Route path="/time" element={<TimeTracking />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   )

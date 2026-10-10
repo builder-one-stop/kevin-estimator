@@ -35,7 +35,12 @@ export function createEstimatorHandler({ repo, provider, origin, logger, testMod
         if (limits.size > 1000) for (const [key, value] of limits) if (now - value.start > 60000) limits.delete(key)
       }
       let data
-      if (parts[0] === 'status' && request.method === 'GET') data = { mode: testMode ? 'controlled-test' : 'real', configured: !!provider.client || testMode }
+      if (parts[0] === 'admin') {
+        if (request.method !== 'GET') throw fail('READ_ONLY',405)
+        if (parts[1] !== 'conversations' || parts.length > 3) throw fail('NOT_FOUND',404)
+        if (parts[2]) z.string().uuid().parse(parts[2])
+        data = await repo.review(owner,parts[2] || null)
+      } else if (parts[0] === 'status' && request.method === 'GET') data = { mode: testMode ? 'controlled-test' : 'real', configured: !!provider.client || testMode }
       else if (parts[0] === 'settings') {
         if (request.method === 'GET') data = (await repo.settings(owner)) || { version: 0, data: defaultSettings() }
         else if (request.method === 'POST') { const x = z.object({ version: z.number().int().min(0), data: settingsSchema }).strict().parse(body); data = await repo.saveSettings(owner, x.data, x.version) }

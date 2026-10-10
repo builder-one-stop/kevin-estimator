@@ -1,6 +1,7 @@
 project_id = "kevin-estimator"
 
 [auth]
+enable_signup = false
 site_url = "https://onestop-beta.netlify.app"
 # Allowed return paths for sign-in, signup confirmation and password recovery.
 additional_redirect_urls = ["http://localhost:5173/**", "http://127.0.0.1:5173/**", "https://onestop-beta.netlify.app/**"]
@@ -10,6 +11,7 @@ enroll_enabled = true
 verify_enabled = true
 
 [auth.email]
+enable_signup = false
 enable_confirmations = true
 max_frequency = "1m"
 otp_length = 8

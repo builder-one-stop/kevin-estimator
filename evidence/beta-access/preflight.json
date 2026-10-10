@@ -1,0 +1,8 @@
+{
+  "site": "onestop-beta",
+  "repository": "builder-one-stop/kevin-estimator",
+  "branch": "feat/ai-estimator-approved-plan",
+  "publishedCommit": "45f516443d6b4d6d3d99c9547aa8487f9db20fd1",
+  "localBaseCommit": "45f516443d6b4d6d3d99c9547aa8487f9db20fd1",
+  "sameBase": true
+}

@@ -14,7 +14,24 @@ export class SupabaseRepository {
   async authenticate(token) {
     const { data, error } = await this.db.auth.getUser(token)
     if (error || !data.user) throw fail('UNAUTHORIZED',401)
+    let claims
+    try { claims = JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString()) } catch { throw fail('UNAUTHORIZED',401) }
+    if (claims.sub !== data.user.id || !claims.amr?.some(x => x.method === 'password')) throw fail('BETA_ACCESS_DENIED',403)
+    if (!claims.session_id || !await this.tokenAccess(data.user.id,claims.session_id)) throw fail('BETA_ACCESS_DENIED',403)
     return data.user.id
+  }
+  async tokenAccess(owner,session) {
+    return this.result(this.db.rpc('beta_token_access',{p_user:owner,p_session:session}))
+  }
+  async access(owner) {
+    const row = await this.result(this.db.from('beta_accounts').select('role').eq('user_id',owner).maybeSingle())
+    return row?.role || null
+  }
+  async review(owner,id=null) {
+    if (await this.access(owner) !== 'admin') throw fail('BETA_ADMIN_REQUIRED',403)
+    const result = await this.result(this.db.rpc('beta_review',{p_actor:owner,p_id:id}))
+    if (result === null) throw fail('NOT_FOUND',404)
+    return result
   }
   async list(owner) { return this.result(this.db.from('ai_conversations').select('id,title,version,estimate_id,created_at,updated_at').eq('owner_id',owner).order('updated_at',{ascending:false}).limit(100)) }
   async get(owner,id) {

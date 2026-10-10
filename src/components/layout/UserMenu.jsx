@@ -22,7 +22,7 @@ export default function UserMenu({ onClose, onNavigate, onSignIn, onSoon, trigge
     setSigningOut(true)
     setSignOutError(false)
     try {
-      const { error } = await supabase.auth.signOut()
+      const { error } = await supabase.auth.signOut({ scope: 'local' })
       if (error) { setSignOutError(true); return }
       onClose()
     } catch { setSignOutError(true) }

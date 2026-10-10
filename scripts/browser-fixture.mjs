@@ -22,6 +22,8 @@ export async function withFixture(run, { origin = 'http://127.0.0.1:5173' } = {}
   } catch { throw new Error('Supabase CLI fixture credential lookup failed (output withheld)') }
   if (!key) throw new Error('Administrative test fixture access unavailable')
   const admin = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
+  const betaGate = await admin.from('beta_accounts').select('user_id').limit(1)
+  if (!betaGate.error) throw new Error('Closed beta: temporary magic-link fixtures are disabled. Use npm run test:beta:browser.')
   const tag = `QA-BROWSER-${Date.now()}-${crypto.randomUUID().slice(0, 4)}`
   const email = `${tag.toLowerCase()}@example.invalid`
   let userId

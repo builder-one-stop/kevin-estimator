@@ -1,12 +1,15 @@
 import { useCallback, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import MobileBar from './MobileBar.jsx'
 import Sidebar from './Sidebar.jsx'
 import Toast from '../ui/Toast.jsx'
+import { useBetaAccess } from '../auth/BetaAccessContext.jsx'
 
 export default function AppShell() {
   const { t } = useTranslation()
+  const access = useBetaAccess()
+  const reviewing = useLocation().pathname.startsWith('/admin/review')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [toast, setToast] = useState('')
   const showToast = useCallback((message) => {
@@ -21,6 +24,7 @@ export default function AppShell() {
       <Sidebar onNavigate={() => setDrawerOpen(false)} onSoon={showSoon} />
       <div className="main-wrap">
         <MobileBar label={t('a11y.menu')} onOpen={() => setDrawerOpen(true)} />
+        {!reviewing && <div className="workspace-label">{t(access?.role === 'admin' ? 'beta.ownDevelopment' : 'beta.ownWorkspace')}</div>}
         <main className="main"><Outlet context={{ showSoon, showToast }} /></main>
       </div>
       <Toast message={toast} />

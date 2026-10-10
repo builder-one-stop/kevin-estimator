@@ -1,0 +1,14 @@
+{
+  "project": "vtpciccluvpaclbeqxih",
+  "checks": [
+    "Real Supabase: unauthorized password session and forged admin metadata denied all data tables, including its own preserved fixture; writes/grant/review RPC denied",
+    "Direct Supabase password update rejected; original temporary password still works; local AI denies unauthorized identity",
+    "Real recovery session generated without sending email: no beta access, password update blocked and original password preserved",
+    "Real Chrome + Supabase password login: unauthorized fixture sees access-denied message, no modules, cleared password and logged-out reload"
+  ],
+  "errors": [],
+  "cleanup": {
+    "errors": [],
+    "scope": "Only exact temporary outsider and client created by this run; no authorized account password changed; no email sent"
+  }
+}

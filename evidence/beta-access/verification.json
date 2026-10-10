@@ -1,0 +1,35 @@
+{
+  "automated": {
+    "command": "npm test",
+    "files": 17,
+    "passed": 88
+  },
+  "lint": "passed",
+  "build": "passed; existing chunk-size warning",
+  "netlifyFunctions": "both bundled successfully with functions:build --src netlify/functions",
+  "chromeLoggedOut": "standalone EN/ES gate on dashboard/chat/contacts/projects/estimates/admin/old password URL; simulated request failure visible; no email sent",
+  "controlledChrome": {
+    "environment": "Local Chrome + real migrated PostgreSQL/PGlite + HTTP API + explicitly controlled model; no remote data",
+    "checks": [
+      "Explicit local test-session entry works; email delivery/authentication was not retested",
+      "Created identifiable local test contact and linked project through existing UI",
+      "Text + real uploaded private photo; pending-height question blocks approval",
+      "Editable plan \u2192 exact revision approval \u2192 persisted 29-line $4,008.60 card",
+      "Two Chrome tabs: pending chat change refuses newer manual estimate version",
+      "Reviewed limited change applies once; manual quantities preserved after reload",
+      "Independent EN/ES document selection; coherent preview; actual proposal and detailed PDF downloads",
+      "UI EN/ES changes in place preserve unsent text and document language",
+      "Explicit restore creates a new revision and recovers the original total",
+      "Explicit preference and validated manual catalog import persist after reload",
+      "Visible persisted loading/error, retained estimate and successful explicit retry after provider failure",
+      "Database confirms generated estimate kept the authorized contact/project links",
+      "Dashboard starts a persisted AI conversation; Estimates navigation/history search reopens the existing result",
+      "Reopen existing conversation and estimate after reload without duplicate creation"
+    ],
+    "errors": [],
+    "cleanup": "Ephemeral local database closed; no remote/customer records used"
+  },
+  "liveAuthentication": "pending hidden local password entry",
+  "naturalSessionExpiry": "not waited out in a browser; active, expired and revoked session checks covered by migrated SQL tests",
+  "liveUnauthorizedAccess": "Real Chrome + remote Supabase: rejected; direct public/recovery password updates blocked, original temporary password preserved; temporary fixture cleanup verified"
+}

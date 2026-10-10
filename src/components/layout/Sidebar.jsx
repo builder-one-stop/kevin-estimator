@@ -4,6 +4,7 @@ import { BriefcaseBusiness, CalendarDays, ChevronUp, Clock3, ContactRound, FileT
 import { useTranslation } from 'react-i18next'
 import { PROFILE } from '../../mocks/data.js'
 import UserMenu from './UserMenu.jsx'
+import { useBetaAccess } from '../auth/BetaAccessContext.jsx'
 
 export function LogoMark({ size = 30 }) {
   return (
@@ -24,6 +25,7 @@ const navItems = [
 
 export default function Sidebar({ onNavigate, onSoon }) {
   const { t } = useTranslation()
+  const access = useBetaAccess()
   const navigate = useNavigate()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -62,6 +64,7 @@ export default function Sidebar({ onNavigate, onSoon }) {
           )
         })}
       </nav>
+      {access?.role === 'admin' && <Link className="admin-review-link" to="/admin/review" onClick={onNavigate}>{t('beta.review')}</Link>}
       <div className="side-bottom">
         <div className="onboard"><b>{t('onboardTitle')}</b><div className="bar"><i /></div><span className="muted onboard-copy">{t('onboardSteps')}</span></div>
         {menuOpen && <UserMenu triggerRef={companyRef} onClose={() => setMenuOpen(false)} onNavigate={() => go('/settings')} onSignIn={() => go('/estimates')} onSoon={onSoon} />}

@@ -1,0 +1,10 @@
+{
+  "directSignupStatus": 422,
+  "directSignupCode": "signup_disabled",
+  "anonymousReadRejected": [
+    "clients",
+    "projects",
+    "estimates",
+    "ai_conversations"
+  ]
+}

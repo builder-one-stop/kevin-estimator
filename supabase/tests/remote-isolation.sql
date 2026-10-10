@@ -10,13 +10,23 @@ begin
   raise exception 'Expected rejection: %', statement;
 end $$;
 insert into auth.users(id) values ('90000000-0000-4000-8000-000000000001'), ('90000000-0000-4000-8000-000000000002');
+-- Grants are replaced only inside this rollback-only transaction; never committed.
+do $$ begin if to_regclass('public.beta_accounts') is not null then
+  delete from public.beta_accounts;
+  insert into auth.sessions(id,user_id) values ('90000000-0000-4000-8000-000000000001','90000000-0000-4000-8000-000000000001'),('90000000-0000-4000-8000-000000000002','90000000-0000-4000-8000-000000000002');
+  insert into public.beta_accounts(user_id,role) values
+    ('90000000-0000-4000-8000-000000000001','operator'),('90000000-0000-4000-8000-000000000002','admin');
+end if; end $$;
+set local request.jwt.claims = '{"amr":[{"method":"password"}]}';
 set local role authenticated;
 set local request.jwt.claim.sub = '90000000-0000-4000-8000-000000000001';
+set local request.jwt.claims = '{"sub":"90000000-0000-4000-8000-000000000001","session_id":"90000000-0000-4000-8000-000000000001","amr":[{"method":"password"}]}';
 insert into public.clients(id,name) values ('91000000-0000-4000-8000-000000000001','Isolation fixture A');
 insert into public.projects(id,name,client_id) values ('92000000-0000-4000-8000-000000000001','Isolation fixture A','91000000-0000-4000-8000-000000000001');
 insert into public.estimates(id,title,client_id,project_id) values ('93000000-0000-4000-8000-000000000001','Isolation fixture A','91000000-0000-4000-8000-000000000001','92000000-0000-4000-8000-000000000001');
 insert into public.estimate_messages(estimate_id,role,content) values ('93000000-0000-4000-8000-000000000001','user','Isolation fixture');
 set local request.jwt.claim.sub = '90000000-0000-4000-8000-000000000002';
+set local request.jwt.claims = '{"sub":"90000000-0000-4000-8000-000000000002","session_id":"90000000-0000-4000-8000-000000000002","amr":[{"method":"password"}]}';
 insert into public.clients(id,name) values ('91000000-0000-4000-8000-000000000002','Isolation fixture B');
 insert into public.projects(id,name,client_id) values ('92000000-0000-4000-8000-000000000002','Isolation fixture B','91000000-0000-4000-8000-000000000002');
 insert into public.estimates(id,title,client_id,project_id) values ('93000000-0000-4000-8000-000000000002','Isolation fixture B','91000000-0000-4000-8000-000000000002','92000000-0000-4000-8000-000000000002');

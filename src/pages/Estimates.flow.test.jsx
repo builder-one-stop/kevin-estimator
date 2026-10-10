@@ -11,7 +11,7 @@ import { emptyDocument } from '../lib/estimateDocument.js'
 
 const fake = vi.hoisted(() => ({ rows: new Map(), save: vi.fn(), load: vi.fn(), session: { user: { id: 'owner-a' } }, listeners: new Set() }))
 const id = '10000000-0000-4000-8000-000000000001'
-vi.mock('../supabaseClient.js', () => ({ supabase: { auth: {
+vi.mock('../supabaseClient.js', () => ({ supabase: { rpc: async () => ({ data: { userId: fake.session?.user.id, role: 'operator' } }), auth: {
   getSession: async () => ({ data: { session: fake.session } }),
   onAuthStateChange: (fn) => { fake.listeners.add(fn); return { data: { subscription: { unsubscribe: () => fake.listeners.delete(fn) } } } },
   signInWithOtp: async () => ({ error: null }),

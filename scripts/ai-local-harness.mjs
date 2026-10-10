@@ -15,6 +15,7 @@ export async function startHarness(){
   try{
    const token=req.headers.authorization?.replace('Bearer ','');const owner=await repo.authenticate(token)
    const url=new URL(req.url,'http://localhost')
+   if(url.pathname.endsWith('/rest/v1/rpc/beta_session_access')){res.end(JSON.stringify({userId:owner,role:await repo.access(owner)}));return}
    if(url.pathname.endsWith('/auth/v1/user')){res.end(JSON.stringify({id:owner,email:'fixture@example.invalid',aud:'authenticated',role:'authenticated'}));return}
    if(url.pathname.endsWith('/auth/v1/logout')){res.end('{}');return}
    const table=url.pathname.split('/').at(-1)

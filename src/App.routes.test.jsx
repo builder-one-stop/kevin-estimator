@@ -13,19 +13,13 @@ function renderRoute(path) {
 }
 
 describe('primary routes', () => {
-  it('renders Estimates immediately after Home and requires a session', () => {
-    const html = renderRoute('/estimates')
-    expect(html).toContain('nav.estimates')
-    expect(html.indexOf('nav.home')).toBeLessThan(html.indexOf('nav.estimates'))
-    expect(html.indexOf('nav.estimates')).toBeLessThan(html.indexOf('nav.projects'))
-    expect(html).toContain('estimateEditor.loading')
-    expect(renderRoute('/estimates/550e8400-e29b-41d4-a716-446655440000')).toContain('estimateEditor.loading')
-  })
-
-  it('resolves a project workspace route and keeps Projects active', () => {
-    const html = renderRoute('/projects/550e8400-e29b-41d4-a716-446655440000')
-    expect(html).toContain('estimateEditor.loading')
-    expect(html).toContain('aria-current="page"')
+  it('guards every module before showing the application shell', () => {
+    for (const path of ['/', '/estimates', '/projects', '/contacts', '/settings', '/invoices', '/schedule', '/time', '/chat', '/admin/review', '/account/password']) {
+      const html = renderRoute(path)
+      expect(html).toContain('estimateEditor.loading')
+      expect(html).not.toContain('nav.estimates')
+      expect(html).not.toContain('sidebar')
+    }
   })
 
   it('accepts a project estimates subroute and an exact contact link', () => {

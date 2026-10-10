@@ -6,18 +6,23 @@ const A = '10000000-0000-4000-8000-000000000001'
 const B = '10000000-0000-4000-8000-000000000002'
 const migrations = readdirSync('supabase/migrations').sort().map((file) => readFileSync(`supabase/migrations/${file}`, 'utf8'))
 const bootstrap = `create role anon; create role authenticated; create role service_role bypassrls;
-create schema auth; create table auth.users(id uuid primary key);
+create schema auth; create table auth.users(id uuid primary key,email text,encrypted_password text,raw_app_meta_data jsonb default '{}'::jsonb,
+ updated_at timestamptz,confirmation_token text,confirmation_sent_at timestamptz,recovery_token text,recovery_sent_at timestamptz,
+ email_change_token_current text,email_change_token_new text,email_change_sent_at timestamptz,
+ phone_change_token text,phone_change_sent_at timestamptz,reauthentication_token text,reauthentication_sent_at timestamptz);
+ create table auth.sessions(id uuid primary key,user_id uuid,not_after timestamptz);create table auth.refresh_tokens(user_id text);create table auth.one_time_tokens(user_id uuid);
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
+create function auth.jwt() returns jsonb language sql stable as $$select jsonb_build_object('session_id',auth.uid()) || coalesce(nullif(current_setting('request.jwt.claims',true),''),'{}')::jsonb$$;
 grant usage on schema public, auth to anon, authenticated;
 grant execute on function auth.uid() to anon, authenticated;`
 let db, clientA, clientB, projectA, projectB, estimateA, estimateB
 const row = async (sql) => (await db.query(sql)).rows[0]
-const asUser = async (id) => db.exec(`reset role; set role authenticated; set request.jwt.claim.sub = '${id}';`)
+const asUser = async (id) => db.exec(`reset role; set role authenticated; set request.jwt.claim.sub = '${id}'; set request.jwt.claims = '{"amr":[{"method":"password"}]}';`)
 beforeAll(async () => {
   db = new PGlite()
   await db.exec(bootstrap)
   for (const migration of migrations) await db.exec(migration)
-  await db.exec(`insert into auth.users values ('${A}'), ('${B}');`)
+  await db.exec(`insert into auth.users(id) values ('${A}'), ('${B}'); insert into beta_accounts(user_id,role) values('${A}','operator'),('${B}','admin');insert into auth.sessions(id,user_id) values('${A}','${A}'),('${B}','${B}');`)
   for (const id of [A, B]) {
     await asUser(id)
     const client = await row("insert into clients(name) values ('Test client') returning *")

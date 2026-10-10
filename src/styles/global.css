@@ -387,3 +387,18 @@ button.list-item:hover { background: var(--card-hover); }
 .proposal-total { margin-top: 15px; padding: 13px; background: #f4f4f4; text-transform: uppercase; font-weight: 700; }
 @media (max-width: 1100px) { .estimate-layout { display: block; }.estimate-assistant { margin-bottom: 15px; }.estimate-assistant.collapsed { width: 100%; }.estimate-list { overflow-x: auto; }.estimate-list-head, .estimate-list-row { min-width: 820px; } }
 @media (max-width: 720px) { .estimate-workspace { padding: 18px 12px; }.estimate-title-block { flex-wrap: wrap; }.estimate-grid-labels { display: none; }.estimate-item-row { grid-template-columns: repeat(3,minmax(0,1fr)); }.estimate-item-row input:first-child { grid-column: span 3; }.estimate-item-detail, .proposal-fields { grid-template-columns: 1fr; }.proposal-fields label:nth-child(2) { grid-column: auto; }.proposal-preview { padding: 24px; } }
+
+.login-screen { min-height: 100dvh; display: grid; place-items: center; padding: 24px; background: var(--bg, #1a1a1a); }
+.login-card { width: min(100%, 420px); background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 32px; }
+.login-card .brand { padding: 0 0 24px; }
+.login-card h1 { font-size: 26px; margin: 24px 0; }
+.login-card form, .login-card label { display: grid; gap: 8px; }
+.login-card form { gap: 18px; }
+.login-card input { width: 100%; min-height: 44px; }
+.login-card .btn { min-height: 44px; }
+.workspace-label { padding: 8px 30px; font-size: 13px; color: var(--muted, #aaa); border-bottom: 1px solid var(--line); }
+.admin-review-link { padding: 12px 14px; color: var(--orange); }
+.admin-review time { display: block; font-size: 12px; color: var(--muted, #aaa); }
+.review-table-wrap { overflow-x: auto; }
+.admin-review table { width: 100%; text-align: left; border-collapse: collapse; }
+.admin-review td, .admin-review th { padding: 10px; border-bottom: 1px solid var(--line); }

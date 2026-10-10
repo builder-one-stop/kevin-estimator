@@ -9,14 +9,16 @@
     "test": "vitest run",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test:browser": "node scripts/browser-smoke.mjs && node scripts/validate-browser.mjs && node scripts/browser-errors.mjs",
+    "test:browser": "node scripts/browser-smoke.mjs && node scripts/ai-browser.mjs",
     "dev:api": "node --env-file=.env.server.local server/index.js",
     "test:ai:browser": "node scripts/ai-browser.mjs",
-    "test:ai:real-browser": "node scripts/ai-real-browser.mjs",
-    "test:ai:online-browser": "AI_BROWSER_ORIGIN=https://onestop-beta.netlify.app node scripts/ai-real-browser.mjs",
-    "test:auth:browser": "node scripts/password-browser.mjs",
-    "test:auth:online-browser": "AUTH_BROWSER_ORIGIN=https://onestop-beta.netlify.app node scripts/password-browser.mjs",
-    "dev:ai:fixture": "node scripts/ai-local-harness.mjs"
+    "test:ai:real-browser": "npm run test:beta:browser",
+    "test:ai:online-browser": "npm run test:beta:browser",
+    "test:auth:browser": "npm run test:beta:browser",
+    "test:auth:online-browser": "npm run test:beta:browser",
+    "dev:ai:fixture": "node scripts/ai-local-harness.mjs",
+    "test:beta:browser": "BETA_ALREADY_PUBLISHED=1 node --env-file=.env.server.local scripts/beta-validation.mjs",
+    "admin:password": "node --env-file=.env.server.local scripts/beta-admin-password.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
@@ -29,8 +31,8 @@
     "react-dom": "^19.2.8",
     "react-i18next": "^17.0.15",
     "react-router-dom": "^7.18.4",
-    "zod": "^4.6.5",
-    "sharp": "^0.35.5"
+    "sharp": "^0.35.5",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",
@@ -39,6 +41,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "bcryptjs": "^3.0.3",
     "jsdom": "^30.1.1",
     "oxlint": "^1.81.0",
     "vite": "^8.3.0",

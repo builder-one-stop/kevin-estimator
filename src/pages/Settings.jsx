@@ -1,12 +1,11 @@
 import { Building2, ChevronRight, CircleDollarSign, CircleUserRound, FileText, Flag, FolderKanban, Globe2, LayoutGrid, Tags } from 'lucide-react'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+import { useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { setLanguage } from '../i18n/index.js'
 
 export default function Settings() {
   const { t, i18n } = useTranslation()
   const { showSoon, showToast } = useOutletContext()
-  const navigate = useNavigate()
   const item = (key, Icon) => (
     <button type="button" className="list-item" onClick={showSoon}>
       <Icon /><span className="grow">{t(`settings.${key}`)}<small>{t(`settings.${key}D`)}</small></span><ChevronRight size={18} />
@@ -29,7 +28,7 @@ export default function Settings() {
           </div>
         </div>
         <div className="list-item"><FileText /><span className="grow">{t('settings.docLang')}<small>{t('settings.docLangD')}</small></span><span className="tag">{t('settings.docLangV')}</span></div>
-        <button type="button" className="list-item" onClick={() => navigate('/account/password')}><CircleUserRound /><span className="grow">{t('settings.account')}<small>{t('auth.changePassword')}</small></span><ChevronRight size={18} /></button>
+        <button type="button" className="list-item" onClick={() => showToast(t('auth.contactAdmin'))}><CircleUserRound /><span className="grow">{t('settings.account')}<small>{t('auth.contactAdmin')}</small></span><ChevronRight size={18} /></button>
       </div>
       <div className="group-label">{t('settings.groupBusiness')}</div>
       <div className="list">
