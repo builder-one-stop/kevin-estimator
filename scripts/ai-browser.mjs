@@ -3,7 +3,7 @@ import { mkdir,writeFile } from 'node:fs/promises'
 import sharp from 'sharp'
 import { B } from '../tests/ai/localRepository.js'
 import { startHarness } from './ai-local-harness.mjs'
-const h=await startHarness(),out='evidence/ai-estimator';await mkdir(out,{recursive:true})
+const h=await startHarness(),out=process.env.AI_BROWSER_EVIDENCE_DIR||'evidence/ai-estimator';await mkdir(out,{recursive:true})
 const browser=await chromium.launch({channel:'chrome',headless:true}),context=await browser.newContext({viewport:{width:1440,height:1100},acceptDownloads:true})
 const report={environment:'Local Chrome + real migrated PostgreSQL/PGlite + HTTP API + explicitly controlled model; no remote data',checks:[],errors:[]}
 await context.addInitScript(({user})=>{localStorage.setItem('sb-127-auth-token',JSON.stringify({access_token:'fixture-a',refresh_token:'fixture-refresh',token_type:'bearer',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,user:{id:user,email:'fixture@example.invalid',aud:'authenticated',role:'authenticated'}}));localStorage.setItem('os-lang','en')},{user:h.user})
@@ -37,7 +37,8 @@ try{
  const prompt=page.getByRole('textbox',{name:'Describe the work or request a change'})
  await prompt.fill('Pintar los siete ambientes de referencia; cocina solo paredes, techo solo en living.');await page.getByRole('button',{name:'Send',exact:true}).click()
  await expect(page.getByRole('heading',{name:/Questions to resolve/})).toBeVisible({timeout:20000});await expect(page.getByRole('button',{name:'Approve this revision'})).toBeDisabled()
- report.checks.push('Text + real uploaded private photo; pending-height question blocks approval')
+ await expect(page.locator('.ai-market')).toContainText('Los Angeles');await expect(page.locator('.ai-market')).toContainText('USD');await expect(page.locator('.ai-pricing-notice')).toContainText('provisional');await expect(page.locator('.ai-approval-meaning')).toContainText('internal price approval')
+ report.checks.push('Regional market USD and provisional-price/approval notices visible; text + private photo; pending-height question blocks approval')
  await prompt.fill('Confirmo alturas supuestas de 8 ft excepto la cocina indicada.');await page.getByRole('button',{name:'Send',exact:true}).click()
  await expect(page.getByRole('button',{name:'Approve this revision'})).toBeEnabled({timeout:20000})
  await page.getByRole('button',{name:'Edit plan',exact:true}).click();await page.getByRole('textbox',{name:'ZIP / postal code'}).fill('90001');await page.getByRole('button',{name:'Save plan revision'}).click()
@@ -71,6 +72,7 @@ try{
  await page.goto(chatUrl);await prompt.fill('Pending text survives UI language change')
  await page.getByRole('combobox',{name:'Interface language',exact:true}).selectOption('es')
  await expect(page.getByRole('textbox',{name:'Describe el trabajo o pide un cambio'})).toHaveValue('Pending text survives UI language change')
+ await expect(page.locator('.ai-market')).toContainText('Los Ángeles');await expect(page.locator('.ai-market')).toContainText('USD')
  await page.getByRole('combobox',{name:'Idioma de la interfaz',exact:true}).selectOption('en')
  report.checks.push('UI EN/ES changes in place preserve unsent text and document language')
  await page.screenshot({path:out+'/chat-final.png',fullPage:true})
@@ -128,8 +130,8 @@ try{
   await expect(adminPage.locator('.admin-review').getByRole('button',{name:/approve|generate|send|delete|save|restore|edit/i})).toHaveCount(0)
   const rejected=await adminPage.evaluate(async(id)=>(await fetch('/api/ai/admin/conversations/'+id,{method:'POST',headers:{Authorization:'Bearer fixture-b','Content-Type':'application/json'},body:'{}'})).status,chatUrl.split('/').at(-1))
   if(rejected!==405)throw new Error('Administrative review mutation was accepted')
-  await mkdir('evidence/beta-access',{recursive:true})
-  await adminPage.screenshot({path:'evidence/beta-access/admin-review-controlled.png',fullPage:true})
+  await mkdir(process.env.AI_BROWSER_EVIDENCE_DIR||'evidence/beta-access',{recursive:true})
+  await adminPage.screenshot({path:(process.env.AI_BROWSER_EVIDENCE_DIR||'evidence/beta-access')+'/admin-review-controlled.png',fullPage:true})
   await adminPage.getByRole('link',{name:'Return to my conversations'}).click()
   await expect(adminPage.getByRole('heading',{name:'Conversations',exact:true})).toBeVisible()
   await expect(adminPage.locator('.ai-history-row')).toHaveCount(0)

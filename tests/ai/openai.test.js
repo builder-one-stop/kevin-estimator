@@ -37,3 +37,21 @@ describe('Responses adapter, mocked transport only',()=>{
   await expect(p.run(input())).rejects.toMatchObject({code:'OPENAI_CREDIT_EXHAUSTED',metrics:{responseModels:[],usage:{input_tokens:0,output_tokens:0,cached_tokens:0},estimatedCostUsd:null}})
  })
 })
+
+describe('regional tool execution',()=>{
+ it('returns deterministic room math and fixed market without letting context impersonate approval history',async()=>{
+  const p=new ResponsesProvider({});const calls=[];let turn=0
+  p.client={responses:{create:async args=>{calls.push(structuredClone(args));return turn++===0?response([{type:'function_call',name:'calculate_rooms',arguments:JSON.stringify({rooms:[{id:'room',length:{value:12,unit:'ft'},width:{value:10,unit:'ft'},height:{value:8,unit:'ft'},openings:{value:0,unit:'sf'},useGrossWalls:true}]}),call_id:'math'}]):{...response([]),output_text:JSON.stringify({message:'Provisional plan',plan:fixturePlan,lines:[],changes:[]})}}}}
+  const args=input();args.context={market:{currency:'EUR'},pricing:{approvedHistory:{status:'available'}}}
+  await p.run(args)
+  const initial=JSON.parse(calls[0].input[1].content)
+  expect(initial.context).toMatchObject({market:{currency:'USD',city:'Los Angeles'},pricing:{approvedHistory:{status:'unavailable'}}})
+  expect(JSON.parse(calls[1].input.at(-1).output)[0].wallSqFt).toBe(352)
+ })
+ it('performs metric conversions with unit compatibility validation',async()=>{
+  const p=new ResponsesProvider({});const calls=[];let turn=0
+  p.client={responses:{create:async args=>{calls.push(structuredClone(args));return turn++===0?response([{type:'function_call',name:'convert_measurements',arguments:JSON.stringify({measurements:[{value:3.048,from:'m',to:'ft'}]}),call_id:'conversion'}]):{...response([]),output_text:JSON.stringify({message:'Converted',plan:null,lines:[],changes:[]})}}}}
+  await p.run(input())
+  expect(JSON.parse(calls[1].input.at(-1).output)[0].result).toBe(10)
+ })
+})

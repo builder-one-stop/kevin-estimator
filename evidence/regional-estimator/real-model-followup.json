@@ -1,0 +1,285 @@
+{
+  "promptVersion": "estimator-2026-10-11.2",
+  "environment": "Local provider adapter with real OpenAI; synthetic content; no database/browser/deployment",
+  "cases": [
+    {
+      "id": "metric-es",
+      "checks": {
+        "maxTwoQuestions": true,
+        "noUnnecessaryQuestions": true,
+        "wallArea": true
+      },
+      "result": {
+        "message": "Plan para revisión: pintar 352 ft² de paredes completas con dos manos, sin descontar aberturas. Precios provisionales suministrados: pintura USD 80, insumos USD 35 y mano de obra USD 360; recargo sobre costo del 20%, sin impuestos. Marca y color quedan como supuestos editables. Aprobar este plan autoriza el alcance y los supuestos, no constituye aprobación interna de precios ni aceptación del cliente.",
+        "plan": {
+          "title": {
+            "en": "Bedroom wall painting — provisional plan",
+            "es": "Pintura de paredes de dormitorio — plan provisional"
+          },
+          "address": "",
+          "zip": "",
+          "tasks": [
+            {
+              "id": "bedroom-walls",
+              "room": {
+                "en": "Bedroom",
+                "es": "Dormitorio"
+              },
+              "work": {
+                "en": "Prepare and paint the full wall surface with two coats of generic eggshell paint.",
+                "es": "Preparar y pintar toda la superficie de paredes con dos manos de pintura genérica de acabado eggshell."
+              },
+              "components": [
+                {
+                  "en": "Generic eggshell wall paint",
+                  "es": "Pintura genérica para paredes de acabado eggshell"
+                },
+                {
+                  "en": "Floor and furniture protection, small-hole filler, patch primer and light-sanding supplies",
+                  "es": "Insumos para protección de piso y muebles, relleno de agujeros pequeños, imprimación de parches y lijado ligero"
+                },
+                {
+                  "en": "Labor for floor and furniture protection, small-hole filling, patch-only priming, light sanding and two-coat wall painting",
+                  "es": "Mano de obra para proteger piso y muebles, tapar agujeros pequeños, imprimar solo parches, lijar ligeramente y pintar paredes con dos manos"
+                }
+              ],
+              "included": {
+                "en": "Full wall surface without opening deductions; floor and furniture protection; filling small holes; light sanding; primer only on patches; two finish coats.",
+                "es": "Toda la superficie de paredes sin descontar aberturas; protección de piso y muebles; tapado de agujeros pequeños; lijado ligero; imprimación solo de parches; dos manos de acabado."
+              },
+              "excluded": {
+                "en": "Ceilings, trim, doors, full-wall priming, major repairs and taxes.",
+                "es": "Techos, molduras, puertas, imprimación completa de paredes, reparaciones mayores e impuestos."
+              },
+              "measurements": {
+                "en": "Seller-supplied dimensions: 3.6576 m × 3.048 m × 2.4384 m high, converted to 12 ft × 10 ft × 8 ft high. Calculated gross wall area: 352 sf, with no opening deductions. Two coats do not change the wall area. Allowances: 2 US gal of paint and 8 labor hours.",
+                "es": "Medidas suministradas por el vendedor: 3.6576 m × 3.048 m × 2.4384 m de alto, equivalentes a 12 ft × 10 ft × 8 ft de alto. Superficie bruta de paredes calculada: 352 ft², sin descontar aberturas. Las dos manos no cambian la superficie de paredes. Cantidades provisionales: 2 galones estadounidenses de pintura y 8 horas de trabajo."
+              },
+              "preparation": {
+                "en": "Protect floor and furniture, fill small holes, lightly sand and prime repaired patches only. Walls reported in good condition.",
+                "es": "Proteger piso y muebles, tapar agujeros pequeños, lijar ligeramente e imprimar únicamente los parches reparados. Paredes declaradas en buen estado."
+              },
+              "product": {
+                "en": "Generic wall paint; brand and color not selected and retained as editable assumptions. Provisional allowance of 2 US gal, not a verified product-specific coverage calculation. Supplies allowance includes protection, filler, patch primer and abrasives.",
+                "es": "Pintura genérica para paredes; marca y color sin seleccionar, como supuestos editables. Cantidad provisional de 2 galones estadounidenses, no un cálculo de rendimiento verificado para un producto específico. La partida de insumos incluye protección, relleno, imprimación de parches y abrasivos."
+              },
+              "finish": {
+                "en": "Eggshell finish, two coats; color to be selected.",
+                "es": "Acabado eggshell, dos manos; color por seleccionar."
+              },
+              "assumptions": {
+                "en": "Editable seller-supplied provisional prices: paint 2 US gal at USD 40/gal; supplies USD 35 per lot; labor 8 hr at USD 45/hr. The paint allowance implies 352 sf per gallon per coat with no separate waste allowance; actual coverage depends on the selected product and color. Labor hours are an allowance, not verified productivity. No major wall damage is included.",
+                "es": "Precios provisionales editables suministrados por el vendedor: pintura, 2 galones estadounidenses a USD 40/galón; insumos, USD 35 por lote; trabajo, 8 horas a USD 45/hora. La cantidad de pintura implica un rendimiento de 352 ft² por galón por mano, sin reserva adicional por desperdicio; el rendimiento real depende del producto y color elegidos. Las horas de trabajo son una previsión, no una productividad verificada. No se incluyen daños mayores en las paredes."
+              },
+              "provenance": {
+                "en": "Scope, wall condition, dimensions, quantities and provisional rates supplied by the seller in this conversation. Area calculated from supplied dimensions; dimensions not independently verified. No verified local prices, connected supplier feed or auditable internal price approval is available. No catalog product match is claimed.",
+                "es": "Alcance, estado de paredes, medidas, cantidades y tarifas provisionales suministrados por el vendedor en esta conversación. Superficie calculada a partir de esas medidas; medidas no verificadas de forma independiente. No hay precios locales verificados, conexión con proveedores ni aprobación interna de precios auditable. No se afirma coincidencia con un producto de catálogo."
+              },
+              "confirmed": true
+            }
+          ],
+          "pending": [],
+          "assumptions": {
+            "en": "Los Angeles, California market; USD. All prices are provisional and seller-supplied, not internally approved or locally verified. Apply a 20% markup on cost, with materials and labor separated; no taxes. Brand and color remain editable assumptions. Address and ZIP were not supplied and do not prevent this provisional plan. Plan approval covers scope and disclosed assumptions only.",
+            "es": "Mercado de Los Ángeles, California; USD. Todos los precios son provisionales y suministrados por el vendedor, sin aprobación interna ni verificación local. Aplicar un recargo sobre costo del 20%, separando materiales y mano de obra; sin impuestos. Marca y color permanecen como supuestos editables. No se proporcionaron dirección ni código postal y no impiden este plan provisional. La aprobación del plan cubre únicamente el alcance y los supuestos declarados."
+          },
+          "markupBps": 2000
+        },
+        "lines": [],
+        "changes": []
+      },
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "effort": "medium",
+        "promptVersion": "estimator-2026-10-11.2",
+        "durationMs": 25915,
+        "usage": {
+          "input_tokens": 14576,
+          "output_tokens": 1539,
+          "cached_tokens": 9548
+        },
+        "estimatedCostUsd": 0.0264008
+      }
+    },
+    {
+      "id": "paint-floor-complete-es",
+      "checks": {
+        "maxTwoQuestions": true,
+        "noUnnecessaryQuestions": true,
+        "wallArea": true
+      },
+      "result": {
+        "message": "Plan para revisión: 352 pies² de paredes, sin descuentos, y 120 pies² de piso. Incluye pintar paredes y sustituir la alfombra por vinilo de clic. Marca, color, desperdicio y precios quedan como supuestos editables; no hay cotización local verificada. La aprobación autoriza el alcance y los supuestos, no constituye aprobación interna de precios ni aceptación del cliente.",
+        "plan": {
+          "title": {
+            "en": "Bedroom wall painting and click-lock vinyl flooring",
+            "es": "Pintura de paredes y piso de vinilo de clic en dormitorio"
+          },
+          "address": "",
+          "zip": "",
+          "tasks": [
+            {
+              "id": "bedroom-walls",
+              "room": {
+                "en": "Bedroom",
+                "es": "Dormitorio"
+              },
+              "work": {
+                "en": "Prepare and paint the full wall surface",
+                "es": "Preparar y pintar toda la superficie de las paredes"
+              },
+              "components": [
+                {
+                  "en": "Interior acrylic wall paint",
+                  "es": "Pintura acrílica interior para paredes"
+                },
+                {
+                  "en": "Spot primer for patched areas",
+                  "es": "Imprimador localizado para áreas resanadas"
+                },
+                {
+                  "en": "Small-hole patching and sanding supplies",
+                  "es": "Materiales para resanar agujeros pequeños y lijar"
+                },
+                {
+                  "en": "Painting masking and protection supplies",
+                  "es": "Consumibles de enmascarado y protección para pintura"
+                },
+                {
+                  "en": "Wall preparation and painting labor",
+                  "es": "Mano de obra de preparación y pintura de paredes"
+                }
+              ],
+              "included": {
+                "en": "Protect adjacent surfaces, fill small holes, sand patches, spot-prime patches, apply two finish coats and clean up.",
+                "es": "Proteger superficies adyacentes, resanar agujeros pequeños, lijar resanes, imprimar únicamente los resanes, aplicar dos manos de acabado y limpiar."
+              },
+              "excluded": {
+                "en": "Ceilings, doors, trim, full-surface priming, major wall repairs and concealed damage.",
+                "es": "Techos, puertas, molduras, imprimación de toda la superficie, reparaciones importantes y daños ocultos."
+              },
+              "measurements": {
+                "en": "Seller supplied 12 × 10 ft and 8 ft height. Calculated gross walls: 352 sf. Full surface retained without opening deductions. Two coats do not change the wall area.",
+                "es": "Medidas suministradas por el vendedor: 12 × 10 pies y 8 pies de alto. Superficie bruta calculada de paredes: 352 pies². Se conserva toda la superficie sin descontar aberturas. Las dos manos no cambian el área de las paredes."
+              },
+              "preparation": {
+                "en": "Good wall condition and small holes reported. Standard cleaning, small-hole patching, sanding and spot priming assumed; no full priming.",
+                "es": "Se reportan paredes en buen estado con agujeros pequeños. Se supone limpieza normal, resanes pequeños, lijado e imprimación localizada; no imprimación completa."
+              },
+              "product": {
+                "en": "Editable allowance: standard interior acrylic wall paint, compatible patch compound and spot primer. Brand and exact product are not selected; no named catalog product is authorized.",
+                "es": "Provisión editable: pintura acrílica interior estándar, compuesto para resanes e imprimador localizado compatibles. Marca y producto exacto sin seleccionar; no se autoriza un producto específico de catálogo."
+              },
+              "finish": {
+                "en": "Editable assumption: one light color, eggshell finish, two coats.",
+                "es": "Supuesto editable: un color claro, acabado cáscara de huevo y dos manos."
+              },
+              "assumptions": {
+                "en": "Provisional USD allowances: paint $35/gal; spot primer $20/qt; patching/sanding supplies $10/lot; masking/protection $15/lot; labor $45/hr. Labor is unconfigured, so $45/hr is an editable assumption, with 8 hr provisionally allowed. Paint coverage assumed 350 sf/gal per coat plus 10% waste: 2.21 gal, rounded to 3 gal. Allow 1 qt spot primer. All prices unverified.",
+                "es": "Provisiones en USD: pintura $35/gal; imprimador localizado $20/qt; materiales de resane/lijado $10/lote; enmascarado/protección $15/lote; mano de obra $45/hora. La tarifa laboral no está configurada: $45/hora es un supuesto editable, con una provisión de 8 horas. Rendimiento supuesto de pintura: 350 pies²/gal por mano más 10% de desperdicio: 2.21 gal, redondeados a 3 gal. Se prevé 1 qt de imprimador localizado. Todos los precios son provisionales, sin verificar."
+              },
+              "provenance": {
+                "en": "Scope, dimensions and visible condition supplied by the seller; wall area calculated from those measurements, not field-verified. Products, coverage, waste, labor time and rates are disclosed estimating assumptions, not supplier quotes or internally approved prices.",
+                "es": "Alcance, medidas y estado visible suministrados por el vendedor; superficie calculada a partir de esas medidas, sin verificación en obra. Productos, rendimiento, desperdicio, tiempo y tarifas son supuestos de estimación declarados, no cotizaciones de proveedor ni precios aprobados internamente."
+              },
+              "confirmed": true
+            },
+            {
+              "id": "bedroom-floor",
+              "room": {
+                "en": "Bedroom",
+                "es": "Dormitorio"
+              },
+              "work": {
+                "en": "Remove existing carpet and install click-lock vinyl plank flooring",
+                "es": "Retirar alfombra existente e instalar piso de vinilo en tablones con sistema de clic"
+              },
+              "components": [
+                {
+                  "en": "Click-lock vinyl plank flooring with attached underlayment",
+                  "es": "Piso de vinilo en tablones con sistema de clic y base integrada"
+                },
+                {
+                  "en": "Vinyl flooring installation consumables",
+                  "es": "Consumibles de instalación de piso de vinilo"
+                },
+                {
+                  "en": "Carpet removal and subfloor cleaning labor",
+                  "es": "Mano de obra de retiro de alfombra y limpieza de la base"
+                },
+                {
+                  "en": "Click-lock vinyl plank installation labor",
+                  "es": "Mano de obra de instalación de vinilo en tablones con sistema de clic"
+                },
+                {
+                  "en": "Removed carpet disposal allowance",
+                  "es": "Provisión para disposición de la alfombra retirada"
+                }
+              ],
+              "included": {
+                "en": "Remove carpet, carpet pad if present, tack strips and staples; collect debris, clean the base, install floating click-lock vinyl planks and dispose of removed carpet.",
+                "es": "Retirar alfombra, acolchado si existe, tiras de sujeción y grapas; recoger residuos, limpiar la base, instalar vinilo flotante de clic y disponer de la alfombra retirada."
+              },
+              "excluded": {
+                "en": "Subfloor leveling or repair, moisture remediation, separate underlayment or moisture barrier, trim removal/replacement, new moldings, thresholds or transition profiles, and heavy furniture moving.",
+                "es": "Nivelación o reparación de la base, tratamiento de humedad, base adicional o barrera de humedad, retiro/reposición de molduras, molduras nuevas, umbrales o perfiles de transición y traslado de muebles pesados."
+              },
+              "measurements": {
+                "en": "Seller supplied 12 × 10 ft. Calculated floor area: 120 sf. Editable 10% cutting waste gives a 132 sf material allowance; final box rounding depends on selected product.",
+                "es": "Medidas suministradas por el vendedor: 12 × 10 pies. Área de piso calculada: 120 pies². Un desperdicio editable de 10% da una provisión de material de 132 pies²; el redondeo final a cajas depende del producto seleccionado."
+              },
+              "preparation": {
+                "en": "Seller reports a dry, even base without visible damage. Remove carpet fixings and clean. Assume the base meets the selected flooring manufacturer's flatness and moisture requirements; verify after removal.",
+                "es": "El vendedor reporta base seca, pareja y sin daños visibles. Retirar fijaciones y limpiar. Se supone que la base cumple los requisitos de planicidad y humedad del fabricante del piso seleccionado; verificar después del retiro."
+              },
+              "product": {
+                "en": "Editable allowance: residential click-lock vinyl planks with attached underlayment. Brand, exact model and box size remain unspecified; final selection must be compatible with the existing base without extra underlayment.",
+                "es": "Provisión editable: vinilo residencial en tablones con sistema de clic y base integrada. Marca, modelo exacto y tamaño de caja sin especificar; la selección final debe ser compatible con la base existente sin base adicional."
+              },
+              "finish": {
+                "en": "Editable assumption: standard wood-look color, straight layout, manufacturer-required expansion gaps; existing trim remains untouched.",
+                "es": "Supuesto editable: color estándar tipo madera, colocación recta y juntas de expansión según el fabricante; las molduras existentes permanecen sin intervención."
+              },
+              "assumptions": {
+                "en": "Provisional USD allowances: flooring $3/sf, installation consumables $25/lot, carpet disposal $40/lot and labor $45/hr. Editable labor allowance: 2 hr removal/cleaning plus 6 hr installation. Floor assumed accessible and clear of heavy furniture. Cutting waste 10%; box rounding not yet included. Hidden damage or required transitions/trim need a reviewed scope change.",
+                "es": "Provisiones en USD: piso $3/pie², consumibles de instalación $25/lote, disposición de alfombra $40/lote y mano de obra $45/hora. Tiempo laboral editable: 2 horas de retiro/limpieza más 6 horas de instalación. Se supone piso accesible y libre de muebles pesados. Desperdicio de corte de 10%; aún no se incluye redondeo a cajas. Daños ocultos o transiciones/molduras necesarias requieren revisar el alcance."
+              },
+              "provenance": {
+                "en": "Flooring type, carpet removal, dimensions and visible base condition supplied by the seller. Area calculated from seller measurements, not field-verified. Attached underlayment, finish, waste, productivity and prices are editable assumptions; no verified local quote or internal price approval.",
+                "es": "Tipo de piso, retiro de alfombra, medidas y estado visible de la base suministrados por el vendedor. Área calculada a partir de esas medidas, sin verificación en obra. Base integrada, acabado, desperdicio, productividad y precios son supuestos editables; no hay cotización local verificada ni aprobación interna de precios."
+              },
+              "confirmed": true
+            }
+          ],
+          "pending": [],
+          "assumptions": {
+            "en": "Los Angeles market, USD. Address and ZIP not supplied and not assumed. Material and labor costs will be separate, with an editable 20% markup on cost. All rates are provisional: no auditable internal-price approval history or connected local supplier feed is available. Confirmed task status refers to seller-supplied scope only; each task's product and pricing assumptions remain editable. Plan approval authorizes scope and disclosed assumptions only, not internal price approval or customer acceptance.",
+            "es": "Mercado de Los Ángeles, USD. Dirección y ZIP no suministrados ni inventados. Materiales y mano de obra se desglosarán por separado, con un recargo editable de 20% sobre el costo. Todas las tarifas son provisionales: no hay historial auditable de aprobación interna de precios ni conexión a proveedores locales. El estado confirmado de las tareas se refiere solo al alcance suministrado por el vendedor; los supuestos de producto y precios siguen siendo editables. Aprobar el plan autoriza solo el alcance y los supuestos declarados, no la aprobación interna de precios ni la aceptación del cliente."
+          },
+          "markupBps": 2000
+        },
+        "lines": [],
+        "changes": []
+      },
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "effort": "medium",
+        "promptVersion": "estimator-2026-10-11.2",
+        "durationMs": 43484,
+        "usage": {
+          "input_tokens": 14443,
+          "output_tokens": 2648,
+          "cached_tokens": 13871
+        },
+        "estimatedCostUsd": 0.029011099999999998
+      }
+    }
+  ],
+  "errors": []
+}

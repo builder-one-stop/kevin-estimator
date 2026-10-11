@@ -5,7 +5,16 @@ export const UNITS = ['ea', 'sf', 'lf', 'hr', 'day', 'cy', 'lot', 'gal', 'qt']
 
 export const emptyDocument = () => ({ sections: [], proposal: { intro: '', scope: '', notes: '', exclusions: '', terms: '' } })
 export const newSection = () => ({ id: crypto.randomUUID(), title: 'New section', collapsed: false, items: [] })
-export const newItem = () => ({ id: crypto.randomUUID(), description: '', quantity: 1, unit: 'ea', unitCost: 0, costType: 'material', notes: '', priceSource: '', priceDate: '', needsReview: false })
+export const newItem = (language = 'en') => reviseManualPrice({ id: crypto.randomUUID(), description: '', quantity: 1, unit: 'ea', unitCost: 0, costType: 'material', notes: '' }, {}, language)
+
+// A changed cost/unit is new manual evidence, never a verified catalog quote.
+export function reviseManualPrice(item, changes, language = 'en') {
+  return { ...item, ...changes, catalogId: null, origin: 'manual', needsReview: true,
+    priceSource: language === 'es' ? 'Entrada manual — provisional' : 'Manual entry — provisional', priceDate: '',
+    price: { status: 'manual', source: 'manual-entry', category: 'provisional-assumption', internalPriceApproval: 'not-recorded',
+      previousSource: item.price?.previousSource || item.price?.source || null,
+      previousEvidence: item.price?.previousEvidence || { source: item.priceSource || '', date: item.priceDate || '' } } }
+}
 
 export function moneyCents(value) {
   const number = Number(value)

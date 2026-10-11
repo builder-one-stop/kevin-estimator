@@ -1,0 +1,692 @@
+{
+  "promptVersion": "estimator-2026-10-11.1",
+  "environment": "Local provider adapter with real OpenAI; synthetic content; no database/browser/deployment",
+  "cases": [
+    {
+      "id": "walls-en",
+      "checks": {
+        "maxTwoQuestions": true,
+        "noUnnecessaryQuestions": true,
+        "wallArea": true
+      },
+      "result": {
+        "message": "The bedroom has 352 sq ft of wall surface, with no deductions. Review the walls-only plan below; it assumes standard preparation and two finish coats. Material prices and the editable $45/hour labor rate are provisional, not internally approved or supplier-verified.",
+        "plan": {
+          "title": {
+            "en": "Bedroom wall painting",
+            "es": "Pintura de paredes del dormitorio"
+          },
+          "address": "",
+          "zip": "",
+          "tasks": [
+            {
+              "id": "bedroom-walls",
+              "room": {
+                "en": "Bedroom",
+                "es": "Dormitorio"
+              },
+              "work": {
+                "en": "Prepare and paint the full wall surface.",
+                "es": "Preparar y pintar toda la superficie de las paredes."
+              },
+              "components": [
+                {
+                  "en": "Interior acrylic wall paint, provisional unbranded allowance",
+                  "es": "Pintura acrílica interior para paredes, asignación provisional sin marca"
+                },
+                {
+                  "en": "Primer for spot priming, provisional unbranded allowance",
+                  "es": "Imprimador para aplicación localizada, asignación provisional sin marca"
+                },
+                {
+                  "en": "Wall preparation and protection supplies",
+                  "es": "Materiales para preparación y protección de paredes"
+                },
+                {
+                  "en": "Wall protection, minor patching, sanding and spot-priming labor",
+                  "es": "Mano de obra para protección, resanes menores, lijado e imprimación localizada de paredes"
+                },
+                {
+                  "en": "Wall painting and cleanup labor",
+                  "es": "Mano de obra para pintura de paredes y limpieza"
+                }
+              ],
+              "included": {
+                "en": "All 352 sq ft of walls without deductions; protection of adjacent surfaces, minor nail-hole patching, light sanding, spot priming of repairs, two finish coats and cleanup.",
+                "es": "Las 352 sq ft de paredes sin deducciones; protección de superficies adyacentes, resanes menores de agujeros de clavos, lijado ligero, imprimación localizada de reparaciones, dos capas de acabado y limpieza."
+              },
+              "excluded": {
+                "en": "Ceilings, trim, doors, windows, flooring, full-wall priming, wallpaper removal, major drywall repairs, moisture or mold remediation and moving heavy furniture.",
+                "es": "Techos, molduras, puertas, ventanas, pisos, imprimación completa de paredes, retiro de papel tapiz, reparaciones mayores de paneles de yeso, tratamiento de humedad o moho y traslado de muebles pesados."
+              },
+              "measurements": {
+                "en": "User supplied: 12 ft long × 10 ft wide × 8 ft high. Gross walls: 2 × (12 + 10) × 8 = 352 sq ft. No openings deducted. Two coats do not change the measured wall area. Dimensions are not field-verified.",
+                "es": "Medidas proporcionadas por el usuario: 12 ft de largo × 10 ft de ancho × 8 ft de alto. Paredes brutas: 2 × (12 + 10) × 8 = 352 sq ft. No se descuentan aberturas. Dos capas no cambian el área medida de paredes. Medidas no verificadas en obra."
+              },
+              "preparation": {
+                "en": "Provisional assumption: walls are sound and previously painted; clean as needed, fill minor nail holes, lightly sand and spot-prime repairs. Protect floors and adjacent surfaces.",
+                "es": "Supuesto provisional: paredes firmes y previamente pintadas; limpiar según sea necesario, resanar agujeros menores de clavos, lijar ligeramente e imprimar reparaciones de forma localizada. Proteger pisos y superficies adyacentes."
+              },
+              "product": {
+                "en": "Provisional generic interior acrylic wall paint and compatible spot primer; brand and exact product remain unspecified. No catalog product or supplier price is claimed.",
+                "es": "Pintura acrílica interior genérica e imprimador compatible para aplicación localizada, ambos provisionales; marca y producto exacto sin especificar. No se afirma un producto de catálogo ni precio de proveedor."
+              },
+              "finish": {
+                "en": "Provisional: two coats, eggshell finish, one standard color with similar coverage to the existing color; customer color selection before purchase.",
+                "es": "Provisional: dos capas, acabado cáscara de huevo, un color estándar con cobertura similar al color existente; selección del color por el cliente antes de la compra."
+              },
+              "assumptions": {
+                "en": "Editable allowances: paint coverage 350 sq ft/gal per coat plus 10% waste gives 2.21 gal, rounded to 3 gal for purchasing at $35/gal; spot primer 1 qt at $15/qt; preparation/protection supplies 1 lot at $20. Labor allowance: 3 hours preparation and 5 hours painting/cleanup at $45/hour because the configured labor rate is $0 and productivity is unspecified. Standard access and minor repairs only. All rates and quantities are provisional. No markup, tax or freight assumed.",
+                "es": "Asignaciones editables: cobertura de pintura de 350 sq ft/gal por capa más 10% de desperdicio da 2.21 gal, redondeados a 3 gal para compra a $35/gal; imprimador localizado, 1 qt a $15/qt; materiales de preparación/protección, 1 lote a $20. Mano de obra: 3 horas de preparación y 5 horas de pintura/limpieza a $45/hora porque la tarifa configurada es $0 y no se especifica productividad. Acceso normal y solo reparaciones menores. Todas las tarifas y cantidades son provisionales. No se supone recargo, impuesto ni flete."
+              },
+              "provenance": {
+                "en": "Scope and dimensions from the current user; wall area calculated with the room calculator using gross walls. Preparation, products, finish, material allowances and labor are assistant-proposed assumptions. No internally approved price records or connected local supplier feed are available. No job ZIP was supplied; prices are provisional. Plan approval covers scope and disclosed assumptions only, not internal price approval or customer acceptance.",
+                "es": "Alcance y medidas del usuario actual; área calculada con la calculadora de habitaciones usando paredes brutas. Preparación, productos, acabado, asignaciones de materiales y mano de obra son supuestos propuestos por el asistente. No hay registros de precios aprobados internamente ni conexión a proveedores locales. No se proporcionó código postal de la obra; los precios son provisionales. La aprobación del plan cubre solo alcance y supuestos declarados, no aprobación interna de precios ni aceptación del cliente."
+              },
+              "confirmed": false
+            }
+          ],
+          "pending": [],
+          "assumptions": {
+            "en": "Los Angeles market; USD. User-confirmed walls-only scope and dimensions; preparation, products, finish, quantities and rates remain editable provisional assumptions. Missing address and ZIP do not block review. Material and labor costs will be separate; markup is provisionally 0%.",
+            "es": "Mercado de Los Ángeles; USD. Alcance solo de paredes y medidas confirmados por el usuario; preparación, productos, acabado, cantidades y tarifas siguen siendo supuestos provisionales editables. La falta de dirección y código postal no impide la revisión. Costos de materiales y mano de obra separados; recargo provisional de 0%."
+          },
+          "markupBps": 0
+        },
+        "lines": [],
+        "changes": []
+      },
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "effort": "medium",
+        "promptVersion": "estimator-2026-10-11.1",
+        "durationMs": 34031,
+        "usage": {
+          "input_tokens": 13953,
+          "output_tokens": 1699,
+          "cached_tokens": 9186
+        },
+        "estimatedCostUsd": 0.027442599999999998
+      }
+    },
+    {
+      "id": "paint-floor-es",
+      "checks": {
+        "maxTwoQuestions": true,
+        "noUnnecessaryQuestions": true,
+        "wallArea": true
+      },
+      "result": {
+        "message": "¿Cuánto mide el dormitorio de largo, ancho y alto?\n¿Qué tipo de piso quiere el cliente: vinilo en tablones, laminado o loseta?",
+        "plan": null,
+        "lines": [],
+        "changes": []
+      },
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "effort": "medium",
+        "promptVersion": "estimator-2026-10-11.1",
+        "durationMs": 4234,
+        "usage": {
+          "input_tokens": 4494,
+          "output_tokens": 56,
+          "cached_tokens": 4319
+        },
+        "estimatedCostUsd": 0.0013419
+      }
+    },
+    {
+      "id": "complete-en",
+      "checks": {
+        "maxTwoQuestions": true,
+        "noUnnecessaryQuestions": true,
+        "wallArea": true
+      },
+      "result": {
+        "message": "Proposed bedroom walls-only plan for review: 352 sq ft, with no opening deductions. Your editable provisional allowances are paint $80, supplies $35, and labor $360, with 20% markup on cost and no tax. Brand and color remain editable assumptions, not approval blockers. Prices are unverified; plan approval covers scope and assumptions only, not internal price approval or customer acceptance.",
+        "plan": {
+          "title": {
+            "en": "Bedroom walls painting — provisional plan",
+            "es": "Pintura de paredes del dormitorio — plan provisional"
+          },
+          "address": "",
+          "zip": "",
+          "tasks": [
+            {
+              "id": "bedroom-walls",
+              "room": {
+                "en": "Bedroom",
+                "es": "Dormitorio"
+              },
+              "work": {
+                "en": "Prepare and paint bedroom walls only with two coats of generic eggshell paint.",
+                "es": "Preparar y pintar solo las paredes del dormitorio con dos capas de pintura genérica con acabado cáscara de huevo."
+              },
+              "components": [
+                {
+                  "en": "Generic interior eggshell wall paint",
+                  "es": "Pintura genérica para paredes interiores con acabado cáscara de huevo"
+                },
+                {
+                  "en": "Protection, nail-hole patching, spot-priming and sanding supplies",
+                  "es": "Materiales de protección, reparación de agujeros de clavos, imprimación localizada y lijado"
+                },
+                {
+                  "en": "Labor to protect furniture and floor, patch minor nail holes, lightly sand, spot prime patches and apply two coats to walls",
+                  "es": "Mano de obra para proteger muebles y piso, reparar agujeros menores de clavos, lijar ligeramente, aplicar imprimación localizada a los parches y pintar las paredes con dos capas"
+                }
+              ],
+              "included": {
+                "en": "Furniture and floor protection; minor nail-hole patching; light sanding; spot primer on patches; two finish coats on the full wall area without opening deductions.",
+                "es": "Protección de muebles y piso; reparación de agujeros menores de clavos; lijado ligero; imprimación localizada en los parches; dos capas de acabado sobre toda el área de paredes sin descontar aberturas."
+              },
+              "excluded": {
+                "en": "Ceiling, trim and doors; full-wall priming; major wall repairs; flooring work; tax.",
+                "es": "Techo, molduras y puertas; imprimación de todas las paredes; reparaciones mayores; trabajos de piso; impuestos."
+              },
+              "measurements": {
+                "en": "User-supplied dimensions: 12 × 10 × 8 ft. Calculated gross wall area: 2 × (12 + 10) × 8 = 352 sq ft. No opening deductions. Two coats do not change the wall area. Paint allowance: 2 US gal; labor allowance: 8 hr. Dimensions have not been field verified.",
+                "es": "Dimensiones proporcionadas por el usuario: 12 × 10 × 8 ft. Área bruta calculada de paredes: 2 × (12 + 10) × 8 = 352 sq ft. Sin descontar aberturas. Las dos capas no cambian el área de paredes. Provisión de pintura: 2 gal estadounidenses; provisión de mano de obra: 8 h. Dimensiones no verificadas en obra."
+              },
+              "preparation": {
+                "en": "Protect furniture and floor, patch minor nail holes, lightly sand and spot prime patches. Walls reported in good condition; no full priming included.",
+                "es": "Proteger muebles y piso, reparar agujeros menores de clavos, lijar ligeramente y aplicar imprimación localizada a los parches. Se informa que las paredes están en buen estado; no se incluye imprimación completa."
+              },
+              "product": {
+                "en": "Provisional generic interior wall paint; brand and exact product unspecified and editable. Supplies allowance includes protection materials, patching compound, spot primer, abrasives and application consumables.",
+                "es": "Pintura genérica provisional para paredes interiores; marca y producto exacto sin especificar y editables. La provisión de materiales incluye protección, compuesto de reparación, imprimación localizada, abrasivos y consumibles de aplicación."
+              },
+              "finish": {
+                "en": "Two coats, eggshell finish. Color unspecified; editable provisional assumption.",
+                "es": "Dos capas, acabado cáscara de huevo. Color sin especificar; supuesto provisional editable."
+              },
+              "assumptions": {
+                "en": "User-authorized provisional allowances: 2 US gal of paint at $40/gal, supplies $35/lot, and 8 labor hours at $45/hr. Paint quantity is an allowance, not verified product coverage; it implies 352 sq ft/gal per coat with no separate waste allowance. Brand and color remain editable. Good walls with minor nail holes only.",
+                "es": "Provisiones provisionales autorizadas por el usuario: 2 gal estadounidenses de pintura a $40/gal, materiales a $35/lote y 8 horas de mano de obra a $45/h. La cantidad de pintura es una provisión, no un rendimiento verificado del producto; implica 352 sq ft/gal por capa sin provisión separada por desperdicio. Marca y color editables. Paredes en buen estado con solo agujeros menores de clavos."
+              },
+              "provenance": {
+                "en": "Scope, dimensions, condition, finish and provisional pricing supplied by the user. Wall area calculated with the room calculation tool; dimensions not independently verified. No verified local prices, supplier feed, exact catalog match or auditable internal-price approval used.",
+                "es": "Alcance, dimensiones, estado, acabado y precios provisionales proporcionados por el usuario. Área de paredes calculada con la herramienta de cálculo de habitaciones; dimensiones no verificadas de forma independiente. No se utilizaron precios locales verificados, conexión con proveedores, coincidencia exacta de catálogo ni aprobación interna de precios auditable."
+              },
+              "confirmed": true
+            }
+          ],
+          "pending": [],
+          "assumptions": {
+            "en": "Los Angeles market; USD. Address and ZIP not supplied. All prices are provisional and editable, not locally verified or internally approved. Apply 20% markup on material and labor cost; no tax. Brand and color are nonblocking editable assumptions. Plan approval authorizes scope and disclosed assumptions only, not Kevin's internal price approval or customer acceptance.",
+            "es": "Mercado de Los Ángeles; USD. Dirección y código postal no proporcionados. Todos los precios son provisionales y editables, sin verificación local ni aprobación interna. Aplicar un recargo del 20% sobre el costo de materiales y mano de obra; sin impuestos. Marca y color son supuestos editables que no bloquean la aprobación. Aprobar el plan autoriza solo el alcance y los supuestos declarados, no la aprobación interna de precios de Kevin ni la aceptación del cliente."
+          },
+          "markupBps": 2000
+        },
+        "lines": [],
+        "changes": []
+      },
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "effort": "medium",
+        "promptVersion": "estimator-2026-10-11.1",
+        "durationMs": 22697,
+        "usage": {
+          "input_tokens": 9366,
+          "output_tokens": 1428,
+          "cached_tokens": 8896
+        },
+        "estimatedCostUsd": 0.0161096
+      }
+    },
+    {
+      "id": "approved-generation-en",
+      "checks": {
+        "total": true,
+        "materials": true,
+        "labor": true,
+        "provisional": true
+      },
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "effort": "medium",
+        "promptVersion": "estimator-2026-10-11.1",
+        "durationMs": 13716,
+        "usage": {
+          "input_tokens": 5922,
+          "output_tokens": 932,
+          "cached_tokens": 0
+        },
+        "estimatedCostUsd": 0.021164
+      },
+      "document": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "title": "Bedroom",
+            "items": [
+              {
+                "id": "bedroom-walls-paint",
+                "taskId": "bedroom-walls",
+                "description": "Generic interior eggshell wall paint",
+                "quantity": 2,
+                "unit": "gal",
+                "unitCost": 40,
+                "costType": "material",
+                "markupBps": 2000,
+                "basis": {
+                  "en": "User-authorized provisional allowance of 2 US gal for two coats over 352 sq ft of gross walls, with no opening deductions. This implies 352 sq ft/gal per coat, with no separate waste allowance; actual product coverage is unverified. Brand and color unspecified and editable. $40/gal is provisional, not locally verified or internally approved; no exact catalog match used.",
+                  "es": "Provisión provisional autorizada por el usuario de 2 gal estadounidenses para dos capas sobre 352 sq ft de paredes brutas, sin descontar aberturas. Implica 352 sq ft/gal por capa, sin provisión separada por desperdicio; rendimiento real del producto sin verificar. Marca y color sin especificar y editables. $40/gal es provisional, sin verificación local ni aprobación interna; no se utilizó una coincidencia exacta de catálogo."
+                },
+                "catalogId": null,
+                "translations": {
+                  "en": "Generic interior eggshell wall paint",
+                  "es": "Pintura genérica para paredes interiores con acabado cáscara de huevo"
+                },
+                "price": {
+                  "status": "provisional",
+                  "source": "model-proposal",
+                  "category": "provisional-assumption",
+                  "internalPriceApproval": "not-recorded"
+                },
+                "priceSource": "Provisional assumption — no verified local price",
+                "priceDate": "",
+                "needsReview": true,
+                "notes": "User-authorized provisional allowance of 2 US gal for two coats over 352 sq ft of gross walls, with no opening deductions. This implies 352 sq ft/gal per coat, with no separate waste allowance; actual product coverage is unverified. Brand and color unspecified and editable. $40/gal is provisional, not locally verified or internally approved; no exact catalog match used.",
+                "origin": "ai-proposal"
+              },
+              {
+                "id": "bedroom-walls-supplies",
+                "taskId": "bedroom-walls",
+                "description": "Protection, nail-hole patching, spot-priming and sanding supplies",
+                "quantity": 1,
+                "unit": "lot",
+                "unitCost": 35,
+                "costType": "material",
+                "markupBps": 2000,
+                "basis": {
+                  "en": "User-authorized provisional $35 supplies allowance covering furniture and floor protection, minor nail-hole patching compound, spot primer for patches, abrasives and application consumables. No full-wall priming or major repairs. Price is not locally verified or internally approved; no exact catalog match used.",
+                  "es": "Provisión provisional de $35 autorizada por el usuario para protección de muebles y piso, compuesto para reparar agujeros menores de clavos, imprimación localizada de parches, abrasivos y consumibles de aplicación. Sin imprimación completa de paredes ni reparaciones mayores. Precio sin verificación local ni aprobación interna; no se utilizó una coincidencia exacta de catálogo."
+                },
+                "catalogId": null,
+                "translations": {
+                  "en": "Protection, nail-hole patching, spot-priming and sanding supplies",
+                  "es": "Materiales de protección, reparación de agujeros de clavos, imprimación localizada y lijado"
+                },
+                "price": {
+                  "status": "provisional",
+                  "source": "model-proposal",
+                  "category": "provisional-assumption",
+                  "internalPriceApproval": "not-recorded"
+                },
+                "priceSource": "Provisional assumption — no verified local price",
+                "priceDate": "",
+                "needsReview": true,
+                "notes": "User-authorized provisional $35 supplies allowance covering furniture and floor protection, minor nail-hole patching compound, spot primer for patches, abrasives and application consumables. No full-wall priming or major repairs. Price is not locally verified or internally approved; no exact catalog match used.",
+                "origin": "ai-proposal"
+              },
+              {
+                "id": "bedroom-walls-labor",
+                "taskId": "bedroom-walls",
+                "description": "Labor to protect furniture and floor, patch minor nail holes, lightly sand, spot prime patches and apply two coats to walls",
+                "quantity": 8,
+                "unit": "hr",
+                "unitCost": 45,
+                "costType": "labor",
+                "markupBps": 2000,
+                "basis": {
+                  "en": "User-authorized allowance of 8 total labor hours at a provisional $45/hr for protection, minor nail-hole repairs, light sanding, spot priming and two coats on 352 sq ft of gross walls. Hours are a job allowance, not a verified production rate. Walls reported in good condition. Ceiling, trim, doors, full-wall priming and major repairs excluded. Rate is not locally verified or internally approved.",
+                  "es": "Provisión autorizada por el usuario de 8 horas totales de mano de obra a una tarifa provisional de $45/h para protección, reparación de agujeros menores de clavos, lijado ligero, imprimación localizada y dos capas sobre 352 sq ft de paredes brutas. Las horas son una provisión para el trabajo, no una tasa de productividad verificada. Paredes declaradas en buen estado. Se excluyen techo, molduras, puertas, imprimación completa y reparaciones mayores. Tarifa sin verificación local ni aprobación interna."
+                },
+                "catalogId": null,
+                "translations": {
+                  "en": "Labor to protect furniture and floor, patch minor nail holes, lightly sand, spot prime patches and apply two coats to walls",
+                  "es": "Mano de obra para proteger muebles y piso, reparar agujeros menores de clavos, lijar ligeramente, aplicar imprimación localizada a los parches y pintar las paredes con dos capas"
+                },
+                "price": {
+                  "status": "provisional",
+                  "source": "model-proposal",
+                  "category": "provisional-assumption",
+                  "internalPriceApproval": "not-recorded"
+                },
+                "priceSource": "Provisional assumption — no verified local price",
+                "priceDate": "",
+                "needsReview": true,
+                "notes": "User-authorized allowance of 8 total labor hours at a provisional $45/hr for protection, minor nail-hole repairs, light sanding, spot priming and two coats on 352 sq ft of gross walls. Hours are a job allowance, not a verified production rate. Walls reported in good condition. Ceiling, trim, doors, full-wall priming and major repairs excluded. Rate is not locally verified or internally approved.",
+                "origin": "ai-proposal"
+              }
+            ]
+          }
+        ],
+        "proposal": {
+          "intro": "",
+          "scope": "",
+          "notes": "",
+          "exclusions": "",
+          "terms": ""
+        },
+        "scope": {
+          "plan": {
+            "title": {
+              "en": "Bedroom walls painting — provisional plan",
+              "es": "Pintura de paredes del dormitorio — plan provisional"
+            },
+            "address": "",
+            "zip": "",
+            "tasks": [
+              {
+                "id": "bedroom-walls",
+                "room": {
+                  "en": "Bedroom",
+                  "es": "Dormitorio"
+                },
+                "work": {
+                  "en": "Prepare and paint bedroom walls only with two coats of generic eggshell paint.",
+                  "es": "Preparar y pintar solo las paredes del dormitorio con dos capas de pintura genérica con acabado cáscara de huevo."
+                },
+                "components": [
+                  {
+                    "en": "Generic interior eggshell wall paint",
+                    "es": "Pintura genérica para paredes interiores con acabado cáscara de huevo"
+                  },
+                  {
+                    "en": "Protection, nail-hole patching, spot-priming and sanding supplies",
+                    "es": "Materiales de protección, reparación de agujeros de clavos, imprimación localizada y lijado"
+                  },
+                  {
+                    "en": "Labor to protect furniture and floor, patch minor nail holes, lightly sand, spot prime patches and apply two coats to walls",
+                    "es": "Mano de obra para proteger muebles y piso, reparar agujeros menores de clavos, lijar ligeramente, aplicar imprimación localizada a los parches y pintar las paredes con dos capas"
+                  }
+                ],
+                "included": {
+                  "en": "Furniture and floor protection; minor nail-hole patching; light sanding; spot primer on patches; two finish coats on the full wall area without opening deductions.",
+                  "es": "Protección de muebles y piso; reparación de agujeros menores de clavos; lijado ligero; imprimación localizada en los parches; dos capas de acabado sobre toda el área de paredes sin descontar aberturas."
+                },
+                "excluded": {
+                  "en": "Ceiling, trim and doors; full-wall priming; major wall repairs; flooring work; tax.",
+                  "es": "Techo, molduras y puertas; imprimación de todas las paredes; reparaciones mayores; trabajos de piso; impuestos."
+                },
+                "measurements": {
+                  "en": "User-supplied dimensions: 12 × 10 × 8 ft. Calculated gross wall area: 2 × (12 + 10) × 8 = 352 sq ft. No opening deductions. Two coats do not change the wall area. Paint allowance: 2 US gal; labor allowance: 8 hr. Dimensions have not been field verified.",
+                  "es": "Dimensiones proporcionadas por el usuario: 12 × 10 × 8 ft. Área bruta calculada de paredes: 2 × (12 + 10) × 8 = 352 sq ft. Sin descontar aberturas. Las dos capas no cambian el área de paredes. Provisión de pintura: 2 gal estadounidenses; provisión de mano de obra: 8 h. Dimensiones no verificadas en obra."
+                },
+                "preparation": {
+                  "en": "Protect furniture and floor, patch minor nail holes, lightly sand and spot prime patches. Walls reported in good condition; no full priming included.",
+                  "es": "Proteger muebles y piso, reparar agujeros menores de clavos, lijar ligeramente y aplicar imprimación localizada a los parches. Se informa que las paredes están en buen estado; no se incluye imprimación completa."
+                },
+                "product": {
+                  "en": "Provisional generic interior wall paint; brand and exact product unspecified and editable. Supplies allowance includes protection materials, patching compound, spot primer, abrasives and application consumables.",
+                  "es": "Pintura genérica provisional para paredes interiores; marca y producto exacto sin especificar y editables. La provisión de materiales incluye protección, compuesto de reparación, imprimación localizada, abrasivos y consumibles de aplicación."
+                },
+                "finish": {
+                  "en": "Two coats, eggshell finish. Color unspecified; editable provisional assumption.",
+                  "es": "Dos capas, acabado cáscara de huevo. Color sin especificar; supuesto provisional editable."
+                },
+                "assumptions": {
+                  "en": "User-authorized provisional allowances: 2 US gal of paint at $40/gal, supplies $35/lot, and 8 labor hours at $45/hr. Paint quantity is an allowance, not verified product coverage; it implies 352 sq ft/gal per coat with no separate waste allowance. Brand and color remain editable. Good walls with minor nail holes only.",
+                  "es": "Provisiones provisionales autorizadas por el usuario: 2 gal estadounidenses de pintura a $40/gal, materiales a $35/lote y 8 horas de mano de obra a $45/h. La cantidad de pintura es una provisión, no un rendimiento verificado del producto; implica 352 sq ft/gal por capa sin provisión separada por desperdicio. Marca y color editables. Paredes en buen estado con solo agujeros menores de clavos."
+                },
+                "provenance": {
+                  "en": "Scope, dimensions, condition, finish and provisional pricing supplied by the user. Wall area calculated with the room calculation tool; dimensions not independently verified. No verified local prices, supplier feed, exact catalog match or auditable internal-price approval used.",
+                  "es": "Alcance, dimensiones, estado, acabado y precios provisionales proporcionados por el usuario. Área de paredes calculada con la herramienta de cálculo de habitaciones; dimensiones no verificadas de forma independiente. No se utilizaron precios locales verificados, conexión con proveedores, coincidencia exacta de catálogo ni aprobación interna de precios auditable."
+                },
+                "confirmed": true
+              }
+            ],
+            "pending": [],
+            "assumptions": {
+              "en": "Los Angeles market; USD. Address and ZIP not supplied. All prices are provisional and editable, not locally verified or internally approved. Apply 20% markup on material and labor cost; no tax. Brand and color are nonblocking editable assumptions. Plan approval authorizes scope and disclosed assumptions only, not Kevin's internal price approval or customer acceptance.",
+              "es": "Mercado de Los Ángeles; USD. Dirección y código postal no proporcionados. Todos los precios son provisionales y editables, sin verificación local ni aprobación interna. Aplicar un recargo del 20% sobre el costo de materiales y mano de obra; sin impuestos. Marca y color son supuestos editables que no bloquean la aprobación. Aprobar el plan autoriza solo el alcance y los supuestos declarados, no la aprobación interna de precios de Kevin ni la aceptación del cliente."
+            },
+            "markupBps": 2000
+          },
+          "revision": 1,
+          "approvalType": "plan"
+        },
+        "market": {
+          "id": "us-ca-los-angeles",
+          "city": "Los Angeles",
+          "region": "California",
+          "country": "US",
+          "currency": "USD",
+          "lengthUnit": "ft",
+          "areaUnit": "sf"
+        },
+        "language": "en",
+        "business": {}
+      },
+      "sums": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "costCents": 47500
+          }
+        ],
+        "costsByType": {
+          "material": 11500,
+          "labor": 36000,
+          "equipment": 0,
+          "other": 0
+        },
+        "laborHours": 8,
+        "costCents": 47500,
+        "markupCents": 9500,
+        "profitCents": 9500,
+        "priceCents": 57000,
+        "marginPercent": 16.666666666666664
+      }
+    },
+    {
+      "id": "metric-es",
+      "checks": {
+        "maxTwoQuestions": true,
+        "noUnnecessaryQuestions": true,
+        "wallArea": true
+      },
+      "result": {
+        "message": "Plan para revisión: pintar únicamente las paredes del dormitorio, con preparación menor y dos manos eggshell. Precios provisionales indicados por ti: pintura 2 galones estadounidenses a USD 40/galón, insumos USD 35 y mano de obra 8 horas a USD 45/hora; recargo sobre costo del 20%, sin impuestos. Marca y color quedan como supuestos editables, no como bloqueos. Aprobar el plan autoriza el alcance y los supuestos, no constituye aprobación interna de precios ni aceptación del cliente.",
+        "plan": {
+          "title": {
+            "en": "Bedroom wall painting — provisional plan",
+            "es": "Pintura de paredes de dormitorio — plan provisional"
+          },
+          "address": "",
+          "zip": "",
+          "tasks": [
+            {
+              "id": "bedroom-walls",
+              "room": {
+                "en": "Bedroom",
+                "es": "Dormitorio"
+              },
+              "work": {
+                "en": "Prepare and paint the full wall surface with two coats of generic eggshell paint.",
+                "es": "Preparar y pintar toda la superficie de paredes con dos manos de pintura genérica eggshell."
+              },
+              "components": [
+                {
+                  "en": "Generic eggshell wall paint",
+                  "es": "Pintura genérica eggshell para paredes"
+                },
+                {
+                  "en": "Floor and furniture protection supplies, small-hole filler, patch primer and light-sanding supplies",
+                  "es": "Insumos de protección de piso y muebles, resanador de agujeros pequeños, imprimación para parches e insumos de lijado ligero"
+                },
+                {
+                  "en": "Labor for floor and furniture protection, small-hole filling, light sanding, patch-only priming and wall painting",
+                  "es": "Mano de obra para proteger piso y muebles, tapar agujeros pequeños, lijar ligeramente, imprimar solo parches y pintar paredes"
+                }
+              ],
+              "included": {
+                "en": "Full gross wall surface; protect floor and furniture; fill small holes; lightly sand; prime repaired patches only; apply two finish coats.",
+                "es": "Toda la superficie bruta de paredes; proteger piso y muebles; tapar agujeros pequeños; lijar ligeramente; imprimar únicamente los parches reparados; aplicar dos manos de acabado."
+              },
+              "excluded": {
+                "en": "Ceiling, trim, doors, full-wall priming, major repairs and floor painting or replacement. No taxes included.",
+                "es": "Techo, molduras, puertas, imprimación completa de paredes, reparaciones mayores y pintura o sustitución del piso. No se incluyen impuestos."
+              },
+              "measurements": {
+                "en": "User-supplied dimensions: 3.6576 m × 3.048 m × 2.4384 m high, converted to 12 × 10 × 8 ft. Calculated gross walls: 352 sf, with no opening deductions. Two coats cover the same 352 sf surface, equivalent to 704 sf of coat application. User-provided allowance: 2 US gal of paint and 8 labor hours. Dimensions have not been field-verified.",
+                "es": "Dimensiones proporcionadas: 3.6576 m × 3.048 m × 2.4384 m de alto, convertidas a 12 × 10 × 8 ft. Paredes brutas calculadas: 352 sf, sin descontar aberturas. Las dos manos se aplican sobre la misma superficie de 352 sf, equivalente a 704 sf de aplicación de manos. Provisión indicada: 2 galones estadounidenses de pintura y 8 horas de trabajo. Dimensiones sin verificación en obra."
+              },
+              "preparation": {
+                "en": "Walls reported in good condition with small holes. Protect floor and furniture, fill small holes, lightly sand and spot-prime patches; no full priming.",
+                "es": "Paredes declaradas en buen estado con agujeros pequeños. Proteger piso y muebles, resanar agujeros pequeños, lijar ligeramente e imprimar solo los parches; sin imprimación completa."
+              },
+              "product": {
+                "en": "Generic wall paint, provisional brand and color to be selected; 2 US gal allowance, with no specific brand or package identity approved. Supplies allowance includes protection, filler, patch primer and sanding supplies.",
+                "es": "Pintura genérica para paredes, con marca y color provisionales por seleccionar; provisión de 2 galones estadounidenses, sin marca ni presentación comercial específica aprobadas. La provisión de insumos incluye protección, resanador, imprimación para parches e insumos de lijado."
+              },
+              "finish": {
+                "en": "Eggshell finish, two coats. Color remains an editable assumption.",
+                "es": "Acabado eggshell, dos manos. El color queda como supuesto editable."
+              },
+              "assumptions": {
+                "en": "User-provided provisional allowances: paint 2 US gal at USD 40/gal; supplies USD 35 as one lot; labor 8 hr at USD 45/hr. Paint quantity is an allowance, not verified manufacturer coverage; no additional waste factor is added. Labor allowance covers the listed preparation and painting. Brand and color remain editable. No major damage assumed beyond the reported small holes.",
+                "es": "Provisiones provisionales indicadas por el usuario: pintura 2 galones estadounidenses a USD 40/galón; insumos USD 35 por lote; mano de obra 8 horas a USD 45/hora. La cantidad de pintura es una provisión, no un rendimiento verificado del fabricante; no se añade un factor adicional de desperdicio. Las horas incluyen la preparación y pintura descritas. Marca y color quedan editables. No se supone daño mayor que los agujeros pequeños indicados."
+              },
+              "provenance": {
+                "en": "Scope, condition, dimensions, finish, quantities and provisional rates supplied by the user. Areas calculated using calculate_rooms; lengths converted using convert_measurements. No catalog match or external supplier lookup used. No verified local prices or auditable internal price approval available.",
+                "es": "Alcance, estado, dimensiones, acabado, cantidades y tarifas provisionales proporcionados por el usuario. Áreas calculadas con calculate_rooms y longitudes convertidas con convert_measurements. No se utilizó coincidencia de catálogo ni consulta externa a proveedores. No hay precios locales verificados ni aprobación interna de precios auditable."
+              },
+              "confirmed": true
+            }
+          ],
+          "pending": [],
+          "assumptions": {
+            "en": "Los Angeles, California market; USD. Address and ZIP not supplied and do not block this provisional plan. All prices remain provisional and editable. Material and labor costs will be separate; markup is 20% on cost (2000 basis points), not margin. No taxes. Plan approval covers scope and disclosed assumptions only, not internal price approval or customer acceptance.",
+            "es": "Mercado de Los Ángeles, California; USD. Dirección y código postal no proporcionados; no bloquean este plan provisional. Todos los precios siguen siendo provisionales y editables. Los costos de materiales y mano de obra se separarán; el recargo es del 20% sobre costo (2000 puntos básicos), no margen. Sin impuestos. La aprobación del plan cubre únicamente el alcance y los supuestos declarados, no la aprobación interna de precios ni la aceptación del cliente."
+          },
+          "markupBps": 2000
+        },
+        "lines": [],
+        "changes": []
+      },
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "effort": "medium",
+        "promptVersion": "estimator-2026-10-11.1",
+        "durationMs": 27951,
+        "usage": {
+          "input_tokens": 14462,
+          "output_tokens": 1645,
+          "cached_tokens": 13791
+        },
+        "estimatedCostUsd": 0.0191711
+      }
+    },
+    {
+      "id": "answered-en",
+      "checks": {
+        "maxTwoQuestions": true,
+        "noUnnecessaryQuestions": true,
+        "wallArea": true
+      },
+      "result": {
+        "message": "Review this walls-only plan: 352 sq ft, minor repairs, protection, spot priming and two coats of generic eggshell. All prices are provisional and editable, not verified local prices or internally approved rates. Brand and color remain editable assumptions; they do not block approval. Materials, labor and 20% markup on cost will be shown separately; no tax.",
+        "plan": {
+          "title": {
+            "en": "Bedroom walls painting",
+            "es": "Pintura de paredes del dormitorio"
+          },
+          "address": "",
+          "zip": "",
+          "tasks": [
+            {
+              "id": "bedroom-walls",
+              "room": {
+                "en": "Bedroom",
+                "es": "Dormitorio"
+              },
+              "work": {
+                "en": "Prepare and paint bedroom walls only with two coats of generic eggshell paint.",
+                "es": "Preparar y pintar únicamente las paredes del dormitorio con dos manos de pintura genérica de acabado cáscara de huevo."
+              },
+              "components": [
+                {
+                  "en": "Generic interior eggshell wall paint",
+                  "es": "Pintura genérica para paredes interiores con acabado cáscara de huevo"
+                },
+                {
+                  "en": "Protection, patching, spot-primer and painting supplies",
+                  "es": "Insumos de protección, resanado, imprimación localizada y pintura"
+                },
+                {
+                  "en": "Labor for furniture and floor protection, minor nail-hole patching, light sanding, spot priming and two-coat wall painting",
+                  "es": "Mano de obra para proteger muebles y piso, resanar pequeños agujeros de clavos, lijar ligeramente, aplicar imprimación localizada y pintar las paredes con dos manos"
+                }
+              ],
+              "included": {
+                "en": "Protect furniture and floor; patch minor nail holes; light sand; spot prime patches; apply two finish coats to the full wall area without opening deductions.",
+                "es": "Proteger muebles y piso; resanar pequeños agujeros de clavos; lijar ligeramente; imprimar únicamente los resanes; aplicar dos manos de acabado sobre el área completa de paredes sin descontar aberturas."
+              },
+              "excluded": {
+                "en": "Ceiling, trim and doors; full-wall priming; major wall repairs; tax.",
+                "es": "Techo, molduras y puertas; imprimación de paredes completas; reparaciones mayores de paredes; impuestos."
+              },
+              "measurements": {
+                "en": "User-supplied dimensions: 12 × 10 × 8 ft. Gross walls: 2 × (12 + 10) × 8 = 352 sq ft; no opening deductions. Floor protection area: 120 sq ft. Two coats represent 704 sq ft of coating application, not additional wall area.",
+                "es": "Dimensiones proporcionadas por el usuario: 12 × 10 × 8 ft. Paredes brutas: 2 × (12 + 10) × 8 = 352 pies cuadrados; sin descontar aberturas. Área de piso para proteger: 120 pies cuadrados. Dos manos representan 704 pies cuadrados de aplicación, no área adicional de paredes."
+              },
+              "preparation": {
+                "en": "Walls reported in good condition with minor nail holes. Protect furniture/floor, patch holes, light sand and spot prime patches; no full priming.",
+                "es": "Paredes reportadas en buen estado con pequeños agujeros de clavos. Proteger muebles/piso, resanar agujeros, lijar ligeramente e imprimar únicamente los resanes; sin imprimación completa."
+              },
+              "product": {
+                "en": "Generic interior eggshell paint; provisional allowance of 2 US gallons at $40/gallon. Brand remains unspecified and editable. Supplies allowance of $35 total includes protection materials, patching compound, spot primer, abrasives and application consumables; no separate full-primer allowance.",
+                "es": "Pintura genérica interior de acabado cáscara de huevo; provisión de 2 galones estadounidenses a $40/galón. Marca sin especificar y editable. Provisión total de $35 para insumos de protección, compuesto de resanado, imprimador localizado, abrasivos y consumibles de aplicación; sin provisión adicional para imprimación completa."
+              },
+              "finish": {
+                "en": "Two coats, eggshell finish. Color unspecified and editable; provisionally assume a standard color that covers in two coats.",
+                "es": "Dos manos, acabado cáscara de huevo. Color sin especificar y editable; se supone provisionalmente un color estándar que cubre con dos manos."
+              },
+              "assumptions": {
+                "en": "User-authorized editable allowances: paint 2 US gallons at $40 each; supplies $35/lot; labor 8 hours at $45/hour. Paint allowance implies 352 sq ft/gallon per coat with no separate waste allowance; actual product coverage may require adjustment. Minor repairs only. Labor allowance includes the listed preparation and painting. Brand and color remain provisional. Markup 20% on cost; no tax.",
+                "es": "Provisiones editables autorizadas por el usuario: pintura 2 galones estadounidenses a $40 cada uno; insumos $35/lote; mano de obra 8 horas a $45/hora. La provisión de pintura implica 352 pies cuadrados/galón por mano sin provisión separada de desperdicio; la cobertura real del producto puede requerir ajustes. Solo reparaciones menores. La provisión de mano de obra incluye la preparación y pintura indicadas. Marca y color provisionales. Recargo del 20% sobre el costo; sin impuestos."
+              },
+              "provenance": {
+                "en": "Scope, dimensions, condition, finish, quantities and provisional rates supplied by the user. Areas calculated from those dimensions, not field verified. No verified local prices, connected supplier feed or recorded internal price approval. No exact catalog product selected. Plan approval covers scope and disclosed assumptions only, not internal price approval or customer acceptance.",
+                "es": "Alcance, dimensiones, estado, acabado, cantidades y tarifas provisionales proporcionados por el usuario. Áreas calculadas con esas dimensiones, sin verificación en obra. Sin precios locales verificados, conexión a proveedores ni aprobación interna de precios registrada. No se seleccionó un producto exacto del catálogo. Aprobar el plan autoriza únicamente el alcance y los supuestos declarados, no la aprobación interna de precios ni la aceptación del cliente."
+              },
+              "confirmed": true
+            }
+          ],
+          "pending": [],
+          "assumptions": {
+            "en": "Los Angeles market; USD. Address and ZIP not supplied. All rates are user-supplied, provisional and editable; no verified local pricing or internal price approval. Brand and color remain editable assumptions, not approval blockers. Separate material and labor costs, with 20% markup on cost and no tax. Dimensions are user-reported, not field verified.",
+            "es": "Mercado de Los Ángeles; USD. Dirección y código postal no proporcionados. Todas las tarifas fueron proporcionadas por el usuario, son provisionales y editables; sin precios locales verificados ni aprobación interna de precios. Marca y color siguen como supuestos editables, sin impedir la aprobación. Costos de materiales y mano de obra separados, con recargo del 20% sobre el costo y sin impuestos. Dimensiones reportadas por el usuario, sin verificación en obra."
+          },
+          "markupBps": 2000
+        },
+        "lines": [],
+        "changes": []
+      },
+      "metrics": {
+        "model": "gpt-6.1-sol",
+        "responseModels": [
+          "gpt-6.1-sol"
+        ],
+        "effort": "medium",
+        "promptVersion": "estimator-2026-10-11.1",
+        "durationMs": 24936,
+        "usage": {
+          "input_tokens": 9408,
+          "output_tokens": 1509,
+          "cached_tokens": 8920
+        },
+        "estimatedCostUsd": 0.016958
+      }
+    }
+  ],
+  "errors": []
+}

@@ -75,3 +75,7 @@
  .home-hero { margin-top:28px; }.home-hero .greet { font-size:30px; }
 }
 @media(prefers-reduced-motion:reduce) { .activity-dots i { animation:none; opacity:.7; } }
+
+.ai-market { display: flex; flex-wrap: wrap; gap: .35rem 1rem; margin: .5rem 0 1rem; color: var(--muted); font-size: .85rem; }
+.ai-market small { font-size: inherit; }
+.ai-pricing-notice, .ai-approval-meaning { font-size: .9rem; line-height: 1.5; color: var(--muted); }

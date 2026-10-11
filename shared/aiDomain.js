@@ -1,3 +1,4 @@
+import { ESTIMATING_MARKET } from './estimatingMarket.js'
 import { planSchema, outputSchema } from './aiSchemas.js'
 import { calculateEstimate, validateEstimate } from '../src/lib/estimateDocument.js'
 export const localText = (value, language = 'en') => typeof value === 'string' ? value : value?.[language] || value?.en || ''
@@ -14,8 +15,8 @@ function itemFromLine(line, catalog, language) {
   if (line.catalogId && (!entry || entry.unit !== line.unit)) throw fail('CATALOG_MISMATCH')
   return { ...line, description: localText(line.description, language), translations: line.description,
     unitCost: entry?.unitCost ?? line.unitCost,
-    price: entry ? { ...entry } : { status: 'provisional', source: 'model-proposal' },
-    priceSource: entry ? `${entry.vendor} · ${entry.product} · ${entry.package}` : 'Provisional',
+    price: entry ? { ...entry, source: 'owner-catalog', category: entry.status === 'verified' ? 'local-source' : 'provisional-assumption', internalPriceApproval: 'not-recorded' } : { status: 'provisional', source: 'model-proposal', category: 'provisional-assumption', internalPriceApproval: 'not-recorded' },
+    priceSource: entry ? `${entry.vendor} · ${entry.product} · ${entry.package}` : (language === 'es' ? 'Supuesto provisional — sin precio local verificado' : 'Provisional assumption — no verified local price'),
     priceDate: entry?.checkedAt || '', needsReview: !entry || entry.status !== 'verified',
     notes: localText(line.basis, language), origin: 'ai-proposal' }
 }
@@ -28,10 +29,10 @@ export function documentFromLines(plan, lines, language, catalog = [], business 
   const doc = { sections: plan.tasks.map(task => ({ id: task.id, title: localText(task.room, language),
     items: lines.filter(x => x.taskId === task.id).map(x => itemFromLine(x, catalog, language)) })),
     proposal: { intro: '', scope: '', notes: '', exclusions: '', terms: '' },
-    scope: { plan: structuredClone(plan), revision }, language, business: structuredClone(business) }
+    scope: { plan: structuredClone(plan), revision, approvalType: 'plan' }, market: { ...ESTIMATING_MARKET }, language, business: structuredClone(business) }
   for (const item of doc.sections.flatMap(s => s.items)) {
     if (item.price?.status === 'verified' && (!plan.zip || !item.price.location.includes(plan.zip))) {
-      item.price.status = 'provisional'; item.price.reason = 'JOB_LOCATION_UNCONFIRMED'; item.needsReview = true
+      item.price.status = 'provisional'; item.price.category = 'provisional-assumption'; item.price.reason = 'JOB_LOCATION_UNCONFIRMED'; item.needsReview = true
     }
   }
   assertDocument(doc, plan.markupBps)
@@ -95,10 +96,10 @@ export function proposedChange(estimate, output, catalog, revision) {
   document.sections = document.sections.filter(s => plan.tasks.some(t => t.id === s.id))
   // A removed task must explicitly remove every line; no implicit loss of manual work.
   if (estimate.document.sections.some(s => !plan.tasks.some(t => t.id === s.id) && s.items.some(i => !output.changes.some(o => o.id === i.id && o.action === 'remove')))) throw fail('IMPLICIT_DELETION')
-  document.scope = { plan: structuredClone(plan), revision }
+  document.scope = { plan: structuredClone(plan), revision, approvalType: 'plan' }
   for (const item of document.sections.flatMap(s => s.items)) {
     if (item.price?.status === 'verified' && (!plan.zip || !item.price.location.includes(plan.zip))) {
-      item.price.status = 'provisional'; item.price.reason = 'JOB_LOCATION_UNCONFIRMED'; item.needsReview = true
+      item.price.status = 'provisional'; item.price.category = 'provisional-assumption'; item.price.reason = 'JOB_LOCATION_UNCONFIRMED'; item.needsReview = true
     }
   }
   assertDocument(document, plan.markupBps)

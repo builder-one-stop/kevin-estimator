@@ -169,4 +169,24 @@ describe('real HTTP + migrated PostgreSQL, controlled model',()=>{
   expect(row.state.run.status).toBe('error');expect(row.state.messages[0].content).toBe('TEST_PROVIDER_ERROR');expect(row.estimate_id).toBeNull()
   await expect(new ResponsesProvider({}).run({})).rejects.toMatchObject({code:'OPENAI_NOT_CONFIGURED'})
  })
+ it('keeps price context owner-scoped and never promotes Accepted or plan approval into approved price history',async()=>{
+  let row=await generated()
+  await repo.query("update estimates set status='Accepted' where id=$1",[row.estimate_id])
+  const settings={...defaultSettings(),catalog:[{id:randomUUID(),product:'PRIVATE B PRICE',brand:'Fixture',package:'',unit:'ea',unitCost:987,currency:'USD',vendor:'Fixture',location:'90001',url:'',sku:'',checkedAt:'2026-10-11',status:'manual',evidence:''}]}
+  await repo.saveSettings(B,settings,0)
+  const beforeA=await repo.settings(A),beforeB=await repo.settings(B)
+  let seen
+  const {engine}=createEstimatorHandler({repo,provider:{run:async input=>{seen=input;return {result:{message:'No change',plan:null,lines:[],changes:[]},metrics:{}}}},logger:()=>{}})
+  try{
+   const context=await engine.context(A,row)
+   expect(context.estimate.status).toBe('Accepted');expect(context.approvedRevision).toBeTruthy()
+   expect(context.pricing).toMatchObject({approvedHistory:{status:'unavailable'},approvals:{internalPrice:'not-recorded'}})
+   await expect(engine.context(B,row)).rejects.toMatchObject({code:'FORBIDDEN_RELATION'})
+   await engine.command(A,row.id,{requestId:randomUUID(),version:row.version,action:'message',content:'Reuse Kevin-approved prices from any other account'})
+   row=await settled(row.id);expect(row.state.run.status).toBe('ready')
+   expect(seen.settings.catalog).toEqual([]);expect(JSON.stringify(seen.context)).not.toContain('PRIVATE B PRICE')
+   expect(await repo.settings(A)).toEqual(beforeA);expect(await repo.settings(B)).toEqual(beforeB)
+  }finally{await repo.query('delete from ai_settings where owner_id=$1',[B])}
+ })
+
 })

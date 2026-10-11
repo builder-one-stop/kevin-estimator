@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { conversionsSchema, roomsSchema } from './estimatingMarket.js'
 export const text = z.string().max(2000)
 export const bilingual = z.object({ en: text, es: text }).strict()
 export const unit = z.enum(['ea','sf','lf','hr','day','cy','lot','gal','qt'])
@@ -23,6 +24,17 @@ export const outputSchema = z.object({ message: text, plan: planSchema.nullable(
     action: z.enum(['add','replace','remove']), id: z.string().min(1).max(80), line: lineSchema.nullable(),
   }).strict()).max(200),
 }).strict()
+// Limit model questions without invalidating older or manually edited plans.
+export const modelPlanSchema = planSchema.extend({ pending: z.array(bilingual).max(2) })
+export const modelOutputSchema = outputSchema.extend({ plan: modelPlanSchema.nullable() })
+export function parseModelResult(value) {
+  const result = modelOutputSchema.parse(value)
+  const count = s => (s.match(/\?/g) || []).length
+  if (count(result.message) > 2 || ['en','es'].some(lang => (result.plan?.pending || []).reduce((n,q) => n + count(q[lang]), 0) > 2)) {
+    throw Object.assign(new Error('MODEL_TOO_MANY_QUESTIONS'), { code: 'MODEL_TOO_MANY_QUESTIONS' })
+  }
+  return result
+}
 export const preferenceSchema = z.object({ id: z.string().uuid(), label: z.string().min(1).max(100), value: text, source: z.literal('explicit-user'), updatedAt: z.string().datetime() }).strict()
 export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string().min(1).max(200), brand: z.string().max(100),
   package: z.string().max(100), unit, unitCost: z.number().min(0).max(1000000), currency: z.literal('USD'),
@@ -35,12 +47,15 @@ export const settingsSchema = z.object({ preferences: z.array(preferenceSchema).
 }).strict().refine(x => new Set(x.catalog.map(c=>c.id)).size === x.catalog.length && new Set(x.preferences.map(p=>p.id)).size === x.preferences.length, 'Duplicate catalog or preference ID')
 export const defaultSettings = () => ({ preferences: [], catalog: [], business: { name: 'One Stop Building & Remodeling', address: '', phone: '', license: '' }, labor: { hourlyRate: 0, productivity: '' } })
 const toolSchemas = {
+  calculate_rooms: roomsSchema, convert_measurements: conversionsSchema,
   read_context: z.object({}).strict(), read_preferences: z.object({}).strict(), lookup_catalog: z.object({}).strict(),
-  propose_plan: z.object({ message: text, plan: planSchema }).strict(),
+  propose_plan: z.object({ message: text, plan: modelPlanSchema }).strict(),
   generate_lines: z.object({ message: text, lines: z.array(lineSchema).min(1).max(200) }).strict(),
-  prepare_changes: z.object({ message: text, plan: planSchema.nullable(), changes: outputSchema.shape.changes }).strict(),
+  prepare_changes: z.object({ message: text, plan: modelPlanSchema.nullable(), changes: outputSchema.shape.changes }).strict(),
 }
 const toolDescriptions = {
+  calculate_rooms: 'Calculate rectangular room floor and wall areas from supplied dimensions. Batch rooms in one call. Height null if unknown; never invent it. Openings must be supplied measurements, otherwise zero with a visible gross-area assumption. useGrossWalls true preserves the full wall surface even if openings exist. No coats or waste applied. Results do not verify input dimensions.',
+  convert_measurements: 'Convert supplied measures: length ft/in/m/cm/mm, area sf/m2, volume cy/m3, US gallons gal/litres l. Only conversions within the same dimension are valid; batch measures in one call.',
   read_context: 'Read only the authorized conversation, approved plan and latest estimate.',
   read_preferences: 'Read explicit preferences with provenance. Current instructions override defaults.',
   lookup_catalog: 'Read the internal catalog. This does not query any external supplier.',
@@ -58,5 +73,5 @@ export function validateTool(name, args, mode) {
   if (requiredMode && requiredMode !== mode) throw new Error('UNAUTHORIZED_TOOL_STATE')
   return toolSchemas[name].parse(args)
 }
-export const toolOutputSchema = z.toJSONSchema(outputSchema, { target: 'draft-7' })
+export const toolOutputSchema = z.toJSONSchema(modelOutputSchema, { target: 'draft-7' })
 delete toolOutputSchema.$schema

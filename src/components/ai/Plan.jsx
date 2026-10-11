@@ -7,6 +7,7 @@ export default function Plan({plan,onChange}) {
  const update=(key,value)=>onChange({...plan,[key]:value})
  const bi=(obj,key,value)=>({...obj,[key]:{...obj[key],[lang]:value}})
  return <div className="ai-plan">
+  <p className="ai-pricing-notice">{a('pricingLimits')}</p><p className="ai-approval-meaning">{a('approvalMeaning')}</p>
   {onChange&&<label>{a('planLanguage')}<select value={lang} onChange={e=>setEditingLanguage(e.target.value)}><option value="en">English</option><option value="es">Español</option></select></label>}
   {field('title',localText(plan.title,lang),v=>onChange(bi(plan,'title',v)))}
   {field('address',plan.address,v=>update('address',v))}{field('zip',plan.zip,v=>update('zip',v))}

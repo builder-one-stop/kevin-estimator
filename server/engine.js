@@ -1,8 +1,9 @@
+import { ESTIMATING_MARKET, pricingAvailability } from '../shared/estimatingMarket.js'
 import { randomUUID } from 'node:crypto'
 import { compactTitle } from '../shared/chatPresentation.js'
 import { z } from 'zod'
 import { assertPlan, assertDocument, documentFromLines, proposedChange, fail, localText } from '../shared/aiDomain.js'
-import { defaultSettings, outputSchema, planSchema } from '../shared/aiSchemas.js'
+import { defaultSettings, parseModelResult, planSchema } from '../shared/aiSchemas.js'
 const bodySchema=z.object({requestId:z.string().uuid(),version:z.number().int().min(1),action:z.enum(['message','retry','generate','savePlan','approve','apply','cancel','language','links','restore']),
   content:z.string().max(8000).optional(),plan:planSchema.optional(),revision:z.number().int().optional(),language:z.enum(['en','es']).optional(),
   clientId:z.string().uuid().nullable().optional(),projectId:z.string().uuid().nullable().optional(),estimateVersion:z.number().int().optional(),restoreVersion:z.number().int().optional()}).strict()
@@ -19,7 +20,7 @@ export class EstimatorEngine {
   const projectId=estimate?estimate.project_id:row.project_id
   const client=clientId ? await this.repo.owned(owner,'clients',clientId):null
   const project=projectId ? await this.repo.owned(owner,'projects',projectId):null
-  return {plan:row.state.plan,pendingPlan:row.state.run?.contextPlan||row.state.pending?.plan||null,approvedRevision:row.state.approvedRevision,estimate,client,project,documentLanguage:row.state.documentLanguage}
+  return {market:ESTIMATING_MARKET,pricing:pricingAvailability(),plan:row.state.plan,pendingPlan:row.state.run?.contextPlan||row.state.pending?.plan||null,approvedRevision:row.state.approvedRevision,estimate,client,project,documentLanguage:row.state.documentLanguage}
  }
  async command(owner,id,input,{dispatch}={}) {
   const body=bodySchema.parse(input); await this.repo.expire(owner)
@@ -132,7 +133,7 @@ export class EstimatorEngine {
    const {result:raw,metrics}=await this.provider.run({mode:row.state.run.mode,messages:row.state.messages,context,settings,images,signal:controller.signal,onStage:stage,onText})
    if(controller.signal.aborted)throw fail('CANCELLED')
    await stage('validating')
-   const result=outputSchema.parse(raw);let estimate=null,estimateVersion=null
+   const result=parseModelResult(raw);let estimate=null,estimateVersion=null
    const s=row.state
    if(s.run.mode==='plan') {
     if(result.lines.length||result.changes.length)throw fail('MODEL_INVALID_OUTPUT')
