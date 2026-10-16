@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import WorkerNotifications from '../workers/WorkerNotifications.jsx'
 import MobileBar from './MobileBar.jsx'
 import Sidebar from './Sidebar.jsx'
 import Toast from '../ui/Toast.jsx'
@@ -26,7 +27,7 @@ export default function AppShell() {
       <Sidebar onNavigate={() => setDrawerOpen(false)} onSoon={showSoon} />
       <div className="main-wrap">
         <MobileBar label={t('a11y.menu')} onOpen={() => setDrawerOpen(true)} />
-        {!reviewing && <div className="workspace-label">{t(access?.role === 'admin' ? 'beta.ownDevelopment' : 'beta.ownWorkspace')}</div>}
+        {!reviewing && <div className="workspace-label"><span>{t(access?.role === 'admin' ? 'beta.ownDevelopment' : 'beta.ownWorkspace')}</span><WorkerNotifications/></div>}
         <main className={`main ${chatting ? 'chat-main' : ''}`}><Outlet context={{ showSoon, showToast }} /></main>
       </div>
       <Toast message={toast} />

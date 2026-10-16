@@ -1,0 +1,13 @@
+{
+  "environment": "Isolated local migrated PostgreSQL, actual HTTP handler, controlled Auth and geolocation; not physical GPS",
+  "checks": [
+    "Denied, unavailable and timeout fixes create no shifts/notices and support retry",
+    "Foreground controlled location + double click saves once; manager receives notification automatically without reload",
+    "Notice/read state persist across reload; map uses saved coordinates and link opens the existing shift",
+    "Existing break/clock-out flow works without requesting another location",
+    "Lost HTTP response retries the same request ID and retains one entry/notice",
+    "Mobile Spanish view, accuracy, capture timestamps and Los Angeles official times remain visible",
+    "Same-project worker B cannot view A’s clock-in GPS"
+  ],
+  "errors": []
+}

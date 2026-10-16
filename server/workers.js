@@ -11,6 +11,7 @@ const password = z
   .refine((value) => Buffer.byteLength(value, 'utf8') <= 72)
 const name = z.string().trim().min(1).max(120)
 const reason = z.string().trim().min(3).max(1000)
+export const entryLocationSchema = z.object({latitude:z.number().finite().min(-90).max(90),longitude:z.number().finite().min(-180).max(180),accuracy:z.number().finite().nonnegative(),capturedAt:z.string().datetime({offset:true})}).strict()
 const correction = {
   shiftId: uuid,
   eventId: uuid.nullable(),
@@ -32,7 +33,8 @@ export const workerSchemas = {
   create: z.object({ id: uuid, name, email: z.string().email().max(254), password }).strict(),
   update: z.object({ workerId: uuid, name, active: z.boolean(), projects: z.array(uuid).max(100) }).strict(),
   password: z.object({ workerId: uuid, password }).strict(),
-  clock: z.object({ id: uuid, projectId: uuid, kind: kinds, closeBreak: z.boolean().optional() }).strict(),
+  clock: z.object({ id: uuid, projectId: uuid, kind: kinds, closeBreak: z.boolean().optional(), location:entryLocationSchema.optional() }).strict().superRefine((x,ctx)=>{if(x.kind==='in'&&!x.location)ctx.addIssue({code:'custom',message:'LOCATION_REQUIRED'});if(x.kind!=='in'&&x.location)ctx.addIssue({code:'custom',message:'INVALID_LOCATION'})}),
+  'notification-read':z.object({notificationId:uuid}).strict(),
   correction: z.object(correction).strict(),
   'admin-correction': z.object(correction).strict(),
   review: z.object({ correctionId: uuid, decision: z.enum(['approve', 'reject']), reason }).strict(),
@@ -48,7 +50,7 @@ export const workerSchemas = {
   view: z.object({ evidenceId: uuid }).strict(),
 }
 const known =
-  /^(ACCESS_DENIED|CONFLICT|ACCOUNT_EXISTS|PROVISION_PENDING|OPEN_SHIFT_RESOLUTION_REQUIRED|INVALID_INPUT|INVALID_SEQUENCE|INVALID_CHRONOLOGY|SHIFT_OVERLAP|SHIFT_ALREADY_OPEN|NO_OPEN_SHIFT|CONFIRM_BREAK_CLOSE|REASON_REQUIRED|INVALID_EVENT|UPLOAD_LIMIT|UPLOAD_EXPIRED)$/
+  /^(ACCESS_DENIED|CONFLICT|ACCOUNT_EXISTS|PROVISION_PENDING|OPEN_SHIFT_RESOLUTION_REQUIRED|INVALID_INPUT|INVALID_SEQUENCE|INVALID_CHRONOLOGY|SHIFT_OVERLAP|SHIFT_ALREADY_OPEN|NO_OPEN_SHIFT|CONFIRM_BREAK_CLOSE|REASON_REQUIRED|INVALID_EVENT|UPLOAD_LIMIT|UPLOAD_EXPIRED|LOCATION_REQUIRED|INVALID_LOCATION|LOCATION_STALE)$/
 const fail = (code, status = 400) => Object.assign(new Error(code), { code, status })
 const headers = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' }
 export const progressBucket = 'worker-progress'
@@ -146,6 +148,7 @@ export function createWorkersHandler({ db, env = process.env }) {
         return result.data
       }
       const action = url.pathname.replace(/^\/(?:api\/workers|\.netlify\/functions\/workers)\/?/, '')
+      if(request.method==='GET'&&action==='notifications')return Response.json(await command('notifications'),{headers})
       if (request.method === 'GET' && !action) return Response.json(await command('dashboard'), { headers })
       if (request.method !== 'POST' || !workerSchemas[action]) throw fail('NOT_FOUND', 404)
       if (!request.headers.get('content-type')?.startsWith('application/json')) throw fail('INVALID_INPUT')
@@ -156,11 +159,11 @@ export function createWorkersHandler({ db, env = process.env }) {
         if (size > 16384) throw fail('INVALID_INPUT', 413)
         chunks.push(Buffer.from(part))
       }
-      let body
+      let body,raw
       try {
-        body = workerSchemas[action].parse(JSON.parse(Buffer.concat(chunks).toString()))
+        raw=JSON.parse(Buffer.concat(chunks).toString());body = workerSchemas[action].parse(raw)
       } catch {
-        throw fail('INVALID_INPUT')
+        throw fail(action==='clock'&&raw?.kind==='in'?(raw.location?'INVALID_LOCATION':'LOCATION_REQUIRED'):'INVALID_INPUT')
       }
       let result
       if (action === 'create') {
@@ -224,6 +227,7 @@ export function createWorkersHandler({ db, env = process.env }) {
           {
             'admin-shift': 'admin_shift',
             'admin-batch': 'admin_batch',
+            'notification-read':'notification_read',
             update: 'update_worker',
             clock: 'clock',
             correction: 'request_correction',

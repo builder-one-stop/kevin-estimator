@@ -28,3 +28,6 @@ supabase/.temp/
 # Local workers verification handshake (never a deploy gate artifact)
 evidence/workers/local-ready.json
 evidence/workers/beta-ready.json
+
+# Local readiness handshake, not a deploy artifact
+evidence/worker-location/ready.json

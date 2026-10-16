@@ -32,6 +32,7 @@ const check = (ok, code) => {
   report.checks.push(code)
 }
 const api = async (t, action = '', body) => {
+    if(action==='clock'&&body?.kind==='in'&&!body.location)body={...body,location:{latitude:34.0522,longitude:-118.2437,accuracy:25,capturedAt:new Date().toISOString()}} // controlled QA coordinates, not physical GPS
   const r = await fetch(`${origin}/api/workers/${action}`, {
     method: body ? 'POST' : 'GET',
     headers: { Authorization: `Bearer ${t}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },

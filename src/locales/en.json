@@ -33,7 +33,7 @@
   "auth":{"password":"Password","signIn":"Sign in","invalidCredentials":"Email or password is incorrect.","accessDenied":"This account does not have beta access.","accessFailed":"Unable to verify access. Please try again.","contactAdmin":"Contact the administrator","working":"Please wait…"},
   "beta":{"review":"Review Kevin’s activity","reviewingKevin":"Reviewing Kevin — read only","ownDevelopment":"My development data","ownWorkspace":"My workspace","returnOwn":"Return to my conversations","readOnlyDetail":"Questions, AI responses, plans and associated estimates. Changes are disabled in this review.","history":"Kevin’s conversations","empty":"Kevin has no conversations yet.","reviewError":"Unable to load this review.","created":"Created","updated":"Updated","messages":"Questions and AI responses","assistant":"AI assistant","runState":"Run status","approvedRevision":"Approved plan revision","description":"Description","quantity":"Quantity","unitCost":"Unit cost","saleTotal":"Sale total"},
   "workers":{
-    "retrySameFile":"Retry: select the same file",
+    "retrySameFile": "Retry: select the same file",
     "title": "Workers",
     "adminIntro": "Manage access, project assignments and work records.",
     "create": "Create worker",
@@ -150,12 +150,49 @@
       "FILE_PENDING": "The file is still awaiting verification.",
       "PLAYBACK_UNSUPPORTED": "This browser cannot play this video. Try a supported MP4/WebM codec.",
       "INVALID_LOCAL_TIME": "This local time does not match the selected PDT/PST offset. Check the date and daylight-saving change.",
-      "UPLOAD_EXPIRED": "The upload expired. Select the file again to start a new upload."
+      "UPLOAD_EXPIRED": "The upload expired. Select the file again to start a new upload.",
+      "LOCATION_REQUIRED": "Location is required to clock in. Try again and allow the location request.",
+      "INVALID_LOCATION": "The device location is invalid. Please obtain a new location and retry.",
+      "LOCATION_STALE": "The location is too old or the device clock is incorrect. Check its clock and try again.",
+      "GEO_DENIED": "Location permission was denied or is blocked. No clock-in was recorded.",
+      "GEO_UNAVAILABLE": "A device location could not be obtained. Check location services and retry. No clock-in was recorded.",
+      "GEO_TIMEOUT": "Getting location took too long. Retry in a place with better reception. No clock-in was recorded."
     },
     "addMissingShift": "Add missing shift",
     "completeOmission": "Complete missing events",
     "batchHelp": "Enter the actual times with a reason. Original events are preserved; break start and end can be added together.",
     "removeDraftEvent": "Remove unsaved event",
-    "addEvent": "Add event"
+    "addEvent": "Add event",
+    "location": {
+      "title": "Clock-in location",
+      "explanation": "Clock-in requires your device location. It will be saved with your entry and shared with your administrator.",
+      "obtaining": "Getting location…",
+      "enable": "Enable location for this site in your browser or phone settings, then try Clock in again. One-time permission is also supported.",
+      "saved": "Clock-in saved. Your administrator’s notification was recorded.",
+      "checkStatus": "Check saved clock-in status",
+      "retry": "Retry",
+      "missing": "Location not recorded",
+      "admin": "Administrative entry · no verified location",
+      "accuracy": "Reported location · approximate accuracy: {{meters}} m",
+      "lowAccuracy": "Low accuracy; indoor reception may be limited",
+      "official": "Original official clock-in (server, Los Angeles)",
+      "deviceTime": "Capture time reported by the device",
+      "original": "The hours were corrected. This location belongs to the original clock-in, not the corrected time.",
+      "reported": "Device-reported location at clock-in; not continuous tracking or proof of GPS authenticity.",
+      "map": "View map (Google Maps, external site)",
+      "allShifts": "Show all shifts"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "unreadCount": "{{count}} unread notifications",
+      "empty": "No clock-in notifications yet.",
+      "error": "Notifications could not be refreshed. Saved notifications remain available.",
+      "message": "{{name}} clocked in at {{project}} on {{time}}.",
+      "read": "Read",
+      "unread": "Unread",
+      "openShift": "Open shift",
+      "markRead": "Mark as read",
+      "more": "Show more"
+    }
   }
 }

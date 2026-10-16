@@ -1,3 +1,6 @@
+import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import EntryLocation from './EntryLocation.jsx'
 import BatchCorrection from './BatchCorrection.jsx'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -55,6 +58,8 @@ const matches = (row, f, at) =>
     (!f.to || localDate(at) <= f.to))
 export function Hours({ data, projectId, workerId, manager, execute, busy }) {
   const { t, i18n } = useTranslation()
+  const [params,setParams]=useSearchParams(),focused=params.get('shift')
+  useEffect(()=>{if(focused)document.getElementById(`shift-${focused}`)?.scrollIntoView?.({block:'start'})},[focused,data.shifts])
   const [filter, setFilter] = useState({ worker: '', from: '', to: '' }),
     [editing, setEditing] = useState(null),
     [reason, setReason] = useState(''),
@@ -67,6 +72,7 @@ export function Hours({ data, projectId, workerId, manager, execute, busy }) {
     [batch, setBatch] = useState(null)
   const rows = data.shifts.filter(
     (s) =>
+      (!focused || s.id===focused) &&
       (!projectId || s.project_id === projectId) &&
       (!workerId || s.worker_id === workerId) &&
       matches(s, filter, s.started_at),
@@ -103,6 +109,7 @@ export function Hours({ data, projectId, workerId, manager, execute, busy }) {
   return (
     <section className="worker-section">
       <h2>{t('workers.hours')}</h2>
+      {focused&&<button className="btn" onClick={()=>setParams(p=>{p.delete('shift');return p})}>{t('workers.location.allShifts')}</button>}
       <p className="muted">{t('workers.timezone')}</p>
       {manager && (
         <button className="btn" onClick={() => setBatch({})}>
@@ -118,7 +125,7 @@ export function Hours({ data, projectId, workerId, manager, execute, busy }) {
       {rows.map((s) => {
         const totals = shiftTotals(s.events, Date.parse(data.serverTime))
         return (
-          <article className="worker-card" key={s.id}>
+          <article className="worker-card" key={s.id} id={`shift-${s.id}`}>
             <header>
               <b>{data.workers.find((w) => w.id === s.worker_id)?.name}</b>
               <span>
@@ -133,6 +140,7 @@ export function Hours({ data, projectId, workerId, manager, execute, busy }) {
                 </li>
               ))}
             </ol>
+            <EntryLocation shift={s}/>
             <p>
               {totals.provisional && <b>{t('workers.provisional')} · </b>}
               {t('workers.elapsed')}: {duration(totals.elapsed)} · {t('workers.breaks')}:{' '}

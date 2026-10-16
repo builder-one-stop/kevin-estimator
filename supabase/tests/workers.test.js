@@ -10,6 +10,7 @@ let db, w, v, p, q, s
 const id = () => crypto.randomUUID()
 const sql = (x) => `'${JSON.stringify(x).replaceAll("'", "''")}'::jsonb`
 async function command(actor, action, input = {}) {
+  if(action==='clock'&&input.kind==='in')input={...input,location:{latitude:34.05,longitude:-118.25,accuracy:25,capturedAt:new Date().toISOString()}}
   await db.exec('reset role')
   return (await db.query(`select workers_command('${actor}','${actor}','${action}',${sql(input)}) x`)).rows[0]
     .x

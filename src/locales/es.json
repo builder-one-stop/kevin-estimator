@@ -33,7 +33,7 @@
   "auth":{"password":"Contraseña","signIn":"Iniciar sesión","invalidCredentials":"El correo o la contraseña no son correctos.","accessDenied":"Esta cuenta no tiene acceso al beta.","accessFailed":"No se pudo verificar el acceso. Inténtalo de nuevo.","contactAdmin":"Contacta al administrador","working":"Espera…"},
   "beta":{"review":"Revisar la actividad de Kevin","reviewingKevin":"Revisando a Kevin — solo lectura","ownDevelopment":"Mis datos de desarrollo","ownWorkspace":"Mi espacio de trabajo","returnOwn":"Volver a mis conversaciones","readOnlyDetail":"Preguntas, respuestas de IA, planes y estimados asociados. Esta revisión no permite cambios.","history":"Conversaciones de Kevin","empty":"Kevin todavía no tiene conversaciones.","reviewError":"No se pudo cargar esta revisión.","created":"Creada","updated":"Actualizada","messages":"Preguntas y respuestas de IA","assistant":"Asistente IA","runState":"Estado de ejecución","approvedRevision":"Revisión de plan aprobada","description":"Descripción","quantity":"Cantidad","unitCost":"Costo unitario","saleTotal":"Total de venta"},
   "workers":{
-    "retrySameFile":"Reintentar: selecciona el mismo archivo",
+    "retrySameFile": "Reintentar: selecciona el mismo archivo",
     "title": "Trabajadores",
     "adminIntro": "Administra accesos, asignaciones a proyectos y registros de trabajo.",
     "create": "Crear trabajador",
@@ -111,7 +111,7 @@
       "closed": "Jornada finalizada"
     },
     "event": {
-      "in": "Entrada",
+      "in": "Ingresar al trabajo",
       "break_start": "Iniciar descanso",
       "break_end": "Volver del descanso",
       "out": "Salida"
@@ -150,12 +150,49 @@
       "FILE_PENDING": "El archivo aún espera verificación.",
       "PLAYBACK_UNSUPPORTED": "Este navegador no puede reproducir el video. Usa un códec MP4/WebM compatible.",
       "INVALID_LOCAL_TIME": "La hora local no corresponde al desfase PDT/PST elegido. Revisa la fecha y el cambio de horario.",
-      "UPLOAD_EXPIRED": "La carga venció. Selecciona el archivo otra vez para iniciar una nueva carga."
+      "UPLOAD_EXPIRED": "La carga venció. Selecciona el archivo otra vez para iniciar una nueva carga.",
+      "LOCATION_REQUIRED": "Necesitamos la ubicación para registrar tu entrada. Reintenta y permite la solicitud.",
+      "INVALID_LOCATION": "La ubicación del dispositivo no es válida. Obtén una nueva ubicación y reintenta.",
+      "LOCATION_STALE": "La ubicación es antigua o el reloj del dispositivo es incorrecto. Revisa el reloj y reintenta.",
+      "GEO_DENIED": "Rechazaste el permiso de ubicación o está bloqueado. No se registró la entrada.",
+      "GEO_UNAVAILABLE": "No pudimos obtener la ubicación. Revisa los servicios de ubicación y reintenta. No se registró la entrada.",
+      "GEO_TIMEOUT": "La ubicación tardó demasiado. Reintenta desde un lugar con mejor recepción. No se registró la entrada."
     },
     "addMissingShift": "Agregar jornada omitida",
     "completeOmission": "Completar marcaciones omitidas",
     "batchHelp": "Ingresa las horas reales con un motivo. Se conservan las marcaciones originales; puedes agregar inicio y fin de descanso juntos.",
     "removeDraftEvent": "Quitar marcación sin guardar",
-    "addEvent": "Agregar marcación"
+    "addEvent": "Agregar marcación",
+    "location": {
+      "title": "Ubicación de entrada",
+      "explanation": "Para ingresar necesitamos la ubicación de tu dispositivo. Se guardará con la entrada y se compartirá con tu administrador.",
+      "obtaining": "Obteniendo ubicación…",
+      "enable": "Habilita la ubicación para este sitio en la configuración del navegador o teléfono y vuelve a pulsar Ingresar al trabajo. También puedes dar permiso solo esta vez.",
+      "saved": "Entrada guardada. Se registró la notificación para tu administrador.",
+      "checkStatus": "Consultar si la entrada quedó guardada",
+      "retry": "Reintentar",
+      "missing": "Ubicación no registrada",
+      "admin": "Registro administrativo · sin ubicación verificada",
+      "accuracy": "Ubicación reportada · precisión aproximada: {{meters}} m",
+      "lowAccuracy": "Precisión baja; la recepción puede ser limitada dentro de edificios",
+      "official": "Entrada oficial original (servidor, Los Ángeles)",
+      "deviceTime": "Fecha de captura reportada por el dispositivo",
+      "original": "Las horas se corrigieron. Esta ubicación corresponde a la entrada original, no a la hora corregida.",
+      "reported": "Ubicación reportada por el dispositivo al ingresar; no es seguimiento continuo ni prueba de autenticidad del GPS.",
+      "map": "Ver en mapa (Google Maps, sitio externo)",
+      "allShifts": "Mostrar todas las jornadas"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "unreadCount": "{{count}} notificaciones sin leer",
+      "empty": "Aún no hay notificaciones de entrada.",
+      "error": "No se pudieron actualizar los avisos. Los guardados siguen disponibles.",
+      "message": "{{name}} registró su entrada en {{project}} el {{time}}.",
+      "read": "Leída",
+      "unread": "Sin leer",
+      "openShift": "Abrir jornada",
+      "markRead": "Marcar como leída",
+      "more": "Mostrar más"
+    }
   }
 }

@@ -45,6 +45,7 @@ async function run(origin, credentials) {
     browser
   const tokens = [token]
   async function api(bearer, action = '', body) {
+    if(action==='clock'&&body?.kind==='in'&&!body.location)body={...body,location:{latitude:34.0522,longitude:-118.2437,accuracy:25,capturedAt:new Date().toISOString()}} // controlled QA coordinates, not physical GPS
     const response = await fetch(`${origin}/api/workers/${action}`, {
       method: body ? 'POST' : 'GET',
       headers: { Authorization: `Bearer ${bearer}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },

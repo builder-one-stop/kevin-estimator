@@ -20,7 +20,9 @@
     "dev:ai:fixture": "node scripts/ai-local-harness.mjs",
     "test:beta:browser": "node --env-file=.env.server.local scripts/beta-validation.mjs",
     "admin:password": "node --env-file=.env.server.local scripts/beta-admin-password.mjs",
-    "test:bridge:browser": "node scripts/chat-estimate-bridge-browser.mjs"
+    "test:bridge:browser": "node scripts/chat-estimate-bridge-browser.mjs",
+    "test:worker-location:browser": "node scripts/worker-location-browser.mjs",
+    "test:worker-location:beta": "node --env-file=.env.server.local scripts/worker-location-remote.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

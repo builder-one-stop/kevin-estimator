@@ -1,0 +1,64 @@
+import {createClient} from '@supabase/supabase-js'
+import {loadEnv} from 'vite'
+import {chromium,expect} from '@playwright/test'
+import {mkdir,writeFile} from 'node:fs/promises'
+import {formatWorkerTime} from '../shared/workerTime.js'
+const url='https://vtpciccluvpaclbeqxih.supabase.co'
+export async function runLocationRemote({credentials}={}){
+ if(process.env.SUPABASE_URL!==url)throw Error('Unexpected Supabase project')
+ const origin='https://onestop-beta.netlify.app',key=loadEnv('development',process.cwd()).VITE_SUPABASE_ANON_KEY,client=()=>createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}}),service=createClient(url,process.env.SUPABASE_SERVICE_ROLE_KEY,{auth:{persistSession:false,autoRefreshToken:false}}),admin=client(),out='evidence/worker-location',report={checkedAt:new Date().toISOString(),origin,scope:'Real Supabase password worker sessions + beta API; controlled geolocation, not physical GPS',managerSession:false,checks:[],errors:[],cleanup:null},users=[],workers=[]
+ await mkdir(out,{recursive:true});let manager,adminToken,project,browser,managerPage,workerPage
+ const check=(ok,code)=>{if(!ok)throw Error(code);report.checks.push(code);console.info(code)}
+ const fix=()=>({latitude:34.0522,longitude:-118.2437,accuracy:250,capturedAt:new Date().toISOString()})
+ const api=async(token,action='',body)=>{const r=await fetch(origin+'/api/workers/'+action,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(20000)});return {status:r.status,data:await r.json()}}
+ const countNotices=async shift=>(await service.from('worker_notifications').select('id,recipient_id,read_at').eq('shift_id',shift)).data||[]
+ try{
+  if(credentials){const login=await admin.auth.signInWithPassword({email:credentials.email.trim(),password:credentials.password});check(!login.error&&!!login.data.session,'existing manager password login');const role=await admin.rpc('beta_session_access');check(['operator','admin'].includes(role.data?.role),'existing authorized manager role');manager=login.data.user.id;adminToken=login.data.session.access_token;report.managerSession=true}
+  else{const owner=await service.from('beta_accounts').select('user_id').eq('role','operator').single();check(!owner.error,'existing Kevin relationship resolved from role record');manager=owner.data.user_id;report.pending=['Existing manager login/UI/API not exercised; notifications inspected with service access']}
+  const made=await service.from('projects').insert({owner_id:manager,name:`QA LOCATION ${Date.now()}`}).select('id').single();check(!made.error,'isolated QA project created');project=made.data.id
+  for(let i=0;i<2;i++){
+   const id=crypto.randomUUID(),email=`qa-location-${id}@example.invalid`,password='QA-'+crypto.randomUUID()+'!',name=`QA LOCATION Worker ${i+1}`
+   if(adminToken){workers.push({id,email,password,name});const created=await api(adminToken,'create',{id,email,password,name});check(created.status===200,'manager creates temporary worker through existing API');Object.assign(workers[i],created.data);users.push(created.data.user_id);const assigned=await api(adminToken,'update',{workerId:id,name,active:true,projects:[project]});check(assigned.status===200,'manager assigns own project')}
+   else{const created=await service.auth.admin.createUser({email,password,email_confirm:true});check(!created.error,'temporary worker Auth user created');users.push(created.data.user.id);workers.push({id,email,password,name,user_id:created.data.user.id});check(!(await service.from('workers').insert({id,user_id:created.data.user.id,manager_id:manager,email,name})).error,'temporary worker profile uses real manager relation');check(!(await service.from('worker_assignments').insert({worker_id:id,project_id:project})).error,'temporary assignment')}
+   const auth=client(),signed=await auth.auth.signInWithPassword({email,password});check(!signed.error&&!!signed.data.session,'real worker password session');Object.assign(workers[i],{auth,token:signed.data.session.access_token})
+  }
+  const [a,b]=workers
+  const noGPS=await api(a.token,'clock',{id:crypto.randomUUID(),projectId:project,kind:'in'});check(noGPS.status===400&&noGPS.data.error==='LOCATION_REQUIRED','direct HTTP clock-in without location denied')
+  for(const location of [{...fix(),latitude:91},{...fix(),accuracy:-1},{...fix(),capturedAt:'invalid'}])check((await api(a.token,'clock',{id:crypto.randomUUID(),projectId:project,kind:'in',location})).status===400,'malformed location rejected by HTTP validation')
+  check((await api(a.token,'clock',{id:crypto.randomUUID(),projectId:project,kind:'in',location:{...fix(),capturedAt:new Date(Date.now()-121000).toISOString()}})).data.error==='LOCATION_STALE','stale location rejected by database')
+  check((await api(a.token,'clock',{id:crypto.randomUUID(),workerId:b.id,projectId:project,kind:'in',location:fix()})).status===400,'caller cannot select another worker')
+  check((await api(a.token,'notifications')).status===403,'worker cannot use notifications API')
+  browser=await chromium.launch({channel:'chrome',headless:true})
+  async function loginPage(email,password,path,mobile=false){const ctx=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1400,height:1000},geolocation:{latitude:34.0522,longitude:-118.2437,accuracy:250},permissions:['geolocation']});await ctx.addInitScript(()=>localStorage.setItem('os-lang','en'));const page=await ctx.newPage();await page.goto(origin+path);try{await page.getByLabel('Email',{exact:true}).fill(email);await page.getByLabel('Password',{exact:true}).fill(password);await page.getByRole('button',{name:'Sign in',exact:true}).click()}catch{throw Error('QA_LOGIN_UI_FAILED (credentials withheld)')}return page}
+  if(credentials){managerPage=await loginPage(credentials.email,credentials.password,'/time');await managerPage.getByRole('button',{name:'Notifications',exact:true}).click()}
+  workerPage=await loginPage(a.email,a.password,'/work',true);await expect(workerPage.getByRole('heading',{name:'My work',exact:true})).toBeVisible({timeout:15000})
+  await workerPage.getByRole('button',{name:'Clock in',exact:true}).click();await expect(workerPage.getByRole('status')).toContainText('Clock-in saved',{timeout:20000});check(true,'real worker UI clock-in with controlled fresh geolocation saved')
+  const state=await api(a.token);check(state.status===200&&state.data.shifts.length===1,'one canonical shift after UI clock-in');const shift=state.data.shifts[0],notices=await countNotices(shift.id);check(notices.length===1&&notices[0].recipient_id===manager&&notices[0].read_at===null,'one durable unread notification for real linked manager');check(shift.entry_location.accuracy===250,'low accuracy accepted and retained');await expect(workerPage.getByText(/Low accuracy/)).toBeVisible();await expect(workerPage.getByRole('link',{name:/View map/})).toHaveAttribute('href',/query=34.0522%2C-118.2437/);await expect(workerPage.getByText('Original official clock-in (server, Los Angeles): '+formatWorkerTime(shift.entry_recorded_at,'en'))).toBeVisible();check(true,'saved map coordinates, advisory accuracy and Los Angeles time match UI')
+  if(managerPage){const n=managerPage.locator(`[data-notification-id="${notices[0].id}"]`);await expect(n).toBeVisible({timeout:15000});await expect(n).toContainText(a.name);check(true,'real manager receives live notice without reload');await n.getByRole('button',{name:'Mark as read',exact:true}).click();await expect(n).toContainText('Read');await managerPage.reload();await managerPage.getByRole('button',{name:'Notifications',exact:true}).click();await expect(managerPage.locator(`[data-notification-id="${notices[0].id}"]`)).toContainText('Read');await managerPage.locator(`[data-notification-id="${notices[0].id}"]`).getByRole('link',{name:'Open shift'}).click();await expect(managerPage).toHaveURL(new RegExp('shift='+shift.id));check((await countNotices(shift.id))[0].read_at!==null,'real manager read state persists and shift link resolves');await managerPage.screenshot({path:out+'/beta-manager.png',fullPage:true})}
+  check((await api(b.token)).data.shifts.length===0,'same-project worker cannot read foreign GPS in dashboard');const foreign=await b.auth.from('worker_shifts').select('entry_location').eq('id',shift.id);check(!foreign.error&&foreign.data.length===0,'foreign shift UUID protected by RLS');const foreignNotice=await b.auth.from('worker_notifications').select('id').eq('id',notices[0].id);check(!foreignNotice.error&&foreignNotice.data.length===0,'foreign notification UUID protected by RLS');check((await api(b.token,'notification-read',{notificationId:notices[0].id})).status===403,'foreign notification write denied')
+  await workerPage.getByRole('button',{name:'Español',exact:true}).click();await expect(workerPage.getByRole('heading',{name:'Ubicación de entrada'})).toBeVisible();await workerPage.screenshot({path:out+'/beta-worker-es.png',fullPage:true});check(await workerPage.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'real beta worker mobile EN/ES fit')
+  for(const kind of ['break_start','break_end','out'])check((await api(a.token,'clock',{id:crypto.randomUUID(),projectId:project,kind})).status===200,'existing '+kind+' requires no location')
+  const beforeNotices=(await service.from('worker_notifications').select('id').eq('worker_id',a.id)).data.length
+  const request={id:crypto.randomUUID(),projectId:project,kind:'in',location:fix()},starts=await Promise.all([api(a.token,'clock',request),api(a.token,'clock',{...request,id:crypto.randomUUID()})]);check(starts.filter(x=>x.status===200).length===1,'concurrent real requests create only one open shift');const second=starts.find(x=>x.status===200).data;const retry=await api(a.token,'clock',{...request,id:second.events[0].id});check(retry.status===200&&retry.data.id===second.id,'real retry returns same shift');check((await countNotices(second.id)).length===1,'concurrent requests/retry create one notification');check((await service.from('worker_notifications').select('id').eq('worker_id',a.id)).data.length===beforeNotices+1,'notification count grows by exactly one')
+  const earlier=new Date(Date.parse(shift.events[0].at)-60000).toISOString()
+  if(adminToken){check((await api(adminToken,'admin-correction',{shiftId:shift.id,eventId:shift.events[0].id,kind:null,at:earlier,reason:'QA LOCATION correction'})).status===200,'real manager correction accepted');const after=(await api(a.token)).data.shifts.find(x=>x.id===shift.id);check(JSON.stringify(after.entry_location)===JSON.stringify(shift.entry_location)&&after.entry_recorded_at===shift.entry_recorded_at,'real correction preserves original GPS and official capture instant')}
+  await api(a.token,'clock',{id:crypto.randomUUID(),projectId:project,kind:'out'})
+  check(!(await service.from('worker_assignments').update({active:false}).eq('worker_id',a.id)).error,'QA worker unassigned');check((await api(a.token,'clock',{id:crypto.randomUUID(),projectId:project,kind:'in',location:fix()})).status===403,'unassigned worker new entry denied');await service.from('worker_assignments').update({active:true}).eq('worker_id',a.id);await service.from('workers').update({active:false}).eq('id',a.id);check((await api(a.token,'clock',{id:crypto.randomUUID(),projectId:project,kind:'in',location:fix()})).status===403,'inactive worker new entry denied')
+ }catch(e){report.errors.push(e.message);process.exitCode=1}
+ finally{
+  await browser?.close();const failures=[]
+  for(const w of workers){
+   const shifts=await service.from('worker_shifts').select('id').eq('worker_id',w.id);if(shifts.error)failures.push('QA shift lookup')
+   if(shifts.data?.length){const ids=shifts.data.map(x=>x.id);if((await service.from('worker_corrections').delete().in('shift_id',ids)).error)failures.push('QA corrections')}
+   for(const table of ['worker_commands','worker_shifts','worker_assignments'])if((await service.from(table).delete().eq('worker_id',w.id)).error)failures.push('QA '+table)
+   if((await service.from('workers').delete().eq('id',w.id)).error)failures.push('QA worker')
+  }
+  for(const id of users)if((await service.auth.admin.deleteUser(id)).error)failures.push('QA Auth user')
+  if(project&&(await service.from('projects').delete().eq('id',project)).error)failures.push('QA project')
+  if(adminToken)await admin.auth.signOut({scope:'local'})
+  report.cleanup={failures,scope:'Only UUIDs created by this run; notifications cascade with their test shifts'};if(failures.length)process.exitCode=1
+  await writeFile(out+(credentials?'/beta-admin.json':'/beta-workers.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
+ }
+ return report
+}
+if(process.argv[1]?.endsWith('worker-location-remote.mjs'))await runLocationRemote()

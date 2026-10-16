@@ -1,3 +1,5 @@
+import { captureEntryLocation } from '../../shared/workerLocation.js'
+import { useBetaAccess } from '../components/auth/BetaAccessContext.jsx'
 import { useWorkers } from '../components/workers/useWorkers.js'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -14,8 +16,12 @@ export default function WorkerPortal() {
     { data, error, busy, execute, reload } = useWorkers()
   const [project, setProject] = useState(''),
     [confirm, setConfirm] = useState(false),
-    [localError, setLocalError] = useState('')
+    [localError, setLocalError] = useState(''),
+    [locating,setLocating]=useState(false),[notice,setNotice]=useState('')
+  const access=useBetaAccess(),clockLock=useRef(false),alive=useRef(true)
+  const pendingKey=`worker-clock-pending:${access?.userId||'session'}`
   const pending = useRef(null)
+  useEffect(()=>{alive.current=true;try{pending.current=JSON.parse(sessionStorage.getItem(pendingKey)||'null')}catch{/* Recreate only a request identity; coordinates are never persisted here. */}return()=>{alive.current=false}},[pendingKey])
   useEffect(() => {
     navigate('/work', { replace: true })
   }, [navigate])
@@ -27,21 +33,27 @@ export default function WorkerPortal() {
       ? 'closed'
       : 'none'
   async function clock(kind, closeBreak = false) {
-    if (busy) return
+    if (busy || clockLock.current) return
     if (kind === 'out' && state === 'break' && !closeBreak) {
       setConfirm(true)
       return
     }
-    if (!pending.current || pending.current.kind !== kind || pending.current.projectId !== selected)
-      pending.current = { id: crypto.randomUUID(), kind, projectId: selected }
+    clockLock.current=true;setLocalError('');setNotice('')
     try {
-      await execute('clock', { ...pending.current, closeBreak })
-      pending.current = null
-      setConfirm(false)
-    } catch {
-      /* retain id for lost-response retry */
-    }
+      let location
+      if(kind==='in') {setLocating(true);location=await captureEntryLocation();if(!alive.current)return;setLocating(false)}
+      if (!pending.current || pending.current.kind !== kind || pending.current.projectId !== selected)
+        pending.current = { id: crypto.randomUUID(), kind, projectId: selected }
+      try{sessionStorage.setItem(pendingKey,JSON.stringify(pending.current))}catch{/* Memory retry still works if tab storage is unavailable. */}
+      await execute('clock', { ...pending.current, closeBreak, ...(location?{location}:{}) })
+      pending.current = null;try{sessionStorage.removeItem(pendingKey)}catch{/* No stored coordinates. */}
+      if(alive.current){setConfirm(false);if(kind==='in')setNotice('workers.location.saved')}
+    } catch(e) {
+      if(alive.current&&e.message.startsWith('GEO_'))setLocalError(e.message)
+      // Retain the request ID after an uncertain response. The next attempt gets a fresh fix.
+    } finally {clockLock.current=false;if(alive.current)setLocating(false)}
   }
+
   return (
     <main className="worker-portal">
       <header className="worker-heading">
@@ -65,7 +77,9 @@ export default function WorkerPortal() {
         </div>
       </header>
       <h1>{t('workers.myWork')}</h1>
-      <WorkerError code={error || localError} />
+      <WorkerError code={localError || error} />
+      {localError==='GEO_DENIED'&&<p>{t('workers.location.enable')}</p>}
+      {notice&&<p role="status">{t(notice)}</p>}
       {!data ? (
         <p>{t('workers.loading')}</p>
       ) : (
@@ -82,7 +96,7 @@ export default function WorkerPortal() {
                 {t('workers.project')}
                 <select
                   value={selected}
-                  disabled={!!open || busy}
+                  disabled={!!open || busy || locating}
                   onChange={(e) => {
                     setProject(e.target.value)
                     pending.current = null
@@ -99,9 +113,12 @@ export default function WorkerPortal() {
               <section className="worker-clock worker-card">
                 <h2>{t(`workers.state.${state}`)}</h2>
                 <p>{t('workers.clockInfo')}</p>
+                {!open&&<p>{t('workers.location.explanation')}</p>}
+                {locating&&<p role="status">{t('workers.location.obtaining')}</p>}
+                {error&&!open&&<button className="btn" disabled={busy||locating} onClick={()=>reload(true)}>{t('workers.location.checkStatus')}</button>}
                 <div className="worker-clock-buttons">
                   {!open ? (
-                    <button className="btn btn-primary" disabled={busy} onClick={() => clock('in')}>
+                    <button className="btn btn-primary" disabled={busy||locating} onClick={() => clock('in')}>
                       {t('workers.event.in')}
                     </button>
                   ) : (
