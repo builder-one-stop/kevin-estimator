@@ -1,6 +1,7 @@
 {
   "localUnitTests": 125,
   "localTestFiles": 26,
+  "additionalFormRegression": { "testsPassed": 3, "newTests": 1, "idlePreconnection": "fixed" },
   "remoteWorkerChecks": 57,
   "remoteWorkerErrors": [],
   "cleanup": {

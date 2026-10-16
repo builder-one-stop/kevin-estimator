@@ -28,8 +28,12 @@ export async function hiddenInput(fields, { port = 8791, onReady } = {}) {
       if (values.get('nonce') !== nonce || !validHiddenFields(fields, values)) { response.setHeader('Content-Type', 'text/plain; charset=utf-8'); response.writeHead(400); response.end('Entrada no válida. Las contraseñas nuevas deben coincidir con su confirmación, tener al menos 8 caracteres y usar como máximo 72 bytes. Vuelve atrás para corregirlas.'); return }
       const result = Object.fromEntries(fields.map(field => [field.name, values.get(field.name)]))
       response.setHeader('Content-Type', 'text/html; charset=utf-8')
-      response.end('<!doctype html><html lang="es"><meta charset="utf-8"><title>One Stop</title><p>Entrada recibida. Puedes cerrar esta pestaña y volver a Codex.</p></html>')
-      server.close(() => resolve(result))
+      response.end('<!doctype html><html lang="es"><meta charset="utf-8"><title>One Stop</title><p>Entrada recibida. Puedes cerrar esta pestaña y volver a Codex.</p></html>', () => {
+        // Chrome may retain an unused preconnected socket. Finish the response,
+        // then close this one-use listener and its sockets before proceeding.
+        server.close(() => resolve(result))
+        server.closeAllConnections()
+      })
     })
     server.on('error', () => reject(new Error('Hidden local input could not start')))
     server.listen(port, '127.0.0.1', () => {

@@ -1,5 +1,6 @@
 import { chromium } from '@playwright/test'
 import { request } from 'node:http'
+import { createConnection } from 'node:net'
 import { describe, expect, it } from 'vitest'
 import { hiddenInput } from '../../scripts/hidden-beta-input.mjs'
 
@@ -18,6 +19,21 @@ async function fixture() {
 }
 
 describe('loopback password input', () => {
+  it('finishes after submission even when the browser retains an unused preconnection', async () => {
+    const f = await fixture()
+    const idle = createConnection({ host: '127.0.0.1', port: Number(new URL(f.origin).port) })
+    try {
+      await new Promise((resolve, reject) => { idle.once('connect', resolve); idle.once('error', reject) })
+      const html = await (await fetch(f.origin)).text()
+      const nonce = html.match(/name="nonce" value="([^"]+)"/)[1]
+      const response = await fetch(`${f.origin}/submit`, {
+        method: 'POST', headers: { Origin: f.origin },
+        body: new URLSearchParams({ nonce, password: 'Synthetic-only', confirmation: 'Synthetic-only' }),
+      })
+      expect(await response.text()).toContain('Entrada recibida.')
+      expect(await f.received).toEqual({ password: 'Synthetic-only', confirmation: 'Synthetic-only' })
+    } finally { idle.destroy(); f.close() }
+  })
   it('keeps strict origin, host, nonce, confirmation and body-size checks', async () => {
     const f = await fixture()
     try {
