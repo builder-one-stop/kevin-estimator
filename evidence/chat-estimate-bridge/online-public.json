@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-16T20:10:54.451Z",
+  "html": 200,
+  "asset": {
+    "path": "/assets/index-DHfX6iIY.js",
+    "status": 200
+  },
+  "unauthenticatedAi": 401,
+  "unauthenticatedWorkers": 401,
+  "migration": [
+    {
+      "version": "20261016142223"
+    }
+  ]
+}

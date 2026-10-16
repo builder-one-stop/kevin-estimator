@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-10-16T20:10:58Z",
+  "status": "published; authenticated acceptance pending",
+  "codeCommit": "1f915f05caed0cb7a9dc59def1e0ebaddce7703a",
+  "local": {
+    "tests": 135,
+    "testFiles": 27,
+    "lint": "passed",
+    "build": "passed; existing large-chunk warning",
+    "browserBridge": "passed",
+    "browserRegression": "passed",
+    "pdf": "EN/ES six pages rendered and inspected"
+  },
+  "online": {
+    "publicChecks": "passed; see online-public.json",
+    "authenticatedWorkflow": "not completed",
+    "blocker": "Chrome Debugger unattached; reconnection requested"
+  },
+  "missingAsset": "Authorized Kevin signature image",
+  "model": {
+    "codingAgent": "GPT-6 family; effort not exposed",
+    "applicationDefault": "gpt-6.1-sol / medium",
+    "onlineModelRun": "not executed"
+  }
+}
