@@ -251,6 +251,8 @@ async function run(origin, credentials) {
       await expect(page.getByRole('heading', { name: 'Mi trabajo', exact: true })).toBeVisible()
       await page.reload()
       await expect(page.getByRole('heading', { name: 'Mi trabajo', exact: true })).toBeVisible()
+      await expect(page.getByText('Cargando…', { exact: true })).toHaveCount(0)
+      await expect(page.getByRole('alert')).toHaveCount(0)
       await mkdir('evidence/workers', { recursive: true })
       await page.screenshot({
         path: `evidence/workers/${origin.startsWith('https') ? 'beta' : 'local'}-worker-${i + 1}.png`,

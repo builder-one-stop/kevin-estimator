@@ -6,16 +6,21 @@ import sharp from 'sharp'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { randomUUID } from 'node:crypto'
 const url = 'https://vtpciccluvpaclbeqxih.supabase.co',
-  origin = 'http://localhost:5173'
-if (process.env.SUPABASE_URL !== url) throw new Error('Unexpected project')
+  origin = process.env.WORKERS_TEST_ORIGIN || 'http://localhost:5173'
+if (
+  process.env.SUPABASE_URL !== url ||
+  !['http://localhost:5173', 'https://onestop-beta.netlify.app'].includes(origin)
+)
+  throw new Error('Unexpected target')
+const evidencePrefix = origin.startsWith('https:') ? 'beta-fixture' : 'fixture'
 const key = loadEnv('development', process.cwd()).VITE_SUPABASE_ANON_KEY
 const create = () => createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
 const db = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 })
 const report = {
-    scope:
-      'Real remote worker sessions, local application; administrative account/creation flow not exercised',
+    scope: 'Real remote worker sessions; administrative account/creation flow not exercised',
+    origin,
     checks: [],
     errors: [],
   },
@@ -271,7 +276,7 @@ try {
     await expect(page.getByText('Cargando…', { exact: true })).toHaveCount(0)
     await expect(page.getByRole('alert')).toHaveCount(0)
     await mkdir('evidence/workers', { recursive: true })
-    await page.screenshot({ path: `evidence/workers/fixture-worker-${i + 1}.png`, fullPage: true })
+    await page.screenshot({ path: `evidence/workers/${evidencePrefix}-worker-${i + 1}.png`, fullPage: true })
     await page.close()
     check(true, `worker ${i + 1} real mobile route guard EN/ES and persistence`)
   }
@@ -329,6 +334,6 @@ try {
   report.cleanup = { failures }
   if (failures.length) process.exitCode = 1
   await mkdir('evidence/workers', { recursive: true })
-  await writeFile('evidence/workers/fixture-remote.json', JSON.stringify(report, null, 2) + '\n')
+  await writeFile(`evidence/workers/${evidencePrefix}-remote.json`, JSON.stringify(report, null, 2) + '\n')
   console.log(JSON.stringify(report))
 }

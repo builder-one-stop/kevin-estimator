@@ -5,10 +5,10 @@ Scope: `builder-one-stop/kevin-estimator`, branch `feat/ai-estimator-approved-pl
 ## Execution plan
 
 - [done] Inspect live configuration, roles, schema, storage, beta target and existing patterns.
-- [implemented; remote manager verification pending] Roles, worker accounts and project assignments; enforce existing-session revocation and CRM isolation.
+- [verified with real manager and worker sessions] Roles, worker accounts and project assignments; enforce existing-session revocation and CRM isolation.
 - [verified with real worker sessions] Private progress evidence with bounded uploads, validation and recovery.
-- [verified locally and with real worker sessions; manager session pending] Transactional attendance, immutable originals and audited corrections.
-- [worker browser verified; manager browser pending] Bilingual mobile worker interface, administrative supervision and project tabs.
+- [verified with real manager and worker sessions] Transactional attendance, immutable originals and audited corrections.
+- [worker and manager browser verified] Bilingual mobile worker interface, administrative supervision and project tabs.
 - [passed] Local SQL, permission/concurrency, API, UI and regression tests; two real remote worker sessions and mobile browser verification.
 - [applied and verified] Versioned migration rollout.
 - [local review complete; publication pending] Reviewed implementation and verification evidence prepared for a local commit. Push and beta deployment are gated on actual administrative-session verification.
@@ -33,6 +33,6 @@ This document records actual completion and remaining verification; unchecked it
 - Existing password-gate browser smoke passed. Earlier concurrent runs encountered an existing 15-second Chrome form timeout and a 5-second PGlite startup timeout; isolated checks and the final serial suite passed.
 - **57 remote checks passed** using two real password-authenticated workers, isolated synthetic data and the local application against Supabase. These include CRM/API/Storage isolation, forged metadata, simultaneous clocks, repeated breaks, JPEG rendering, WebM playback, mobile EN/ES, deassignment and deactivation of an existing token. This fixture test does **not** substitute for a real manager session or administrative account creation. Cleanup succeeded; temporary workers/projects were removed.
 - Added regression coverage for a stale polling response after mutation, EN/ES preservation of an unsaved form, and assignment retry after partial account creation without recreating the account.
-- Two administrative login attempts returned `invalid_credentials` (HTTP 400). At the user's request, another loopback-only attempt is open at `http://localhost:8792`; no existing account password was changed. Actual manager account creation, reset, approvals and browser supervision remain pending.
+- After two rejected administrative login attempts (`invalid_credentials`, HTTP 400), the new submission authenticated successfully. **52 real-manager/worker checks passed** against remote Supabase through the local app: actual account creation and idempotent retry, assignments, private media, corrections/approval, administrative project views, password reset, old-password rejection and existing-session revocation. Cleanup succeeded. No existing administrative password was changed.
 - A subsequent form submission stalled on an unused Chrome preconnection. An attempted runtime recovery terminated the process before any Auth result was recorded; this was not a confirmed credential rejection. The one-use form now closes its connections after flushing its response. All three form tests passed, including the new idle-preconnection regression; a fresh submission was requested without retaining the old values.
-- Changes reviewed for a local commit. No push or beta deployment: this branch triggers automatic Netlify publication, which must wait for the administrative checks.
+- Local commits `2770657` and `5230865` contain the implementation and form fix. The administrative verification gate has now passed; the authorized beta publication and verification are next.

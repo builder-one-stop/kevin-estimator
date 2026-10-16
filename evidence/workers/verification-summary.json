@@ -1,14 +1,23 @@
 {
   "localUnitTests": 125,
   "localTestFiles": 26,
-  "additionalFormRegression": { "testsPassed": 3, "newTests": 1, "idlePreconnection": "fixed" },
+  "additionalFormRegression": {
+    "testsPassed": 3,
+    "newTests": 1,
+    "idlePreconnection": "fixed"
+  },
   "remoteWorkerChecks": 57,
   "remoteWorkerErrors": [],
   "cleanup": {
     "failures": []
   },
-  "adminSessionVerification": "pending",
-  "administrativeLoginFailures": { "attempts": 2, "code": "invalid_credentials", "httpStatus": 400 },
+  "adminSessionVerification": "passed against remote Supabase through local application",
+  "administrativeLoginFailures": {
+    "attempts": 2,
+    "code": "invalid_credentials",
+    "httpStatus": 400
+  },
   "betaDeployment": "not performed",
-  "bundleSecretScan": "no privileged values found"
+  "bundleSecretScan": "no privileged values found",
+  "remoteAdministrativeChecks": 52
 }
