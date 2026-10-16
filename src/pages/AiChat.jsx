@@ -4,9 +4,10 @@ import { setLanguage } from '../i18n/index.js'
 import { aiRequest,command } from '../services/ai.js'
 import { getClients } from '../services/clients.js'
 import { getProjects } from '../services/projects.js'
-import { calculateEstimate } from '../lib/estimateDocument.js'
 import { useAiText,errorText } from '../components/ai/strings.js'
 import Plan from '../components/ai/Plan.jsx'
+import EstimateWorkspace from './EstimateWorkspace.jsx'
+import { bridgeText, isPdfRequest } from '../../shared/estimatePresentation.js'
 import HistoryDrawer from '../components/ai/HistoryDrawer.jsx'
 import { ArrowUp, ImagePlus, ArrowDown, Settings2 } from 'lucide-react'
 import { compactTitle } from '../../shared/chatPresentation.js'
@@ -14,6 +15,8 @@ import '../styles/ai.css'
 const money=c=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(c/100)
 export default function AiChat(){
  const {id}=useParams(),{a,language}=useAiText()
+ const estimateEditor=useRef(null),b=bridgeText(language)
+ const [documentNotice,setDocumentNotice]=useState('')
  const [assetTick,setAssetTick]=useState(0)
  const [row,setRow]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[text,setText]=useState(''),[planDraft,setPlanDraft]=useState(null)
  const [estimate,setEstimate]=useState(null),[assets,setAssets]=useState([]),[mode,setMode]=useState('real'),[clients,setClients]=useState([]),[projects,setProjects]=useState([])
@@ -64,12 +67,13 @@ export default function AiChat(){
   if(lock.current)return false;lock.current=true;setBusy(true);setError('')
   const signature=JSON.stringify({action,body,version})
   if(requestRef.current?.signature!==signature)requestRef.current={signature,id:crypto.randomUUID()}
-  try{const next=await command({...row,version},action,body,requestId||requestRef.current.id);accept(next);requestRef.current=null;return true}
-  catch(e){setError(e.code);return false}finally{lock.current=false;setBusy(false)}
+  try{if(estimateEditor.current&&['message','apply','restore','language'].includes(action))await estimateEditor.current.flush();const next=await command({...row,version},action,body,requestId||requestRef.current.id);accept(next);requestRef.current=null;return true}
+  catch(e){setError(e.code||'ESTIMATE_CONFLICT');return false}finally{lock.current=false;setBusy(false)}
  }
 
  async function sendMessage(pending=outbox){
   if(lock.current||rowRef.current?.state.run?.status==='working')return
+  if(!pending&&isPdfRequest(text)){setDocumentNotice('');if(!estimateEditor.current){setDocumentNotice(b('noEstimate'));return}lock.current=true;setBusy(true);try{if(await estimateEditor.current.download()){setText('');setDocumentNotice(b('downloaded'))}}finally{lock.current=false;setBusy(false)}return}
   const message=pending||{id:crypto.randomUUID(),version:row.version,content:text.trim()}
   if(!message.content)return
   setOutbox({...message,status:'sending'});if(!pending)setText('');latest()
@@ -88,9 +92,9 @@ export default function AiChat(){
  async function loadRevisions(){try{setRevisions(await aiRequest(`conversations/${id}/revisions`))}catch(e){setError(e.code)}}
  if(!row)return <div className="page ai-page"><Link to="/chat">{a('history')}</Link><p role={error?'alert':'status'}>{error?errorText(error,a):a('loading')}</p><button onClick={()=>refresh().catch(e=>setError(e.code))}>{a('retry')}</button></div>
  const s=row.state,working=s.run?.status==='working',disabled=busy||working||!!outbox
- const sums=estimate?calculateEstimate(estimate.document,estimate.markup_bps):null
  return <div className="ai-page ai-chat"><header className="ai-chat-toolbar"><div className="ai-chat-title"><span className="home-eyebrow">{a('chat')}</span><h1>{compactTitle(s.plan?.title?.[language]||row.title)}</h1></div><div className="ai-toolbar-actions"><Link to="/chat/settings" aria-label={a('settings')} title={a('settings')}><Settings2 size={19}/></Link><label className="ai-ui-language"><span className="sr-only">{a('uiLanguage')}</span><select value={language} onChange={e=>setLanguage(e.target.value)}><option value="en">English</option><option value="es">Español</option></select></label><HistoryDrawer /></div></header>
  <div className="ai-thread" ref={scroll} onScroll={()=>{const node=scroll.current;atEnd.current=node.scrollHeight-node.scrollTop-node.clientHeight<90;if(atEnd.current)setNewContent(false)}}><div className="ai-thread-content" ref={content}>
+ {documentNotice&&<p role="status">{documentNotice}</p>}
  {mode==='controlled-test'&&<p className="ai-banner">{a('test')}</p>}
  {error&&<div className="estimate-error" role="alert">{errorText(error,a)} <button onClick={()=>refresh().catch(e=>setError(e.code))}>{a('reload')}</button></div>}
  <aside className="ai-market"><strong>{a('market')}</strong><small>{a('marketHelp')}</small></aside>
@@ -107,8 +111,10 @@ export default function AiChat(){
  {planDraft?<><p role="status">{a('dirty')}</p><Plan plan={planDraft.plan} onChange={p=>setPlanDraft({...planDraft,plan:p})}/><button disabled={disabled} onClick={async()=>{if(await act('savePlan',{plan:planDraft.plan},planDraft.version))setPlanDraft(null)}}>{a('savePlan')}</button><button onClick={()=>setPlanDraft(null)}>{a('discard')}</button></>:<><Plan plan={s.plan}/><div className="ai-actions"><button disabled={disabled} onClick={()=>setPlanDraft({plan:structuredClone(s.plan),version:row.version})}>{a('edit')}</button>
  {s.approvedRevision===s.planRevision?<><b>{a('approveStatus')} {s.planRevision}</b><button className="btn btn-primary" disabled={disabled} onClick={()=>act('generate')}>{a('generate')}</button></>:<button className="btn btn-primary" disabled={disabled||!!s.plan.pending.length} onClick={()=>act('approve',{revision:s.planRevision})}>{a('approve')}</button>}</div></>}
  </section>}
- {estimate&&<section className="ai-card" data-testid="estimate-result"><h2>{estimate.title}</h2><p>{estimate.id.slice(0,8).toUpperCase()} · {estimate.document.sections.reduce((n,g)=>n+g.items.length,0)} {a('lines')} · {a('revision')} {estimate.version}</p><strong>{money(sums.priceCents)}</strong><dl className="ai-financial">{[['cost',money(sums.costCents)],['markupAmount',money(sums.markupCents)],['margin',`${sums.marginPercent.toFixed(1)}%`],['materialsCost',money(sums.costsByType.material)],['laborCost',money(sums.costsByType.labor)],['laborHours',sums.laborHours]].map(([label,value])=><div key={label}><dt>{a(label)}</dt><dd>{value}</dd></div>)}</dl><p>{a(estimate.document.sections.some(g=>g.items.some(i=>i.needsReview))?'provisional':'catalogPrices')}</p><Link className="btn btn-primary" to={`/estimates/${estimate.id}`}>{a('open')}</Link><button onClick={loadRevisions}>{a('revisions')}</button>
- {revisions.map(r=><p key={r.id}>{a('revision')} {r.version} · {r.origin} <button disabled={disabled||r.version===estimate.version} onClick={async()=>{if(window.confirm(a('restoreConfirm'))&&await act('restore',{estimateVersion:estimate.version,restoreVersion:r.version}))setRevisions([])}}>{a('restore')}</button></p>)}
+ {estimate&&<section className="ai-card" data-testid="estimate-result">
+ <EstimateWorkspace key={estimate.id} estimateId={estimate.id} embedded editorRef={estimateEditor} onSaved={setEstimate} disabled={disabled}/>
+ <div className="ai-actions"><Link to={`/estimates/${estimate.id}`}>{a('open')}</Link><button onClick={loadRevisions}>{a('revisions')}</button></div>
+ {revisions.map(r=><p key={r.id}>{a('revision')} {r.version} · {r.origin} <button disabled={disabled||r.version===estimate.version} onClick={async()=>{if(window.confirm(a('restoreConfirm'))&&await act('restore',{estimateVersion:estimate.version,restoreVersion:r.version})){setRevisions([]);await estimateEditor.current?.refresh()}}}>{a('restore')}</button></p>)}
  </section>}
  {s.pending&&<section className="ai-card"><h2>{a('changes')} · {a('revision')} {s.pending.revision}</h2>{planDraft?<><Plan plan={planDraft.plan} onChange={p=>setPlanDraft({...planDraft,plan:p})}/><button disabled={disabled} onClick={async()=>{if(await act('savePlan',{plan:planDraft.plan},planDraft.version))setPlanDraft(null)}}>{a('savePlan')}</button><button onClick={()=>setPlanDraft(null)}>{a('discard')}</button></>:<><Plan plan={s.pending.plan}/><button disabled={disabled} onClick={()=>setPlanDraft({plan:structuredClone(s.pending.plan),version:row.version})}>{a('edit')}</button></>}{s.pending.operations.map(op=><div className="ai-diff" key={op.id}><b>{a(op.action==='remove'?'remove':op.action)}</b><span>{op.before&&`${op.before.description}: ${op.before.quantity} ${op.before.unit} × ${op.before.unitCost}`} → {op.after&&`${op.after.description}: ${op.after.quantity} ${op.after.unit} × ${op.after.unitCost}`}<small className="ai-change-source">{a('provenance')}: {op.before?.priceSource||'—'} → {op.after?.priceSource||'—'} · {a('markup')}: {op.before?.markupBps==null?'—':op.before.markupBps/100} → {op.after?.markupBps==null?'—':op.after.markupBps/100}</small></span></div>)}<p>{s.pending.blocked?a('pending'):`${a('costImpact')}: ${money(s.pending.costDelta)} · ${a('saleImpact')}: ${money(s.pending.saleDelta)}`}</p>{s.pending.blocked&&<button disabled={disabled||!!planDraft} onClick={()=>act('message',{content:a('priceRevisedPrompt')})}>{a('priceRevised')}</button>}<button className="btn btn-primary" disabled={disabled||s.pending.blocked||!!planDraft} onClick={()=>act('apply',{revision:s.pending.revision})}>{a('apply')}</button></section>}
  </div></div>

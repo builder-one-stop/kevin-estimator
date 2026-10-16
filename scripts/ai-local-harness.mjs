@@ -16,6 +16,14 @@ export async function startHarness(){
    const token=req.headers.authorization?.replace('Bearer ','');const owner=await repo.authenticate(token)
    const url=new URL(req.url,'http://localhost')
    if(url.pathname.endsWith('/rest/v1/rpc/beta_session_access')){res.end(JSON.stringify({userId:owner,role:await repo.access(owner)}));return}
+   if(url.pathname.endsWith('/rest/v1/rpc/finalize_estimate')){
+    const chunks=[];for await(const c of req)chunks.push(c)
+    const body=JSON.parse(Buffer.concat(chunks).toString())
+    const result=await db.transaction(async tx=>{
+     await tx.query("select set_config('request.jwt.claim.sub',$1,true)",[owner]);await tx.exec('set local role authenticated')
+     return (await tx.query('select to_jsonb(public.finalize_estimate($1,$2,$3)) as value',[body.p_id,body.p_expected,body.p_request_id])).rows[0].value
+    });res.end(JSON.stringify(result));return
+   }
    if(url.pathname.endsWith('/auth/v1/user')){res.end(JSON.stringify({id:owner,email:'fixture@example.invalid',aud:'authenticated',role:'authenticated'}));return}
    if(url.pathname.endsWith('/auth/v1/logout')){res.end('{}');return}
    const table=url.pathname.split('/').at(-1)

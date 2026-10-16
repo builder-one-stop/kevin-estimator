@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { EstimatorEngine } from './engine.js'
 import { settingsSchema, defaultSettings } from '../shared/aiSchemas.js'
 import { createWorkersHandler } from './workers.js'
+import { normalizeSignature } from './signature.js'
 import { fail } from '../shared/aiDomain.js'
 
 const jsonHeaders = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'application/json' }
@@ -46,7 +47,7 @@ export function createEstimatorHandler({ repo, provider, origin, logger, testMod
       } else if (parts[0] === 'status' && request.method === 'GET') data = { mode: testMode ? 'controlled-test' : 'real', configured: !!provider.client || testMode }
       else if (parts[0] === 'settings') {
         if (request.method === 'GET') data = (await repo.settings(owner)) || { version: 0, data: defaultSettings() }
-        else if (request.method === 'POST') { const x = z.object({ version: z.number().int().min(0), data: settingsSchema }).strict().parse(body); data = await repo.saveSettings(owner, x.data, x.version) }
+        else if (request.method === 'POST') { const x = z.object({ version: z.number().int().min(0), data: settingsSchema }).strict().parse(body); if(x.data.business.signatureImage)x.data.business.signatureImage=await normalizeSignature(x.data.business.signatureImage); data = await repo.saveSettings(owner, x.data, x.version) }
       } else if (parts[0] === 'conversations') {
         const id = parts[1]; if (id) z.string().uuid().parse(id)
         if (!id && request.method === 'GET') { await repo.expire(owner); data = await repo.list(owner) }

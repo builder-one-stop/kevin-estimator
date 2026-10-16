@@ -1,0 +1,76 @@
+[
+  {
+    "language": "en",
+    "pages": [
+      {
+        "page": 1,
+        "characters": 946,
+        "outsideMargins": []
+      },
+      {
+        "page": 2,
+        "characters": 1059,
+        "outsideMargins": []
+      },
+      {
+        "page": 3,
+        "characters": 1212,
+        "outsideMargins": []
+      },
+      {
+        "page": 4,
+        "characters": 1242,
+        "outsideMargins": []
+      },
+      {
+        "page": 5,
+        "characters": 1066,
+        "outsideMargins": []
+      },
+      {
+        "page": 6,
+        "characters": 423,
+        "outsideMargins": []
+      }
+    ],
+    "recordId": "9bd8011a-ec42-4a58-b508-7af8bf8a7f39",
+    "revision": 7
+  },
+  {
+    "language": "es",
+    "pages": [
+      {
+        "page": 1,
+        "characters": 967,
+        "outsideMargins": []
+      },
+      {
+        "page": 2,
+        "characters": 1056,
+        "outsideMargins": []
+      },
+      {
+        "page": 3,
+        "characters": 1214,
+        "outsideMargins": []
+      },
+      {
+        "page": 4,
+        "characters": 1237,
+        "outsideMargins": []
+      },
+      {
+        "page": 5,
+        "characters": 1055,
+        "outsideMargins": []
+      },
+      {
+        "page": 6,
+        "characters": 464,
+        "outsideMargins": []
+      }
+    ],
+    "recordId": "9bd8011a-ec42-4a58-b508-7af8bf8a7f39",
+    "revision": 8
+  }
+]

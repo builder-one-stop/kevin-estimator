@@ -1,7 +1,7 @@
 import { supabase } from '../supabaseClient.js'
 import { duplicateDocument, emptyDocument, validateEstimate } from '../lib/estimateDocument.js'
 
-const fields = 'id,owner_id,client_id,project_id,title,status,markup_bps,document,version,created_at,updated_at,client:clients!estimates_client_id_fkey(id,name,address),project:projects!estimates_project_id_fkey(id,name,address,client_id)'
+const fields = 'id,owner_id,client_id,project_id,title,status,markup_bps,document,version,finalized_at,finalized_version,finalization_request_id,created_at,updated_at,client:clients!estimates_client_id_fkey(id,name,address,email,phone),project:projects!estimates_project_id_fkey(id,name,address,client_id)'
 const unwrap = ({ data, error }) => { if (error) throw error; return data }
 
 export async function listEstimates({ limit, projectId } = {}) {
@@ -53,4 +53,10 @@ export async function duplicateEstimate(record) {
 
 export async function listMessages(estimateId) {
   return unwrap(await supabase.from('estimate_messages').select('id,role,content,operations,created_at').eq('estimate_id', estimateId).order('created_at'))
+}
+
+export async function finalizeEstimate(record, requestId) {
+  const { data, error } = await supabase.rpc('finalize_estimate', { p_id: record.id, p_expected: record.version, p_request_id: requestId }).single()
+  if (error) { if (error.message?.includes('ESTIMATE_CONFLICT')) error.code = 'ESTIMATE_CONFLICT'; throw error }
+  return data
 }

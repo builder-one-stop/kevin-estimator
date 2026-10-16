@@ -1,24 +1,35 @@
 import { reviseManualPrice } from '../lib/estimateDocument.js'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { ArrowDown, ArrowLeft, ArrowUp, ChevronDown, ChevronRight, Copy, Download, Eye, Plus, Trash2 } from 'lucide-react'
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { ArrowDown, ArrowLeft, ArrowUp, ChevronDown, ChevronRight, Copy, Download, Plus, Trash2 } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { getEstimate, saveEstimate } from '../services/estimates.js'
+import { getEstimate, saveEstimate, finalizeEstimate } from '../services/estimates.js'
 import { getClients } from '../services/clients.js'
 import { getProjects } from '../services/projects.js'
-import { calculateEstimate, COST_TYPES, ESTIMATE_STATUSES, itemCostCents, moveInArray, newItem, newSection, proposalPrices, UNITS, validateEstimate } from '../lib/estimateDocument.js'
+import { calculateEstimate, COST_TYPES, ESTIMATE_STATUSES, itemCostCents, moveInArray, newItem, newSection, UNITS, validateEstimate } from '../lib/estimateDocument.js'
 import ApprovedProposal from '../components/ai/ApprovedProposal.jsx'
 import { useAiText } from '../components/ai/strings.js'
 import { draftStore } from '../lib/estimateDrafts.js'
 import { formatMoney } from '../lib/money.js'
+import EstimateDocument from '../components/estimates/EstimateDocument.jsx'
+import { bridgeText } from '../../shared/estimatePresentation.js'
+import { assertDocument } from '../../shared/aiDomain.js'
+import { aiRequest } from '../services/ai.js'
 
 const editable = (record) => ({ title: record.title, client_id: record.client_id, project_id: record.project_id, status: record.status, markup_bps: record.markup_bps, document: record.document })
 const money = (cents) => formatMoney(cents / 100)
 
-export default function EstimateWorkspace() {
-  const { id } = useParams()
+export default function EstimateWorkspace({ estimateId, embedded = false, editorRef, onSaved, disabled = false }) {
+  const params = useParams()
+  const id = estimateId || params.id
   const { t } = useTranslation()
   const { a, language } = useAiText()
+  const b = bridgeText(language)
+  const [editing, setEditing] = useState(false)
+  const [actionBusy, setActionBusy] = useState(false)
+  const [actionNotice, setActionNotice] = useState('')
+  const actionLock = useRef(false), finalRequest = useRef(null), onSavedRef = useRef(onSaved)
+  useEffect(() => { onSavedRef.current = onSaved }, [onSaved])
   const [draft, setDraft] = useState(null)
   const [savedVersion, setSavedVersion] = useState(null)
   const [clients, setClients] = useState([])
@@ -111,9 +122,9 @@ export default function EstimateWorkspace() {
       try {
         const result = await saveEstimate(saved, patch)
         if (!activeRef.current || savedRef.current?.id !== saved.id) return
-        savedRef.current = result; setSavedVersion(result.version)
+        savedRef.current = result; setSavedVersion(result.version); onSavedRef.current?.(result)
         clearBackup(revision); clearBackup(source); sourceRef.current = null
-        if (draftRef.current === snapshot) { setSaveStatus('saved'); setError(''); revisionRef.current = null; refreshBackups() }
+        if (draftRef.current === snapshot) { draftRef.current = result; setDraft(result); setSaveStatus('saved'); setError(''); revisionRef.current = null; refreshBackups() }
         else {
           writeBackup(result.version, draftRef.current)
           saveQueued()
@@ -124,6 +135,7 @@ export default function EstimateWorkspace() {
         setSaveStatus('error'); setError(tRef.current(cause.code === 'ESTIMATE_CONFLICT' ? 'estimateEditor.conflictRecovered' : 'estimateEditor.saveError'))
       }
     })
+    return queueRef.current
   }, [])
 
   useEffect(() => {
@@ -203,30 +215,79 @@ export default function EstimateWorkspace() {
     refreshBackups()
   }
 
+  const refreshRecord = useCallback(async () => {
+    const base = savedRef.current
+    if (!base || actionLock.current) return
+    const latest = await getEstimate(id)
+    if (!activeRef.current || savedRef.current !== base || !latest || latest.version <= base.version) return
+    if (JSON.stringify(editable(draftRef.current)) !== JSON.stringify(editable(base))) {
+      conflictRef.current = true; setConflict(true); setSaveStatus('error'); setError(tRef.current('estimateEditor.conflictRecovered'))
+      return
+    }
+    savedRef.current = latest; draftRef.current = latest; setDraft(latest); setSavedVersion(latest.version); onSavedRef.current?.(latest)
+  }, [id])
+  useEffect(() => {
+    const timer = setInterval(() => { refreshRecord().catch(() => {}) }, 3000)
+    return () => clearInterval(timer)
+  }, [refreshRecord])
+
+  async function flushSaved() {
+    await enqueueSave()
+    // The queue may have picked up edits made while an earlier request was in flight.
+    await queueRef.current
+    if (conflictRef.current || !savedRef.current || JSON.stringify(editable(draftRef.current)) !== JSON.stringify(editable(savedRef.current))) throw new Error('UNSAVED_ESTIMATE')
+    const saved = savedRef.current, latest = await getEstimate(id)
+    if (!latest || savedRef.current !== saved || JSON.stringify(editable(draftRef.current)) !== JSON.stringify(editable(saved))) {
+      conflictRef.current = true; setConflict(true); setSaveStatus('error'); setError(tRef.current('estimateEditor.conflictRecovered')); throw new Error('ESTIMATE_CONFLICT')
+    }
+    if (latest.version !== saved.version) {
+      savedRef.current=latest;draftRef.current=latest;setDraft(latest);setSavedVersion(latest.version);onSavedRef.current?.(latest)
+    }
+    return latest
+  }
+  async function downloadSaved(preview = false) {
+    if (actionLock.current) return false
+    actionLock.current = true; setActionBusy(true); setActionNotice('')
+    try {
+      const saved = await flushSaved()
+      const { buildProposalPdf } = await import('../lib/proposalPdf.js')
+      const pdf = buildProposalPdf(saved, { format: 'detailed' })
+      if (preview) { const url = pdf.output('bloburl'); window.open(url, '_blank', 'noopener,noreferrer'); setTimeout(() => URL.revokeObjectURL(url), 60000) }
+      else pdf.save(`${saved.id.slice(0,8)}-${saved.document.language || 'en'}-r${saved.version}.pdf`)
+      setActionNotice(b('downloaded')); return true
+    } catch { setActionNotice(b('exportError')); return false }
+    finally { actionLock.current = false; setActionBusy(false) }
+  }
+  async function finalizeCurrent() {
+    if (actionLock.current) return
+    actionLock.current = true; setActionBusy(true); setActionNotice('')
+    try {
+      const saved = await flushSaved()
+      assertDocument(saved.document, saved.markup_bps)
+      if (finalRequest.current?.version !== saved.version) finalRequest.current = { version: saved.version, id: crypto.randomUUID() }
+      const finalized = await finalizeEstimate(saved, finalRequest.current.id)
+      const next = { ...saved, ...finalized }
+      savedRef.current = next; draftRef.current = next; setDraft(next); setSavedVersion(next.version); onSavedRef.current?.(next)
+      setEditing(false); setActionNotice(b('finalized')); setError(''); setSaveStatus('saved')
+    } catch (e) { if (e.code === 'ESTIMATE_CONFLICT') { conflictRef.current = true; setConflict(true) } setError(b('finalizeError')) }
+    finally { actionLock.current = false; setActionBusy(false) }
+  }
+  useImperativeHandle(editorRef, () => ({ flush: flushSaved, download: downloadSaved, refresh: refreshRecord }))
+
   if (error && !draft) return <div className="page"><div role="alert" className="estimate-error">{error}</div><button className="btn btn-ghost" onClick={() => { setError(''); setRetry((value) => value + 1) }}>{t('home.retry')}</button></div>
   if (!draft) return <div className="page"><p role="status">{t('estimateEditor.loading')}</p></div>
   const totals = calculateEstimate(draft.document, draft.markup_bps)
   const client = clients.find((row) => row.id === draft.client_id)
   const project = projects.find((row) => row.id === draft.project_id)
-  const pdfRecord = { ...draft, version: savedVersion || draft.version, client, project }
-  const proposal = draft.document.proposal
-  const clientPrices = proposalPrices(draft.document, draft.markup_bps)
+  const pdfRecord = { ...draft, finalized_at: saveStatus === 'saved' ? draft.finalized_at : null, version: savedVersion || draft.version, client, project }
 
-  async function previewPdf() {
-    const { buildProposalPdf } = await import('../lib/proposalPdf.js')
-    const url = buildProposalPdf(pdfRecord).output('bloburl')
-    window.open(url, '_blank', 'noopener,noreferrer')
-    window.setTimeout(() => URL.revokeObjectURL(url), 60000)
-  }
-  async function downloadPdf() {
-    const { downloadProposalPdf } = await import('../lib/proposalPdf.js')
-    downloadProposalPdf(pdfRecord)
-  }
+  const downloadPdf = () => downloadSaved(false)
+  const actions = <div className="estimate-actions"><button className="btn btn-primary" disabled={disabled || actionBusy || conflict} onClick={finalizeCurrent}>{b('finalize')}</button><button className="btn btn-ghost" disabled={disabled || actionBusy || conflict} onClick={downloadPdf}><Download size={16}/>{b('download')}</button>{embedded && <button className="btn btn-ghost" disabled={disabled || actionBusy} onClick={() => setEditing(x => !x)}>{b(editing ? 'closeEdit' : 'edit')}</button>}<small>{b('finalizationHelp')}</small></div>
 
-  return <div className="page estimate-workspace">
-    <Link to="/estimates" className="workspace-back"><ArrowLeft size={16} />{t('estimates.title')}</Link>
+  return <div className={`page estimate-workspace ${embedded ? 'estimate-embedded' : ''}`}>
+    {!embedded && <Link to="/estimates" className="workspace-back"><ArrowLeft size={16} />{t('estimates.title')}</Link>}
     <header className="estimate-header">
-      <div className="estimate-title-block"><label className="sr-only" htmlFor="estimate-title">{t('estimateEditor.name')}</label><input id="estimate-title" className="estimate-title-input" value={draft.title} onChange={(event) => edit((current) => ({ ...current, title: event.target.value }))} onBlur={enqueueSave} />
+      <div className="estimate-title-block"><label className="sr-only" htmlFor="estimate-title">{t('estimateEditor.name')}</label><input id="estimate-title" disabled={disabled || actionBusy} className="estimate-title-input" value={draft.title} onChange={(event) => edit((current) => ({ ...current, title: event.target.value }))} onBlur={enqueueSave} />
         <span className="estimate-code">#{draft.id.slice(0, 8).toUpperCase()}</span></div>
       <span className={`estimate-save estimate-save-${saveStatus}`} role="status">{t(`estimateEditor.${saveStatus}`)}</span>
     </header>
@@ -236,6 +297,10 @@ export default function EstimateWorkspace() {
       {backups.map((backup) => <button key={backup.key} onClick={() => recoverBackup(backup)}>{t('estimateEditor.recoverDraft', { title: backup.draft.title })}</button>)}
       {legacy?.draft && <button onClick={() => { recoverBackup(legacy); setLegacy(null) }}>{t('estimateEditor.recoverLegacy')}</button>}
     </div>}
+    {actions}{actionNotice && <p role="status">{actionNotice}</p>}
+    {embedded && <details><summary>{b('internalBreakdown')}</summary><dl className="ai-financial">{[['cost',money(totals.costCents)],['markupAmount',money(totals.markupCents)],['margin',`${totals.marginPercent.toFixed(1)}%`],['materialsCost',money(totals.costsByType.material)],['laborCost',money(totals.costsByType.labor)],['laborHours',totals.laborHours]].map(([label,value])=><div key={label}><dt>{a(label)}</dt><dd>{value}</dd></div>)}</dl></details>}
+    {embedded && !editing && <EstimateDocument record={pdfRecord}/>}
+    <fieldset disabled={disabled || actionBusy} hidden={embedded && !editing} className={embedded ? 'document-edit-area' : ''}>
     <div className="estimate-fields">
       <label>{t('estimateEditor.client')}<select value={draft.client_id || ''} onChange={(event) => clientChanged(event.target.value)}><option value="">{t('projects.noClient')}</option>{clients.map((row) => <option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
       <label>{t('estimateEditor.project')}<select value={draft.project_id || ''} onChange={(event) => projectChanged(event.target.value)}><option value="">{t('estimateEditor.noProject')}</option>{projects.map((row) => <option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
@@ -243,11 +308,11 @@ export default function EstimateWorkspace() {
     </div>
     <div className="estimate-tabs"><button className={view === 'estimate' ? 'active' : ''} onClick={() => setView('estimate')}>{t('estimateEditor.estimate')}</button><button className={view === 'proposal' ? 'active' : ''} onClick={() => setView('proposal')}>{t('estimateEditor.proposal')}</button></div>
     <div className="estimate-layout">
-      <aside className={`estimate-assistant ${assistantOpen ? '' : 'collapsed'}`} style={{ '--assistant-width': `${assistantWidth}px` }}>
+      {!embedded && <aside className={`estimate-assistant ${assistantOpen ? '' : 'collapsed'}`} style={{ '--assistant-width': `${assistantWidth}px` }}>
         <button className="estimate-assistant-toggle" onClick={() => setAssistantOpen((open) => !open)}>{assistantOpen ? <ChevronDown size={17} /> : <ChevronRight size={17} />}{t('estimateEditor.assistant')}</button>
         {assistantOpen && <div><p><Link to={draft.document.conversationId ? `/chat/${draft.document.conversationId}` : '/chat'}>{a(draft.document.conversationId ? 'backChat' : 'noChat')}</Link></p><label>{t('estimateEditor.panelWidth')}<input type="range" min="240" max="430" value={assistantWidth} onChange={(event) => setAssistantWidth(Number(event.target.value))} /></label></div>}
-      </aside>
-      <main className="estimate-main">
+      </aside>}
+      <div className="estimate-main">
         {view === 'estimate' ? <>
           <div className="estimate-table-head"><h2>{t('estimateEditor.workItems')}</h2><button className="btn btn-ghost" onClick={() => updateDocument((doc) => ({ ...doc, sections: [...doc.sections, { ...newSection(), title: t('estimateEditor.newSection') }] }))}><Plus size={16} />{t('estimateEditor.addSection')}</button></div>
           {!draft.document.sections.length && <p className="estimate-empty-items">{t('estimateEditor.noItems')}</p>}
@@ -268,14 +333,15 @@ export default function EstimateWorkspace() {
               <button className="estimate-add-item" onClick={() => updateSection(section.id, (row) => ({ ...row, items: [...row.items, { ...newItem(language), ...(draft.document.scope ? { taskId: section.id, origin: 'manual' } : {}) }] }))}><Plus size={16} />{t('estimateEditor.addItem')}</button></>}
           </section>)}
           <div className="estimate-summary"><label>{t('estimateEditor.markupRate')}<span className="estimate-markup-input"><input type="number" min="0" max="1000" step="0.1" value={draft.markup_bps / 100} onChange={(event) => edit((current) => ({ ...current, markup_bps: Math.round(Number(event.target.value) * 100) }))} />%</span></label><dl><div><dt>{t('estimateEditor.costTotal')}</dt><dd>{money(totals.costCents)}</dd></div><div><dt>{t('estimateEditor.markup')}</dt><dd>{money(totals.markupCents)}</dd></div><div><dt>{t('estimateEditor.profit')}</dt><dd>{money(totals.profitCents)}</dd></div><div className="grand"><dt>{t('estimateEditor.salePrice')}</dt><dd>{money(totals.priceCents)}</dd></div></dl><small>{t('estimateEditor.marginInfo', { value: totals.marginPercent.toFixed(1) })}</small></div>
-        </> : draft.document.scope ? <ApprovedProposal estimate={pdfRecord} saved={saveStatus === 'saved' && !conflict} onLanguage={language => updateDocument(doc => ({ ...doc, language }))} /> : <div className="estimate-proposal"><div className="estimate-proposal-actions"><h2>{t('estimateEditor.proposal')}</h2><button className="btn btn-ghost" onClick={previewPdf}><Eye size={16} />{t('estimateEditor.previewPdf')}</button><button className="btn btn-primary" onClick={downloadPdf}><Download size={16} />{t('estimateEditor.downloadPdf')}</button></div>
-          <p className="muted">{t('estimateEditor.englishDocument')}</p><div className="proposal-fields">{['intro', 'scope', 'notes', 'exclusions', 'terms'].map((key) => <label key={key}>{t(`estimateEditor.proposalFields.${key}`)}<textarea value={proposal[key] || ''} onChange={(event) => updateDocument((doc) => ({ ...doc, proposal: { ...doc.proposal, [key]: event.target.value } }))} rows={key === 'scope' ? 4 : 2} /></label>)}</div>
-          <article className="proposal-preview"><div className="proposal-brand">ONE STOP <small>Building & Remodeling · Los Angeles, CA</small></div><p className="proposal-kicker">ESTIMATE & CLIENT PROPOSAL</p><h2>{draft.title}</h2><p><b>Prepared for:</b> {client?.name || 'Client to be confirmed'}</p><p><b>Job address:</b> {project?.address || client?.address || 'To be confirmed'}</p>
-            {proposal.intro && <section><h3>Introduction</h3><p>{proposal.intro}</p></section>}{proposal.scope && <section><h3>Scope of work</h3><p>{proposal.scope}</p></section>}
-            <section><h3>Work and pricing</h3>{draft.document.sections.map((section) => <div key={section.id}><h4>{section.title}</h4>{section.items.map((item) => <div className="proposal-line" key={item.id}><span>{item.description || 'Item'} · {item.quantity} {item.unit}</span><b>{money(clientPrices.get(item.id) ?? 0)}</b></div>)}</div>)}<div className="proposal-total"><span>Total proposal</span><b>{money(totals.priceCents)}</b></div></section>
-            {Object.entries({ Notes: proposal.notes, Exclusions: proposal.exclusions, 'Terms & conditions': proposal.terms }).map(([label, value]) => value && <section key={label}><h3>{label}</h3><p>{value}</p></section>)}
-          </article></div>}
-      </main>
+        </> : draft.document.scope ? <ApprovedProposal estimate={pdfRecord} flush={flushSaved} saved={saveStatus === 'saved' && !conflict} onLanguage={language => updateDocument(doc => ({ ...doc, language }))} /> : <EstimateDocument record={pdfRecord}/>}
+      </div>
     </div>
+    <section className="proposal-fields"><h2>{b('proposalDetails')}</h2><p>{b('termsHelp')}</p>
+      <label>{b('documentLanguage')}<select value={draft.document.language || 'en'} onChange={e=>updateDocument(doc=>({...doc,language:e.target.value}))}><option value="en">English</option><option value="es">Español</option></select></label>
+      {['intro','scope','notes','exclusions','terms'].map(key=><label key={key}>{b({exclusions:'excluded',terms:'conditions'}[key]||key)}<textarea aria-label={b({exclusions:'excluded',terms:'conditions'}[key]||key)} value={draft.document.proposal[key]||''} maxLength={10000} onChange={e=>updateDocument(doc=>({...doc,proposal:{...doc.proposal,[key]:e.target.value}}))}/></label>)}
+      <button type="button" onClick={async()=>{try{const settings=await aiRequest('settings');updateDocument(doc=>({...doc,business:structuredClone(settings.data.business)}))}catch{setError(t('estimateEditor.loadError'))}}}>{b('syncBusiness')}</button>
+      <p>{b('signatureHelp')}</p>{!draft.document.business?.signatureImage&&<p>{b('signatureMissing')}</p>}
+    </section>
+    </fieldset>
   </div>
 }

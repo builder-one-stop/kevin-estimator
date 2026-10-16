@@ -1,0 +1,13 @@
+{
+  "environment": "Local Chrome, migrated PostgreSQL/PGlite, controlled model (not real AI/auth)",
+  "checks": [
+    "Generated and reviewed all 29 lines, company/scope/exclusions/provisional notices and totals inside chat",
+    "Inline quantity/terms autosave and reload on the same record",
+    "Ambiguous instruction clarified; quantity and labor-only reviewed edits preserve manual materials and terms",
+    "Failed save blocked PDF; pending edit recovered after reload without downloading stale data",
+    "Two tabs detect revision conflict and block stale PDF; explicit resolution uses server revision",
+    "Finalize is idempotent; Estimates lists the same ID and chat link without marking customer acceptance",
+    "Actual PDF downloads by button and EN/ES messages use saved revisions; full Spanish document and mobile fit"
+  ],
+  "errors": []
+}

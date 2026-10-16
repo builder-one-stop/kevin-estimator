@@ -1,3 +1,5 @@
+import { directEstimateChange } from '../shared/estimateCommands.js'
+import { isPdfRequest } from '../shared/estimatePresentation.js'
 import { ESTIMATING_MARKET, pricingAvailability } from '../shared/estimatingMarket.js'
 import { randomUUID } from 'node:crypto'
 import { compactTitle } from '../shared/chatPresentation.js'
@@ -20,7 +22,7 @@ export class EstimatorEngine {
   const projectId=estimate?estimate.project_id:row.project_id
   const client=clientId ? await this.repo.owned(owner,'clients',clientId):null
   const project=projectId ? await this.repo.owned(owner,'projects',projectId):null
-  return {market:ESTIMATING_MARKET,pricing:pricingAvailability(),plan:row.state.plan,pendingPlan:row.state.run?.contextPlan||row.state.pending?.plan||null,approvedRevision:row.state.approvedRevision,estimate,client,project,documentLanguage:row.state.documentLanguage}
+  return {market:ESTIMATING_MARKET,pricing:pricingAvailability(),plan:row.state.plan,pendingPlan:row.state.run?.contextPlan||row.state.pending?.plan||null,approvedRevision:row.state.approvedRevision,estimate,client,project,documentLanguage:estimate?.document.language||row.state.documentLanguage}
  }
  async command(owner,id,input,{dispatch}={}) {
   const body=bodySchema.parse(input); await this.repo.expire(owner)
@@ -29,6 +31,19 @@ export class EstimatorEngine {
   if(row.version!==body.version)throw fail('CONFLICT',409)
   const s=row.state, working=s.run?.status==='working'
   if(working && body.action!=='cancel')throw fail('RUN_BUSY',409)
+  if(body.action==='message' && body.content?.trim()) {
+   const pdf=isPdfRequest(body.content)
+   const directRecord=!pdf&&row.estimate_id?await this.repo.estimate(owner,row.estimate_id):null
+   const direct=directRecord?directEstimateChange(directRecord,body.content,s.planRevision+1,directRecord.document.language||s.documentLanguage):null
+   if(pdf||direct){
+    if(s.messages.length+2>80)throw fail('TURN_LIMIT')
+    const response=pdf?(s.documentLanguage==='es'?'Usa Descargar PDF en el documento para guardar y exportar la revisión actual. No se ha creado ningún enlace de descarga.':'Use Download PDF on the document to save and export the current revision. No download link has been created.'):direct.message
+    s.messages.push({id:body.requestId,role:'user',content:body.content,createdAt:new Date().toISOString()},{id:randomUUID(),role:'assistant',content:response,createdAt:new Date().toISOString()})
+    if(direct)s.pending=direct.pending||null
+    s.receipts=[...s.receipts,body.requestId].slice(-200)
+    return this.repo.commit(owner,row,row.version)
+   }
+  }
   let estimate=null,estimateVersion=null,origin='ai'
   if(body.action==='cancel') {
    s.run={...s.run,status:'cancelled',preview:''};this.active.get(s.run.id)?.abort()

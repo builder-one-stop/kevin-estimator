@@ -6,11 +6,13 @@ import { calculateEstimate, ESTIMATE_STATUSES } from '../lib/estimateDocument.js
 import { createEstimate, deleteEstimate, duplicateEstimate, listEstimates } from '../services/estimates.js'
 import { formatMoney } from '../lib/money.js'
 import { useAiText } from '../components/ai/strings.js'
+import { bridgeText } from '../../shared/estimatePresentation.js'
 import EmptyState from '../components/ui/EmptyState.jsx'
 
 export default function Estimates() {
   const { t } = useTranslation()
-  const { a } = useAiText()
+  const { a, language } = useAiText()
+  const b = bridgeText(language)
   const navigate = useNavigate()
   const [rows, setRows] = useState([])
   const [query, setQuery] = useState('')
@@ -65,8 +67,8 @@ export default function Estimates() {
       : visible.length === 0 ? <p className="contact-message">{t('estimateEditor.noResults')}</p>
         : <div className="estimate-list"><div className="estimate-list-head"><span>{t('estimateEditor.name')}</span><span>{t('estimateEditor.client')}</span><span>{t('estimateEditor.total')}</span><span>{t('estimateEditor.status')}</span><span>{t('estimateEditor.modified')}</span><span /></div>
           {visible.map((row) => <div className="estimate-list-row" key={row.id}><Link to={`/estimates/${row.id}`} className="estimate-list-name">{row.title}</Link><span>{row.client?.name || '—'}</span>
-            <strong>{formatMoney(calculateEstimate(row.document, row.markup_bps).priceCents / 100)}</strong><span className="tag">{t(`estimateStatus.${row.status}`)}</span>
-            <time dateTime={row.updated_at}>{new Date(row.updated_at).toLocaleDateString()}</time><div className="estimate-row-actions"><button type="button" disabled={busy} onClick={() => copy(row)}>{t('estimateEditor.duplicate')}</button><button type="button" disabled={busy} onClick={() => remove(row)}>{t('estimateEditor.delete')}</button></div></div>)}
+            <strong>{formatMoney(calculateEstimate(row.document, row.markup_bps).priceCents / 100)}</strong><span className="tag">{t(`estimateStatus.${row.status}`)}{row.finalized_at&&row.finalized_version===row.version&&<> · {b('finalized')}</>}</span>
+            <time dateTime={row.updated_at}>{new Date(row.updated_at).toLocaleDateString()}</time><div className="estimate-row-actions">{row.document.conversationId&&<Link to={`/chat/${row.document.conversationId}`}>{a('backChat')}</Link>}<button type="button" disabled={busy} onClick={() => copy(row)}>{t('estimateEditor.duplicate')}</button><button type="button" disabled={busy} onClick={() => remove(row)}>{t('estimateEditor.delete')}</button></div></div>)}
         </div>}
   </div>
 }

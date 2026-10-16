@@ -1,0 +1,67 @@
+import { chromium,expect } from '@playwright/test'
+import { mkdir,writeFile } from 'node:fs/promises'
+import { startHarness } from './ai-local-harness.mjs'
+const out='evidence/chat-estimate-bridge',h=await startHarness();await mkdir(out,{recursive:true});await mkdir('output/pdf',{recursive:true})
+const browser=await chromium.launch({channel:'chrome',headless:true}),context=await browser.newContext({viewport:{width:1440,height:1000},acceptDownloads:true})
+await context.addInitScript(()=>localStorage.setItem('os-lang','en'))
+const page=await context.newPage(),report={environment:'Local Chrome, migrated PostgreSQL/PGlite, controlled model (not real AI/auth)',checks:[],errors:[]};page.on('pageerror',e=>report.errors.push(e.message))
+const check=x=>{report.checks.push(x);console.info(x)}
+try{
+ const [client]=await h.repo.query("insert into clients(owner_id,name,email) values($1,'BRIDGE TEST client','synthetic@example.invalid') returning *",[h.user]);const [project]=await h.repo.query("insert into projects(owner_id,client_id,name) values($1,$2,'BRIDGE TEST project') returning *",[h.user,client.id])
+ await page.goto(h.url+'/__fixture/session');await page.getByRole('button',{name:'Enter test workspace'}).click()
+ await page.getByRole('button',{name:'New conversation',exact:true}).click();await page.waitForURL(/\/chat\/[0-9a-f-]+$/);const chatUrl=page.url()
+ await page.locator('summary').filter({hasText:'Contact (optional)'}).click();await page.getByRole('combobox',{name:'Project (optional)',exact:true}).selectOption(project.id);await page.getByRole('button',{name:'Save links'}).click()
+ const prompt=page.getByRole('textbox',{name:'Describe the work or request a change'}),send=async text=>{await prompt.fill(text);await page.getByRole('button',{name:'Send',exact:true}).click()}
+ await send('Seven rooms painting');await expect(page.getByRole('button',{name:'Approve this revision'})).toBeDisabled();await expect(page.getByRole('heading',{name:/Questions to resolve/})).toBeVisible({timeout:20000})
+ await send('Confirm height assumption');await expect(page.getByRole('button',{name:'Approve this revision'})).toBeEnabled({timeout:20000});await page.getByRole('button',{name:'Approve this revision'}).click();await page.getByRole('button',{name:'Generate estimate',exact:true}).click()
+ const doc=page.getByTestId('complete-estimate'),saved=page.locator('.estimate-save')
+ await expect(doc).toContainText('$4,008.60',{timeout:20000});await expect(doc.locator('tbody tr:not(.document-section)')).toHaveCount(29)
+ await expect(doc).toContainText(client.name);await expect(doc).toContainText(project.name);
+ check('Generated and reviewed all 29 lines, company/scope/exclusions/provisional notices and totals inside chat')
+ const conversation=await h.repo.get(h.user,chatUrl.split('/').at(-1)),id=conversation.estimate_id,record=()=>h.repo.estimate(h.user,id)
+ await page.getByRole('button',{name:'Edit document',exact:true}).click()
+ await page.getByLabel('Qty',{exact:true}).first().fill('3');await page.getByLabel('Terms and conditions',{exact:true}).fill('Payment terms require a separately agreed written schedule. Manual test condition.')
+ await expect(saved).toHaveText('Saved',{timeout:10000});await page.reload();await expect(doc).toContainText('Manual test condition.')
+ expect((await record()).document.sections[0].items[0].quantity).toBe('3');check('Inline quantity/terms autosave and reload on the same record')
+ const beforeAmbiguous=await record();await send('Cambia la pintura a tres galones');await expect(page.locator('.ai-message.assistant').last()).toContainText('Specify the item and room',{timeout:20000});expect((await record()).version).toBe(beforeAmbiguous.version)
+ await send('Change Bedroom 2 Walls to three gallons');await expect(page.getByRole('button',{name:'Approve scope and apply changes'})).toBeVisible({timeout:20000});expect((await record()).document.sections[1].items[0].quantity).toBe(2)
+ await page.getByRole('button',{name:'Approve scope and apply changes'}).click();await expect(page.getByRole('heading',{name:/Review proposed changes/})).toHaveCount(0);await expect.poll(async()=>(await record()).document.sections[1].items[0].quantity).toBe(3)
+ const preLabor=await record();await send('Mantén los materiales y baja la mano de obra un 5 %');await expect(page.getByRole('button',{name:'Approve scope and apply changes'})).toBeVisible();await page.getByRole('button',{name:'Approve scope and apply changes'}).click();await expect.poll(async()=>(await record()).version).toBe(preLabor.version+1)
+ const afterLabor=await record();expect(afterLabor.document.sections.flatMap(s=>s.items).filter(i=>i.costType==='material')).toEqual(preLabor.document.sections.flatMap(s=>s.items).filter(i=>i.costType==='material'));expect(afterLabor.document.proposal.terms).toContain('Manual test condition');check('Ambiguous instruction clarified; quantity and labor-only reviewed edits preserve manual materials and terms')
+ await expect(doc).toContainText('Revision '+afterLabor.version,{timeout:10000})
+ await page.getByRole('button',{name:'Edit document',exact:true}).click()
+ // A failed save must preserve the draft and must not download an older PDF.
+ const route='**/rest/v1/estimates?**';await page.route(route,async r=>r.request().method()==='PATCH'?r.fulfill({status:503,contentType:'application/json',body:'{"message":"Controlled offline save"}'}):r.continue())
+ await page.getByLabel('Terms and conditions',{exact:true}).fill('RECOVERABLE manual condition')
+ let downloads=0;page.on('download',()=>downloads++)
+ await page.getByRole('button',{name:'Download PDF',exact:true}).click();await expect(page.getByText('The current revision could not be saved or exported. No older PDF was downloaded.',{exact:true})).toBeVisible();expect(downloads).toBe(0)
+ await page.reload();await expect(doc).toContainText('RECOVERABLE manual condition',{timeout:10000});await expect(saved).toHaveText('Save failed',{timeout:10000})
+ await page.unroute(route)
+ // Existing recovery UI explicitly adopts the retained local draft.
+ const recover=page.getByRole('button',{name:/^Recover:/});if(await recover.count())await recover.first().click()
+ const keep=page.getByRole('button',{name:/Save my draft/});if(await keep.count())await keep.click();const retrySave=page.getByRole('button',{name:'Retry save',exact:true});if(await retrySave.count())await retrySave.click()
+ await expect.poll(async()=>(await record()).document.proposal.terms).toBe('RECOVERABLE manual condition')
+ check('Failed save blocked PDF; pending edit recovered after reload without downloading stale data')
+ // Conflict between chat and standalone editor while local edit cannot save.
+ const second=await context.newPage();await second.goto(h.url+'/estimates/'+id);await expect(second.getByLabel('Qty',{exact:true}).first()).toBeVisible();await page.getByRole('button',{name:'Edit document',exact:true}).click()
+ await page.route(route,async r=>r.request().method()==='PATCH'?r.fulfill({status:503,contentType:'application/json',body:'{"message":"Controlled offline save"}'}):r.continue())
+ await page.getByLabel('Terms and conditions',{exact:true}).fill('KEEP THIS LOCAL CONDITION')
+ await second.getByLabel('Qty',{exact:true}).first().fill('4');await expect(second.locator('.estimate-save')).toHaveText('Saved',{timeout:10000})
+ await expect(page.locator('.estimate-error[role=alert]')).toContainText('changed elsewhere',{timeout:10000});await expect(page.getByRole('button',{name:'Download PDF',exact:true})).toBeDisabled()
+ await page.unroute(route);await page.getByRole('button',{name:/Use remote version/}).click();await expect(saved).toHaveText('Saved');await second.close();check('Two tabs detect revision conflict and block stale PDF; explicit resolution uses server revision')
+ await page.getByRole('button',{name:'Finalize estimate',exact:true}).click();await expect(doc).toContainText('Finalized',{timeout:15000})
+ const finalized=await record();expect(finalized.status).toBe('Draft');expect(finalized.finalized_version).toBe(finalized.version)
+ await page.getByRole('button',{name:'Finalize estimate',exact:true}).click();await expect(saved).toHaveText('Saved');expect((await record()).version).toBe(finalized.version)
+ await page.goto(h.url+'/estimates');const listrow=page.locator('.estimate-list-row').filter({has:page.locator(`a[href="/estimates/${id}"]`)});await expect(listrow).toContainText('Finalized');await expect(listrow.locator(`a[href="/chat/${conversation.id}"]`)).toBeVisible()
+ await page.goto(chatUrl);await expect(doc).toContainText('Finalized');check('Finalize is idempotent; Estimates lists the same ID and chat link without marking customer acceptance')
+ const buttonDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Download PDF',exact:true}).click();await (await buttonDownload).saveAs('output/pdf/chat-estimate-en.pdf')
+ const messageDownload=page.waitForEvent('download');await send('Export as PDF');await (await messageDownload).saveAs(out+'/written-request.pdf');expect((await record()).version).toBe(finalized.version)
+ await page.getByRole('button',{name:'Edit document',exact:true}).click();await page.getByRole('combobox',{name:'Document language',exact:true}).last().selectOption('es');await expect(saved).toHaveText('Saved');await page.getByRole('button',{name:'Review document',exact:true}).click();await expect(doc).toContainText('Alcance del trabajo');await expect(doc).toContainText('RECOVERABLE manual condition')
+ await page.getByRole('combobox',{name:'Interface language',exact:true}).selectOption('es')
+ const spanishDownload=page.waitForEvent('download');await page.getByRole('textbox',{name:'Describe el trabajo o pide un cambio'}).fill('Pasar a PDF');await page.getByRole('button',{name:'Enviar',exact:true}).click();await (await spanishDownload).saveAs('output/pdf/chat-estimate-es.pdf')
+ await doc.scrollIntoViewIfNeeded();await page.screenshot({path:out+'/desktop-es.png',fullPage:true})
+ await page.setViewportSize({width:390,height:844});await doc.scrollIntoViewIfNeeded();await page.screenshot({path:out+'/mobile-es.png',fullPage:true});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true)
+ check('Actual PDF downloads by button and EN/ES messages use saved revisions; full Spanish document and mobile fit')
+ expect(report.errors).toEqual([]);await writeFile(out+'/saved-record.json',JSON.stringify(await record(),null,2))
+}catch(e){report.failure=e.message;await writeFile(out+'/failure-dom.txt',await page.locator('body').innerText());await page.screenshot({path:out+'/failure.png',fullPage:true});process.exitCode=1;console.error(e.message)}
+finally{await writeFile(out+'/report.json',JSON.stringify(report,null,2));await browser.close();await h.close()}

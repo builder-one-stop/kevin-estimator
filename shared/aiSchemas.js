@@ -42,7 +42,7 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
   sku: z.string().max(100), checkedAt: z.string().date(), status: z.enum(['manual','provisional','verified']), evidence: text,
 }).strict().refine(x => x.status !== 'verified' || (x.evidence && x.vendor && x.location && (x.url || x.sku)), 'Verification requires source evidence, vendor, location and URL/SKU')
 export const settingsSchema = z.object({ preferences: z.array(preferenceSchema).max(40), catalog: z.array(catalogSchema).max(500),
-  business: z.object({ name: z.string().max(120), address: text, phone: z.string().max(80), license: z.string().max(80) }).strict(),
+  business: z.object({ name: z.string().max(120), address: text, phone: z.string().max(80), license: z.string().max(80), signerName: z.string().max(120).optional(), signerTitle: z.string().max(120).optional(), signatureImage: z.string().max(140000).regex(/^(?:data:image\/(?:png|jpeg);base64,[A-Za-z0-9+/]+={0,2})?$/).optional() }).strict(),
   labor: z.object({ hourlyRate: z.number().min(0).max(10000), productivity: text }).strict(),
 }).strict().refine(x => new Set(x.catalog.map(c=>c.id)).size === x.catalog.length && new Set(x.preferences.map(p=>p.id)).size === x.preferences.length, 'Duplicate catalog or preference ID')
 export const defaultSettings = () => ({ preferences: [], catalog: [], business: { name: 'One Stop Building & Remodeling', address: '', phone: '', license: '' }, labor: { hourlyRate: 0, productivity: '' } })

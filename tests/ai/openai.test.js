@@ -27,6 +27,12 @@ describe('Responses adapter, mocked transport only',()=>{
   const result=await p.run(args);expect(JSON.parse(calls[1].input.at(-1).output)).toEqual({preferences:args.settings.preferences,labor:args.settings.labor})
   expect(calls[0].instructions).toContain('Current user instructions override saved preferences');expect(result.metrics.estimatedCostUsd).toBeNull();expect(result.metrics.usage.input_tokens).toBe(200)
  })
+ it('withholds the authorized signature from initial context and read_context tool outputs',async()=>{
+  const p=new ResponsesProvider({}),calls=[];let n=0
+  p.client={responses:{create:async args=>{calls.push(structuredClone(args));return n++===0?response([{type:'function_call',name:'read_context',arguments:'{}',call_id:'context'}]):{...response([]),output_text:JSON.stringify({message:'Review',plan:fixturePlan,lines:[],changes:[]})}}}}
+  const args=input();args.context.estimate={document:{business:{name:'One Stop',signatureImage:'PRIVATE_AUTHORIZED_SIGNATURE'}}}
+  await p.run(args);expect(JSON.stringify(calls)).not.toContain('PRIVATE_AUTHORIZED_SIGNATURE');expect(args.context.estimate.document.business.signatureImage).toBe('PRIVATE_AUTHORIZED_SIGNATURE')
+ })
  it('refuses incomplete/refusal outputs and preserves measured usage on bounded failure',async()=>{
   const p=new ResponsesProvider({});p.client={responses:{create:async()=>({...response([]),status:'incomplete',output_text:''})}}
   await expect(p.run(input())).rejects.toMatchObject({code:'MODEL_INCOMPLETE',metrics:{usage:{input_tokens:100,output_tokens:50,cached_tokens:20}}})
