@@ -32,6 +32,7 @@ it('requires location only at clock-in, validates exact shape, and disallows cal
  const base={id:crypto.randomUUID(),projectId:crypto.randomUUID(),kind:'in'},location={latitude:34,longitude:-118,accuracy:800,capturedAt:new Date().toISOString()}
  expect(workerSchemas.clock.safeParse(base).success).toBe(false)
  expect(workerSchemas.clock.safeParse({...base,location}).success).toBe(true)
+ expect(workerSchemas.clock.parse({...base,location:{...location,capturedAt:'2026-10-16T08:00:00-07:00'}}).location.capturedAt).toBe('2026-10-16T15:00:00.000Z')
  for(const changed of [{latitude:91},{longitude:181},{accuracy:-1},{accuracy:Infinity},{capturedAt:'invalid'},{latitude:'34'}])expect(workerSchemas.clock.safeParse({...base,location:{...location,...changed}}).success).toBe(false)
  for(const extra of [{workerId:crypto.randomUUID()},{at:new Date().toISOString()}])expect(workerSchemas.clock.safeParse({...base,location,...extra}).success).toBe(false)
  expect(workerSchemas.clock.safeParse({...base,kind:'out'}).success).toBe(true);expect(workerSchemas.clock.safeParse({...base,kind:'out',location}).success).toBe(false)

@@ -11,7 +11,7 @@ const password = z
   .refine((value) => Buffer.byteLength(value, 'utf8') <= 72)
 const name = z.string().trim().min(1).max(120)
 const reason = z.string().trim().min(3).max(1000)
-export const entryLocationSchema = z.object({latitude:z.number().finite().min(-90).max(90),longitude:z.number().finite().min(-180).max(180),accuracy:z.number().finite().nonnegative(),capturedAt:z.string().datetime({offset:true})}).strict()
+export const entryLocationSchema = z.object({latitude:z.number().finite().min(-90).max(90),longitude:z.number().finite().min(-180).max(180),accuracy:z.number().finite().nonnegative(),capturedAt:z.string().datetime({offset:true}).transform(value=>new Date(value).toISOString())}).strict()
 const correction = {
   shiftId: uuid,
   eventId: uuid.nullable(),
