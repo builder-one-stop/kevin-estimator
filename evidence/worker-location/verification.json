@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-10-16T22:33:49.910Z",
+  "status": "implemented and published; manager-session and physical-phone acceptance pending",
+  "branch": "feat/ai-estimator-approved-plan",
+  "functionalCommit": "a396ab7c744ed0430ed9fc5c6eb59dc9de8b8ffe",
+  "deploy": "6ad2a545fc6b68365b17c601",
+  "migration": {
+    "version": "20261016221552",
+    "project": "vtpciccluvpaclbeqxih",
+    "applied": true,
+    "schemaLint": "no errors"
+  },
+  "local": {
+    "tests": 148,
+    "files": 30,
+    "lint": "passed",
+    "build": "passed; existing chunk-size warning",
+    "browser": "passed; controlled Auth/geolocation"
+  },
+  "beta": {
+    "workerPasswordSessions": "two temporary normal Auth accounts",
+    "assertions": 37,
+    "errors": [],
+    "cleanup": {
+      "failures": [],
+      "scope": "Only UUIDs created by this run; notifications cascade with their test shifts"
+    },
+    "utcOffsetProbe": "passed on latest functional commit; cleanup successful",
+    "managerSession": "not exercised; optional current-credential input was not received",
+    "notificationRecipient": "real existing worker-manager relationship; durable unread row inspected with service access"
+  },
+  "pending": [
+    "Real Kevin/manager session: live UI, read state and shift link on beta",
+    "Physical phone GPS and permission prompts; all automated fixes were controlled"
+  ]
+}

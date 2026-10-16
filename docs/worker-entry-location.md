@@ -35,3 +35,13 @@ Worker: sign in with the account created by your administrator, choose an assign
 Kevin/manager: remain signed in; the notification badge updates within roughly 5 seconds while the tab is visible. Open Notifications, inspect the report/map, mark the notice read explicitly or open its existing shift. The same fix appears in Time tracking and project Hours. A manual correction retains the original location and its original time.
 
 Physical phone permission/GPS behavior requires an actual device test. Automated positions are identified as controlled throughout the evidence.
+
+## Observed rollout (2026-10-16)
+
+- Migration `20261016221552` applied to Supabase project `vtpciccluvpaclbeqxih`; remote SQL lint found no schema errors. Security advisors have the same seven pre-existing warnings, with no new worker/location/notification finding (see `advisors.json`). They concern old client/estimate helpers, the intentional beta role lookup and Auth leaked-password configuration.
+- Main feature commit `b80b01a` published on the existing Netlify beta branch. A follow-up normalizes client capture instants with offsets to UTC before persistence (`a396ab7`); its focused schema tests passed.
+- Real beta verification used two disposable normal Auth users/password sessions, the existing Kevin owner relationship and a new identifiable QA project. All 37 assertions passed, including direct request rejection, SQL stale checks, low accuracy, actual worker UI, map/time agreement, one unread notification for the linked manager, RLS/UUID denial between workers, concurrency/retry, breaks/out, unassignment and deactivation. Cleanup reported no failures and removed only this run's objects, including its notifications through their shift references.
+- Manager-notification rows were inspected with privileged service access in this remote run. **The existing Kevin/manager login, notification UI/live receipt and read action on the beta have not yet been exercised with a real manager session.** These flows passed only in the explicitly controlled local browser harness. Optional secure manager input is still pending; no credentials or passwords were changed.
+- **No physical GPS or actual phone permission prompt has been verified.** Browser geolocation was explicitly controlled; indoor accuracy and one-time permission behavior still require a physical-device check.
+
+Latest functional publication confirmed: `a396ab7c744ed0430ed9fc5c6eb59dc9de8b8ffe`, Netlify deploy `6ad2a545fc6b68365b17c601`, ready at 2026-10-16T22:33:40.521Z. A focused real-password beta request with an explicit client timezone offset verified canonical UTC persistence on this version; its temporary objects were removed (`beta-utc.json`).

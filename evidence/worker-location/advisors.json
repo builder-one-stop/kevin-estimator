@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-10-16T22:28:43.508Z",
+  "issues": [
+    {
+      "name": "function_search_path_mutable",
+      "level": "WARN",
+      "metadata": {
+        "name": "set_clients_updated_at",
+        "schema": "public",
+        "type": "function"
+      }
+    },
+    {
+      "name": "anon_security_definer_function_executable",
+      "level": "WARN",
+      "metadata": {
+        "name": "capture_estimate_baseline",
+        "schema": "public"
+      }
+    },
+    {
+      "name": "anon_security_definer_function_executable",
+      "level": "WARN",
+      "metadata": {
+        "name": "capture_estimate_revision",
+        "schema": "public"
+      }
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "level": "WARN",
+      "metadata": {
+        "name": "beta_account_role",
+        "schema": "public"
+      }
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "level": "WARN",
+      "metadata": {
+        "name": "capture_estimate_baseline",
+        "schema": "public"
+      }
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "level": "WARN",
+      "metadata": {
+        "name": "capture_estimate_revision",
+        "schema": "public"
+      }
+    },
+    {
+      "name": "auth_leaked_password_protection",
+      "level": "WARN",
+      "metadata": {
+        "entity": "Auth",
+        "type": "auth"
+      }
+    }
+  ]
+}

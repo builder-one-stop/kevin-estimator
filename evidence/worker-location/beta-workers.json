@@ -1,0 +1,53 @@
+{
+  "checkedAt": "2026-10-16T22:31:36.364Z",
+  "origin": "https://onestop-beta.netlify.app",
+  "scope": "Real Supabase password worker sessions + beta API; controlled geolocation, not physical GPS",
+  "managerSession": false,
+  "checks": [
+    "existing Kevin relationship resolved from role record",
+    "isolated QA project created",
+    "temporary worker Auth user created",
+    "temporary worker profile uses real manager relation",
+    "temporary assignment",
+    "real worker password session",
+    "temporary worker Auth user created",
+    "temporary worker profile uses real manager relation",
+    "temporary assignment",
+    "real worker password session",
+    "direct HTTP clock-in without location denied",
+    "malformed location rejected by HTTP validation",
+    "malformed location rejected by HTTP validation",
+    "malformed location rejected by HTTP validation",
+    "stale location rejected by database",
+    "caller cannot select another worker",
+    "worker cannot use notifications API",
+    "real worker UI clock-in with controlled fresh geolocation saved",
+    "one canonical shift after UI clock-in",
+    "one durable unread notification for real linked manager",
+    "low accuracy accepted and retained",
+    "saved map coordinates, advisory accuracy and Los Angeles time match UI",
+    "same-project worker cannot read foreign GPS in dashboard",
+    "foreign shift UUID protected by RLS",
+    "foreign notification UUID protected by RLS",
+    "foreign notification write denied",
+    "real beta worker mobile EN/ES fit",
+    "existing break_start requires no location",
+    "existing break_end requires no location",
+    "existing out requires no location",
+    "concurrent real requests create only one open shift",
+    "real retry returns same shift",
+    "concurrent requests/retry create one notification",
+    "notification count grows by exactly one",
+    "QA worker unassigned",
+    "unassigned worker new entry denied",
+    "inactive worker new entry denied"
+  ],
+  "errors": [],
+  "cleanup": {
+    "failures": [],
+    "scope": "Only UUIDs created by this run; notifications cascade with their test shifts"
+  },
+  "pending": [
+    "Existing manager login/UI/API not exercised; notifications inspected with service access"
+  ]
+}

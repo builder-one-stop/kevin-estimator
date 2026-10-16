@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-16T22:34:27.963Z",
+  "commit": "a396ab7",
+  "controlledPosition": true,
+  "checks": [
+    "real linked owner",
+    "isolated project",
+    "temporary Auth account",
+    "worker fixture",
+    "assigned fixture",
+    "real password session",
+    "published clock API accepted explicit capture offset",
+    "device instant persisted canonically in UTC",
+    "official server instant independent from client capture"
+  ],
+  "cleanup": []
+}

@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-16T22:30:42.333Z",
+  "tests": {
+    "passed": 148,
+    "files": 30,
+    "command": "npm test -- --maxWorkers=1 --reporter=dot",
+    "initialParallelTimeouts": "two existing tests exceeded limits under concurrent browser/build load; serial run passed"
+  },
+  "lint": "passed",
+  "build": "passed; existing large-chunk warning",
+  "sqlLint": "remote schema passed",
+  "physicalGps": "not tested; automated controlled positions",
+  "adminSession": "optional secure input pending"
+}
