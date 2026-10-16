@@ -1,0 +1,53 @@
+{
+  "origin": "https://onestop-beta.netlify.app",
+  "checks": [
+    "manager creates own test project",
+    "create worker 1",
+    "creation retry returns same account",
+    "worker 1 password login",
+    "create worker 2",
+    "creation retry returns same account",
+    "worker 2 password login",
+    "unassigned worker empty state",
+    "manager assigns project",
+    "worker receives only safe assigned project fields",
+    "worker denied CRM clients",
+    "worker denied CRM projects",
+    "worker denied CRM estimates",
+    "worker denied CRM estimate_messages",
+    "worker denied CRM ai_conversations",
+    "worker denied CRM ai_settings",
+    "worker denied CRM ai_attachments",
+    "worker denied CRM estimate_revisions",
+    "worker cannot administer assignments",
+    "worker cannot modify role/owner",
+    "worker cannot change password directly",
+    "user-editable metadata accepted as data only",
+    "forged metadata does not grant administration",
+    "anonymous workers read denied",
+    "reserve progress upload",
+    "authenticated assigned worker uploads private photo",
+    "server verifies uploaded photo",
+    "authorized short-lived viewing URL works",
+    "worker B cannot view worker A evidence",
+    "direct foreign storage download denied",
+    "anonymous storage access denied",
+    "two devices cannot open two shifts",
+    "start break",
+    "lost-response retry is idempotent",
+    "break close requires confirmation",
+    "open shift prevents silent deactivation",
+    "return from break",
+    "clock out",
+    "worker requests correction",
+    "correction approval preserves audit",
+    "worker 1 real mobile browser login, direct CRM route guard, EN/ES and reload",
+    "worker 2 real mobile browser login, direct CRM route guard, EN/ES and reload"
+  ],
+  "errors": [
+    "expect(locator).toBeVisible() failed\n\nLocator: getByRole('heading', { name: 'QA Worker 1', exact: true })\nExpected: visible\nError: strict mode violation: getByRole('heading', { name: 'QA Worker 1', exact: true }) resolved to 2 elements:\n    1) <h2>QA Worker 1</h2> aka getByRole('article').filter({ hasText: 'QA Worker 1qa-workers-' }).getByRole('heading')\n    2) <h2>QA Worker 1</h2> aka getByRole('article').filter({ hasText: 'QA Worker 1qa-worker-fixture-' }).getByRole('heading')\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('heading', { name: 'QA Worker 1', exact: true }) with timeout 5000ms\n  - waiting for getByRole('heading', { name: 'QA Worker 1', exact: true })\n"
+  ],
+  "cleanup": {
+    "failures": []
+  }
+}

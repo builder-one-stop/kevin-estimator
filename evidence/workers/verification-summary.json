@@ -17,7 +17,24 @@
     "code": "invalid_credentials",
     "httpStatus": 400
   },
-  "betaDeployment": "not performed",
+  "betaDeployment": {
+    "site": "https://onestop-beta.netlify.app",
+    "deployId": "6ad1bf25e8e6f737efcf30f9",
+    "applicationCommit": "063347d1eede8c07f714e4e81350aff03df5d33f"
+  },
   "bundleSecretScan": "no privileged values found",
-  "remoteAdministrativeChecks": 52
+  "remoteAdministrativeChecks": 52,
+  "betaWorkerChecks": 57,
+  "betaWorkerErrors": [],
+  "betaAdministrativeChecks": 42,
+  "betaAdministrativeCompletion": "partial: ambiguous test locator stopped the browser step; selector corrected; remaining steps not rerun",
+  "betaAdministrativeUi": "existing signed-in Chrome session: Workers list and Create worker form verified",
+  "betaCleanup": {
+    "administrative": {
+      "failures": []
+    },
+    "fixture": {
+      "failures": []
+    }
+  }
 }

@@ -11,7 +11,7 @@ Scope: `builder-one-stop/kevin-estimator`, branch `feat/ai-estimator-approved-pl
 - [worker and manager browser verified] Bilingual mobile worker interface, administrative supervision and project tabs.
 - [passed] Local SQL, permission/concurrency, API, UI and regression tests; two real remote worker sessions and mobile browser verification.
 - [applied and verified] Versioned migration rollout.
-- [local review complete; publication pending] Reviewed implementation and verification evidence prepared for a local commit. Push and beta deployment are gated on actual administrative-session verification.
+- [published; full beta administrative rerun pending] Application published to the existing beta. Independent worker checks passed; the administrative beta run stopped on an ambiguous test selector after 42 checks.
 
 ## Initial observations
 
@@ -26,7 +26,7 @@ This document records actual completion and remaining verification; unchecked it
 
 ## Current verified state
 
-- Netlify site `ce81887b-c941-40c3-8da4-13d6fc833290` is `onestop-beta.netlify.app`, linked to this repository and branch; published baseline is `3e5a98f0e774b081154d9cfd7cf53afc7702ee79`.
+- Netlify site `ce81887b-c941-40c3-8da4-13d6fc833290` is `onestop-beta.netlify.app`, linked to this repository and branch; pre-module baseline was `3e5a98f0e774b081154d9cfd7cf53afc7702ee79`. The tested module application commit is `063347d1eede8c07f714e4e81350aff03df5d33f`, deploy `6ad1bf25e8e6f737efcf30f9` (`ready`).
 - Migration `20261016052330_workers_module.sql` applied to `vtpciccluvpaclbeqxih` through Supabase CLI after dry run. All six tables have RLS; private bucket verified; public entry point executable only by service role. Both original beta grants unchanged.
 - Security advisors: eight pre-existing warnings; no new worker-related finding.
 - Full suite passed **125 tests / 26 files** with `npm test -- --maxWorkers=1`; lint/build passed. Netlify functions bundled, including hourly cleanup. The existing Vite bundle-size warning remains.
@@ -35,4 +35,7 @@ This document records actual completion and remaining verification; unchecked it
 - Added regression coverage for a stale polling response after mutation, EN/ES preservation of an unsaved form, and assignment retry after partial account creation without recreating the account.
 - After two rejected administrative login attempts (`invalid_credentials`, HTTP 400), the new submission authenticated successfully. **52 real-manager/worker checks passed** against remote Supabase through the local app: actual account creation and idempotent retry, assignments, private media, corrections/approval, administrative project views, password reset, old-password rejection and existing-session revocation. Cleanup succeeded. No existing administrative password was changed.
 - A subsequent form submission stalled on an unused Chrome preconnection. An attempted runtime recovery terminated the process before any Auth result was recorded; this was not a confirmed credential rejection. The one-use form now closes its connections after flushing its response. All three form tests passed, including the new idle-preconnection regression; a fresh submission was requested without retaining the old values.
-- Local commits `2770657` and `5230865` contain the implementation and form fix. The administrative verification gate has now passed; the authorized beta publication and verification are next.
+- Commits `2770657`, `5230865` and `063347d` were pushed to the existing beta branch after the real administrative gate passed. No main merge.
+- **Beta: 57 worker checks passed**, including real JPEG/WebM render/playback, route guards, EN/ES, CRM isolation and existing-token deactivation. **42 administrative/worker checks passed** before the manager browser assertion matched two disposable workers with the same display name. This is a test-locator error, not evidence of an application failure; it still means the remaining ten beta steps were not executed. Those ten checks passed locally against the same remote database. The selector is now scoped to the unique worker email and test names include the reservation prefix.
+- The existing signed-in Chrome session independently confirmed the published Workers list and the Create worker form with name, email, initial password and assignments. Screenshot: `evidence/workers/admin-create-beta.png`. No new credentials were entered through browser control.
+- Cleanup succeeded for both beta runs. The additional full beta administrative rerun (project views, unassignment, deactivation and reset through the deployed administrative API) remains pending a fresh secure administrative login; the earlier one-use script discarded its credentials on exit. The form at localhost:8792 is therefore closed. No further password entry is needed just to use the published application.

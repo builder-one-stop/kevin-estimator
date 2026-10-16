@@ -80,12 +80,13 @@ async function run(origin, credentials) {
     for (let n = 0; n < 2; n++) {
       const password = `QA-${randomUUID()}!`,
         email = `qa-workers-${randomUUID()}@example.invalid`,
-        id = randomUUID()
+        id = randomUUID(),
+        name = `QA Worker ${n + 1} ${id.slice(0, 8)}`
       // Retain reservation identity even if a later operation fails.
       workers.push({ id, email, password })
-      const created = await api(token, 'create', { id, email, password, name: `QA Worker ${n + 1}` })
+      const created = await api(token, 'create', { id, email, password, name })
       check(created.status === 200, `create worker ${n + 1}`)
-      const retry = await api(token, 'create', { id, email, password, name: `QA Worker ${n + 1}` })
+      const retry = await api(token, 'create', { id, email, password, name })
       check(retry.data.user_id === created.data.user_id, 'creation retry returns same account')
       Object.assign(workers[n], created.data)
       const db = client(),
@@ -267,7 +268,12 @@ async function run(origin, credentials) {
     await managerPage.getByLabel('Password', { exact: true }).fill(credentials.password)
     await managerPage.getByRole('button', { name: 'Sign in', exact: true }).click()
     await expect(managerPage.getByRole('heading', { name: 'Workers', exact: true })).toBeVisible()
-    await expect(managerPage.getByRole('heading', { name: a.name, exact: true })).toBeVisible()
+    await expect(
+      managerPage
+        .getByRole('article')
+        .filter({ hasText: a.email })
+        .getByRole('heading', { name: a.name, exact: true }),
+    ).toBeVisible()
     await managerPage.goto(`${origin}/projects/${project}/hours`)
     await expect(managerPage.getByRole('heading', { name: 'Hours', exact: true })).toBeVisible()
     await managerPage.goto(`${origin}/projects/${project}/progress`)
