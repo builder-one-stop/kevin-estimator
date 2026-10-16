@@ -4,6 +4,7 @@ import sharp from 'sharp'
 import { documentFromLines } from '../../shared/aiDomain.js'
 import { directEstimateChange } from '../../shared/estimateCommands.js'
 import { isPdfRequest,estimatePresentation } from '../../shared/estimatePresentation.js'
+import { estimatePublicMessage } from '../../server/publicText.js'
 import { normalizeSignature } from '../../server/signature.js'
 import { fixturePlan,fixtureLines } from './fixture.js'
 import { localDatabase,A,B } from './localRepository.js'
@@ -25,6 +26,10 @@ describe('precise reviewed message edits',()=>{
  it('recognizes only explicit standalone PDF actions',()=>{
   for(const s of ['Descargar PDF','Pasar a PDF','Export as PDF','Please download PDF.'])expect(isPdfRequest(s)).toBe(true)
   for(const s of ['Change paint and download PDF','No descargar PDF','PDF links?'])expect(isPdfRequest(s)).toBe(false)
+ })
+ it('replaces invented model PDF claims and links with the explicit system action',()=>{
+  for(const text of ['Your PDF is ready: https://fake.invalid/estimate.pdf','Ya generé el PDF: sandbox:/mnt/data/falso.pdf']){const result=estimatePublicMessage(text,'es');expect(result).not.toContain('fake.invalid');expect(result).not.toContain('sandbox:');expect(result).toContain('Descargar PDF')}
+  expect(estimatePublicMessage('Which room?')).toBe('Which room?')
  })
  it('uses the same allocated total, metadata and line IDs in document and PDF presentation',()=>{
   const e=estimate(),v=estimatePresentation(e);expect(v.sections.flatMap(s=>s.items).reduce((n,i)=>n+i.amount,0)).toBe(v.sums.priceCents);expect(v.sums.priceCents).toBe(400860)

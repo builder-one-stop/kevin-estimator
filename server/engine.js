@@ -1,3 +1,4 @@
+import { estimatePublicMessage } from './publicText.js'
 import { directEstimateChange } from '../shared/estimateCommands.js'
 import { isPdfRequest } from '../shared/estimatePresentation.js'
 import { ESTIMATING_MARKET, pricingAvailability } from '../shared/estimatingMarket.js'
@@ -135,7 +136,7 @@ export class EstimatorEngine {
    if(controller.signal.aborted)throw fail('CANCELLED')
    if(firstTextMs===null)firstTextMs=Date.now()-start
    if(!complete && lastPreview && Date.now()-lastPreview<700)return
-   row.state.run.preview=text;row=await this.repo.commit(owner,row,row.version)
+   row.state.run.preview=estimatePublicMessage(text,row.state.documentLanguage);row=await this.repo.commit(owner,row,row.version)
    lastPreview=Date.now();previewUpdates++
   }
   try {
@@ -166,7 +167,7 @@ export class EstimatorEngine {
      } else s.pending={...proposedChange(context.estimate,result,settings.catalog,s.planRevision+1),revision:s.planRevision+1}
     }
    }
-   s.messages.push({id:randomUUID(),role:'assistant',content:result.message,createdAt:new Date().toISOString()})
+   s.messages.push({id:randomUUID(),role:'assistant',content:estimatePublicMessage(result.message,s.documentLanguage),createdAt:new Date().toISOString()})
    s.run={...s.run,status:'ready',stage:'ready',preview:'',metrics:{...metrics,previewUpdates,firstTextMs}};s.runs=[...s.runs,s.run].slice(-30)
    row=await this.repo.commit(owner,row,row.version,estimate,estimateVersion,'ai-approved-plan')
    this.logger(JSON.stringify({event:'estimator_run',runId,...metrics,status:'ready'}))

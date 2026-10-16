@@ -52,3 +52,11 @@ export async function readPublicStream(stream, mode, onText) {
   if (!final) throw Object.assign(new Error('Incomplete stream'), { code: 'MODEL_INCOMPLETE' })
   return { ...final, output_text: final.output?.filter(x => x.type === 'message').flatMap(x => x.content || []).filter(x => x.type === 'output_text').map(x => x.text).join('') || '' }
 }
+
+// Download state belongs to the application, never to model-generated prose or links.
+export function estimatePublicMessage(text, language='en') {
+  if (!/\bpdf\b|sandbox:\/|blob:\/|data:application\/pdf/i.test(text)) return text
+  return language === 'es'
+    ? 'La descarga se ejecuta con «Descargar PDF» o una solicitud directa en el chat, después de guardar el estimado. Revisa el documento y los cambios propuestos antes de continuar.'
+    : 'Download runs through “Download PDF” or a direct request in chat after the estimate is saved. Review the document and proposed changes before continuing.'
+}
