@@ -5,16 +5,19 @@ import sharp from 'sharp'
 import { z } from 'zod'
 import { EstimatorEngine } from './engine.js'
 import { settingsSchema, defaultSettings } from '../shared/aiSchemas.js'
+import { createWorkersHandler } from './workers.js'
 import { fail } from '../shared/aiDomain.js'
 
 const jsonHeaders = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'application/json' }
 const maxBodyBytes = 7400000
 
 export function createEstimatorHandler({ repo, provider, origin, logger, testMode = false, requestsPerMinute = 40, runMode = 'inline', dispatch }) {
+  const workers = repo.db ? createWorkersHandler({ db: repo.db, env: { ...process.env, ...(origin ? { APP_ORIGIN: origin } : {}) } }) : null
   const engine = new EstimatorEngine(repo, provider, { logger, runMode })
   const limits = new Map()
   async function handle(request) {
     try {
+      if (new URL(request.url).pathname.startsWith('/api/workers') && workers) return await workers(request)
       const requestOrigin = new URL(request.url).origin
       if (request.headers.get('origin') && request.headers.get('origin') !== (origin || requestOrigin)) throw fail('ORIGIN_REJECTED', 403)
       const auth = request.headers.get('authorization')?.match(/^Bearer (.+)$/)?.[1]

@@ -1,10 +1,15 @@
-import { Clock3 } from 'lucide-react'
-import { useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import EmptyState from '../components/ui/EmptyState.jsx'
-
+import { useWorkers } from '../components/workers/useWorkers.js'
+import { Hours, WorkerError } from '../components/workers/WorkerViews.jsx'
+import '../styles/workers.css'
 export default function TimeTracking() {
   const { t } = useTranslation()
-  const { showSoon } = useOutletContext()
-  return <div className="page"><div className="page-head"><h1>{t('time.title')}</h1></div><EmptyState icon={Clock3} title={t('time.emptyT')} description={t('time.emptyP')} cta={t('time.cta')} onAction={showSoon} /></div>
+  const { data, error, busy, execute } = useWorkers()
+  return (
+    <div className="page">
+      <h1>{t('time.title')}</h1>
+      <WorkerError code={error} />
+      {data ? <Hours data={data} manager execute={execute} busy={busy} /> : <p>{t('workers.loading')}</p>}
+    </div>
+  )
 }

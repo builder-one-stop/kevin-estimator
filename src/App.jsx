@@ -1,5 +1,9 @@
 import { Navigate, Route, Routes, useParams, Outlet } from 'react-router-dom'
 import AppShell from './components/layout/AppShell.jsx'
+import Workers from './pages/Workers.jsx'
+import WorkerPortal from './pages/WorkerPortal.jsx'
+import ProjectWorkers from './components/projects/ProjectWorkers.jsx'
+import { useBetaAccess } from './components/auth/BetaAccessContext.jsx'
 import Home from './pages/Home.jsx'
 import Projects from './pages/Projects.jsx'
 import ProjectWorkspace from './pages/ProjectWorkspace.jsx'
@@ -28,7 +32,12 @@ function AiChatRoute() { const { id } = useParams(); return <AiChat key={id} /> 
 function AdminReviewRoute() { const { id } = useParams(); return <AdminReview key={id || 'history'} /> }
 
 function AuthenticatedRoutes() {
-  return <EstimateAuth><Outlet /></EstimateAuth>
+  return <EstimateAuth><RoleRoutes /></EstimateAuth>
+}
+
+function RoleRoutes() {
+  const access = useBetaAccess()
+  return access?.role === 'worker' ? <WorkerPortal /> : <Outlet />
 }
 
 export default function App() {
@@ -40,11 +49,14 @@ export default function App() {
           <Route path="/chat" element={<Chats />} />
           <Route path="/chat/settings" element={<AiSettings />} />
           <Route path="/chat/:id" element={<AiChatRoute />} />
+          <Route path="/workers" element={<Workers />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectWorkspace />}>
             <Route index element={<ProjectOverview />} />
             <Route path="estimates" element={<ProjectEstimates />} />
             <Route path="invoices" element={<ProjectInvoices />} />
+            <Route path="progress" element={<ProjectWorkers section="progress" />} />
+            <Route path="hours" element={<ProjectWorkers section="hours" />} />
           </Route>
           <Route path="/estimates" element={<Estimates />} />
           <Route path="/estimates/:id" element={<EstimateWorkspaceRoute />} />

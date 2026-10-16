@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { BriefcaseBusiness, CalendarDays, ChevronUp, Clock3, ContactRound, FileText, Home, Search, Sparkles, WalletCards } from 'lucide-react'
+import { BriefcaseBusiness, CalendarDays, ChevronUp, Clock3, ContactRound, FileText, Home, Search, Sparkles, WalletCards, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { PROFILE } from '../../mocks/data.js'
 import UserMenu from './UserMenu.jsx'
@@ -18,7 +18,7 @@ export function LogoMark({ size = 30 }) {
 
 const navItems = [
   ['home', '/', Home], ['estimates', '/estimates', FileText],
-  ['projects', '/projects', BriefcaseBusiness],
+  ['projects', '/projects', BriefcaseBusiness], ['workers', '/workers', Users],
   ['invoices', '/invoices', WalletCards], ['contacts', '/contacts', ContactRound],
   ['schedule', '/schedule', CalendarDays], ['time', '/time', Clock3],
 ]

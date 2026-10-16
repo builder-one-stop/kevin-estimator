@@ -74,6 +74,8 @@ export default function ProjectWorkspace() {
         <NavLink end to={`/projects/${id}`}>{t('workspace.overview')}</NavLink>
         <NavLink to={`/projects/${id}/estimates`}>{t('workspace.estimates')}</NavLink>
         <NavLink to={`/projects/${id}/invoices`}>{t('workspace.invoices')}</NavLink>
+      <NavLink to={`/projects/${id}/progress`}>{t('workers.progress')}</NavLink>
+        <NavLink to={`/projects/${id}/hours`}>{t('workers.hours')}</NavLink>
       </nav>
       <Outlet context={{ project }} />
       {editing && <ProjectDialog mode="edit" project={project} clients={clients} onClose={() => setEditing(false)} onSaved={(saved) => { setProject(saved); setEditing(false) }} showToast={showToast} />}

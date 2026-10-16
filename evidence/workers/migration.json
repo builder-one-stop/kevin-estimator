@@ -1,0 +1,65 @@
+{
+  "migrations": [
+    {
+      "version": "20261016052330",
+      "name": "workers_module"
+    }
+  ],
+  "tables": [
+    {
+      "tablename": "worker_commands",
+      "rowsecurity": true
+    },
+    {
+      "tablename": "worker_corrections",
+      "rowsecurity": true
+    },
+    {
+      "tablename": "worker_evidence",
+      "rowsecurity": true
+    },
+    {
+      "tablename": "workers",
+      "rowsecurity": true
+    },
+    {
+      "tablename": "worker_assignments",
+      "rowsecurity": true
+    },
+    {
+      "tablename": "worker_shifts",
+      "rowsecurity": true
+    }
+  ],
+  "bucket": [
+    {
+      "id": "worker-progress",
+      "public": false,
+      "file_size_limit": 26214400,
+      "allowed_mime_types": [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "video/mp4",
+        "video/webm"
+      ]
+    }
+  ],
+  "entrypoint": [
+    {
+      "anonymous": false,
+      "authenticated": false,
+      "service": true
+    }
+  ],
+  "betaRoles": [
+    {
+      "role": "admin",
+      "count": 1
+    },
+    {
+      "role": "operator",
+      "count": 1
+    }
+  ]
+}

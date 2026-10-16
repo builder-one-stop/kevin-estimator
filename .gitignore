@@ -24,3 +24,7 @@ supabase/.temp/
 *.njsproj
 *.sln
 *.sw?
+
+# Local workers verification handshake (never a deploy gate artifact)
+evidence/workers/local-ready.json
+evidence/workers/beta-ready.json

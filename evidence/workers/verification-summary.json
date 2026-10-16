@@ -1,0 +1,13 @@
+{
+  "localUnitTests": 125,
+  "localTestFiles": 26,
+  "remoteWorkerChecks": 57,
+  "remoteWorkerErrors": [],
+  "cleanup": {
+    "failures": []
+  },
+  "adminSessionVerification": "pending",
+  "administrativeLoginFailures": { "attempts": 2, "code": "invalid_credentials", "httpStatus": 400 },
+  "betaDeployment": "not performed",
+  "bundleSecretScan": "no privileged values found"
+}
