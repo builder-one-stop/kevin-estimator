@@ -26,7 +26,7 @@ export function buildApprovedPdf(estimate,{format='proposal',includeCosts=false}
    ensure(30)
    const count=Math.max(1,Math.floor((bottom-y-14)/12)),chunk=remaining.splice(0,count),h=Math.max(30,chunk.length*12+14)
    style(9);pdf.text(chunk,xs[0]+7,y+5)
-   if(first){[item.quantity,item.unit,money(item.unitPrice),money(item.amount)].forEach((value,n)=>pdf.text(clean(value),xs[n+1]+widths[n+1]-7,y+5,{align:'right'}));first=false}
+   if(first){[item.quantity,item.unit,item.unitPriceDisplay,money(item.amount)].forEach((value,n)=>pdf.text(clean(value),xs[n+1]+widths[n+1]-7,y+5,{align:'right'}));first=false}
    else {style(8,false,100);pdf.text(t('continued'),right-7,y+5,{align:'right'})}
    y+=h;pdf.setDrawColor(225);pdf.line(left,y-8,right,y-8)
    if(remaining.length)nextPage()

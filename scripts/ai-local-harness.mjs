@@ -4,8 +4,8 @@ import { localDatabase,LocalRepository,A } from '../tests/ai/localRepository.js'
 import { ControlledProvider } from '../tests/ai/controlledProvider.js'
 import { createEstimatorServer } from '../server/http.js'
 import { createServer as createViteServer } from 'vite'
-export async function startHarness(){
- const db=await localDatabase(),repo=new LocalRepository(db),provider=new ControlledProvider();provider.delay=650
+export async function startHarness({ provider = new ControlledProvider() } = {}){
+ const db=await localDatabase(),repo=new LocalRepository(db);provider.delay=650
  const {server:api}=createEstimatorServer({repo,provider,origin:'http://127.0.0.1:5180',testMode:true,logger:()=>{}})
  const server=createServer(async(req,res)=>{
   if(req.url.startsWith('/api/ai')){api.emit('request',req,res);return}

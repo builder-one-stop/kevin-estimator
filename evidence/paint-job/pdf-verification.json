@@ -1,0 +1,24 @@
+{
+  "en": {
+    "pages": 3,
+    "savedTotalUsd": 994.34,
+    "pdfTotal": true,
+    "area": true,
+    "paintQuantity": true,
+    "priceProvenance": true,
+    "language": true,
+    "savedPaintQuantity": true,
+    "savedStatus": "public_observed"
+  },
+  "es": {
+    "pages": 3,
+    "savedTotalUsd": 1105.68,
+    "pdfTotal": true,
+    "area": true,
+    "paintQuantity": true,
+    "priceProvenance": true,
+    "language": true,
+    "savedPaintQuantity": true,
+    "savedStatus": "manual"
+  }
+}

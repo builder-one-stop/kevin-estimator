@@ -1,0 +1,41 @@
+{
+  "environment": "Real OpenAI provider, synthetic prompt, no database/browser/supplier access",
+  "model": "gpt-6.1-sol",
+  "checks": [
+    {
+      "planReturned": true,
+      "pending": 0,
+      "tasks": 1,
+      "dimensions": {
+        "lengthFt": 12,
+        "widthFt": 10,
+        "heightFt": 8,
+        "openingsSqFt": 0,
+        "useGrossWalls": true
+      },
+      "wallPaint": true,
+      "selectedPaintDisclosed": true,
+      "messageQuestionCount": 0
+    }
+  ],
+  "metrics": {
+    "model": "gpt-6.1-sol",
+    "responseModels": [
+      "gpt-6.1-sol"
+    ],
+    "promptVersion": "estimator-2026-10-18.paint-rules-1",
+    "usage": {
+      "input_tokens": 11884,
+      "output_tokens": 2218,
+      "cached_tokens": 11878
+    },
+    "estimatedCostUsd": 0.0233798
+  },
+  "generation": {
+    "validStructuredResult": true,
+    "lines": 11,
+    "taskIdsValid": true,
+    "model": "gpt-6.1-sol",
+    "promptVersion": "estimator-2026-10-18.paint-rules-1"
+  }
+}

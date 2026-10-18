@@ -3,6 +3,7 @@ import { directEstimateChange } from '../shared/estimateCommands.js'
 import { isPdfRequest } from '../shared/estimatePresentation.js'
 import { ESTIMATING_MARKET, pricingAvailability } from '../shared/estimatingMarket.js'
 import { effectiveCatalog } from '../shared/researchCatalog.js'
+import { isInteriorWallPaint, paintDimensions, makePaintItems, paintMarkupBps, defaultPaintTemplate, PAINT_RULE_VERSION } from '../shared/paintJob.js'
 import { randomUUID } from 'node:crypto'
 import { compactTitle } from '../shared/chatPresentation.js'
 import { z } from 'zod'
@@ -158,8 +159,32 @@ export class EstimatorEngine {
     if(result.plan){assertPlan(result.plan);row.title=compactTitle(localText(result.plan.title,s.documentLanguage));s.plan=result.plan;s.planRevision++;s.approvedRevision=null}
    } else if(s.run.mode==='generate') {
     if(result.plan||result.changes.length)throw fail('MODEL_CHANGED_APPROVED_PLAN')
-    const document={...documentFromLines(s.plan,result.lines,s.documentLanguage,settings.catalog,settings.business,s.planRevision), conversationId:row.id}
-    estimate={id:randomUUID(),title:localText(s.plan.title,s.documentLanguage),markup_bps:s.plan.markupBps,document};estimateVersion=0
+    const eligible=s.plan.tasks.map(task=>({task,inputs:isInteriorWallPaint(task)?paintDimensions(task):null})).filter(x=>x.inputs)
+    const paintTasks=s.plan.tasks.length===1 && eligible.length===1 ? eligible : []
+    const planned=new Set(paintTasks.map(x=>x.task.id))
+    const placeholder=paintTasks.map(({task})=>({id:randomUUID(),taskId:task.id,description:task.components[0],quantity:0,unit:'ea',unitCost:0,costType:'material',markupBps:null,basis:{en:'Rule calculation pending',es:'Cálculo por reglas pendiente'},catalogId:null}))
+    const document={...documentFromLines(s.plan,[...result.lines.filter(line=>!planned.has(line.taskId)),...placeholder],s.documentLanguage,settings.catalog,settings.business,s.planRevision), conversationId:row.id}
+    let markupBps=s.plan.markupBps
+    if(paintTasks.length){
+      const template=structuredClone(settings.paintTemplate||defaultPaintTemplate())
+      markupBps=paintMarkupBps(template.marginPercent)
+      const paint={}
+      for(const {task,inputs} of paintTasks){
+        const approved=[task.product.en,task.product.es,...task.components.flatMap(x=>[x.en,x.es])].join(' ').toLowerCase()
+        const selectedPaint=settings.catalog.find(x=>x.id===template.paintCatalogId)
+        const selectedRepair=settings.catalog.find(x=>x.id===template.repairCatalogId)
+        const forTask={...template,
+          paintCatalogId:selectedPaint && approved.includes(selectedPaint.brand.toLowerCase()) && approved.includes(selectedPaint.product.toLowerCase()) ? template.paintCatalogId : null,
+          repairCatalogId:selectedRepair && approved.includes(selectedRepair.brand.toLowerCase()) && approved.includes(selectedRepair.product.toLowerCase()) ? template.repairCatalogId : null}
+        const calculated=makePaintItems(task.id,inputs,forTask,settings.catalog,s.documentLanguage,s.plan.zip)
+        document.sections.find(section=>section.id===task.id).items=calculated.items
+        paint[task.id]={version:PAINT_RULE_VERSION,inputs,template:structuredClone(forTask),catalogSnapshots:settings.catalog.filter(x=>[forTask.paintCatalogId,forTask.repairCatalogId].includes(x.id)).map(x=>structuredClone(x)),areaSqFt:calculated.areaSqFt}
+      }
+      document.rules={paint}
+      document.scope.plan.markupBps=markupBps
+      assertDocument(document,markupBps)
+    }
+    estimate={id:randomUUID(),title:localText(s.plan.title,s.documentLanguage),markup_bps:markupBps,document};estimateVersion=0
    } else {
     if(result.lines.length)throw fail('MODEL_INVALID_OUTPUT')
     if(result.changes.length || result.plan) {

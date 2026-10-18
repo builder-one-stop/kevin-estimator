@@ -11,6 +11,7 @@ export const newItem = (language = 'en') => reviseManualPrice({ id: crypto.rando
 export function reviseManualPrice(item, changes, language = 'en') {
   const priceOnly = Object.keys(changes).every(key => key === 'unitCost')
   return { ...item, ...changes, catalogId: null, origin: 'manual', needsReview: true,
+    ruleOverrides: item.ruleKey ? { ...item.ruleOverrides, ...(priceOnly ? { price: true } : { price: true, description: true }) } : item.ruleOverrides,
     previousCatalogId: priceOnly ? item.catalogId || item.previousCatalogId || null : null,
     takeoff: priceOnly ? item.takeoff : undefined,
     priceSource: language === 'es' ? 'Entrada manual — provisional' : 'Manual entry — provisional', priceDate: '',

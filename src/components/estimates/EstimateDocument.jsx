@@ -20,4 +20,4 @@ export default function EstimateDocument({record}) {
   <small>{t('finalizationHelp')}</small>
  </article>
 }
-function Section({section}) {return <><tr className="document-section"><th colSpan={5}>{section.title}</th></tr>{section.items.map(i=><tr key={i.id}><td>{i.label}{i.notes&&<small>{i.notes}</small>}{i.priceSource&&<small>{i.priceSource}{i.priceDate ? ` · ${i.priceDate}` : ''}</small>}</td><td>{i.quantity}</td><td>{i.unit}</td><td>{money(i.unitPrice)}</td><td>{money(i.amount)}</td></tr>)}</>}
+function Section({section}) {return <><tr className="document-section"><th colSpan={5}>{section.title}</th></tr>{section.items.map(i=><tr key={i.id}><td>{i.label}{i.notes&&<small>{i.notes}</small>}{i.priceSource&&<small>{i.priceSource}{i.priceDate ? ` · ${i.priceDate}` : ''}</small>}</td><td>{i.quantity}</td><td>{i.unit}</td><td>{i.unitPriceDisplay}</td><td>{money(i.amount)}</td></tr>)}</>}

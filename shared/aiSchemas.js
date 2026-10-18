@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { conversionsSchema, roomsSchema } from './estimatingMarket.js'
+import { defaultPaintTemplate } from './paintJob.js'
 export const text = z.string().max(2000)
 export const bilingual = z.object({ en: text, es: text }).strict()
 export const unit = z.enum(['ea','sf','lf','hr','day','cy','lot','gal','qt'])
@@ -52,11 +53,18 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
 }).strict().refine(x => x.status !== 'verified' || (x.unitCost !== null && x.verifiedZip && x.localPriceEvidence && x.vendor && x.location && x.url), 'Local verification requires exact ZIP, price and product/branch evidence')
   .refine(x => x.status !== 'public_observed' || x.unitCost !== null, 'An observed price requires a value')
   .refine(x => x.status !== 'quote_required' || x.unitCost === null, 'A quote-required record has no observed price')
-export const settingsSchema = z.object({ preferences: z.array(preferenceSchema).max(40), catalog: z.array(catalogSchema).max(500),
+export const paintTemplateSchema = z.object({
+  coats: z.number().positive().max(10), coverageSqFtPerGallon: z.number().positive().max(10000), wastePercent: z.number().min(0).max(100), patchCount: z.number().int().min(0).max(1000),
+  paintCatalogId: z.string().uuid().nullable(), repairCatalogId: z.string().uuid().nullable(),
+  hourlyRate: z.number().min(0).max(10000), expensesPercent: z.number().min(0).max(100), marginPercent: z.number().min(0).max(90),
+  productivity: z.object({ protection: z.number().positive(), preparation: z.number().positive(), repair: z.number().positive(), painting: z.number().positive(), cleanup: z.number().positive() }).strict(),
+  consumablesUsdPerSqFt: z.object({ protection: z.number().min(0), preparation: z.number().min(0), cleanup: z.number().min(0) }).strict(),
+}).strict()
+export const settingsSchema = z.object({ preferences: z.array(preferenceSchema).max(40), catalog: z.array(catalogSchema).max(500), paintTemplate: paintTemplateSchema.optional(),
   business: z.object({ name: z.string().max(120), address: text, phone: z.string().max(80), license: z.string().max(80), signerName: z.string().max(120).optional(), signerTitle: z.string().max(120).optional(), signatureImage: z.string().max(140000).regex(/^(?:data:image\/(?:png|jpeg);base64,[A-Za-z0-9+/]+={0,2})?$/).optional() }).strict(),
   labor: z.object({ hourlyRate: z.number().min(0).max(10000), productivity: text }).strict(),
 }).strict().refine(x => new Set(x.catalog.map(c=>c.id)).size === x.catalog.length && new Set(x.preferences.map(p=>p.id)).size === x.preferences.length, 'Duplicate catalog or preference ID')
-export const defaultSettings = () => ({ preferences: [], catalog: [], business: { name: 'One Stop Building & Remodeling', address: '', phone: '', license: '' }, labor: { hourlyRate: 0, productivity: '' } })
+export const defaultSettings = () => ({ preferences: [], catalog: [], paintTemplate: defaultPaintTemplate(), business: { name: 'One Stop Building & Remodeling', address: '', phone: '', license: '' }, labor: { hourlyRate: 0, productivity: '' } })
 const toolSchemas = {
   calculate_rooms: roomsSchema, convert_measurements: conversionsSchema,
   read_context: z.object({}).strict(), read_preferences: z.object({}).strict(), lookup_catalog: z.object({}).strict(),

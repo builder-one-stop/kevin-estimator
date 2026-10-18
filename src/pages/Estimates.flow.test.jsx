@@ -60,7 +60,7 @@ describe('estimates user flow and multi-tab recovery', () => {
     fireEvent.change(screen.getByLabelText('Qty'), { target: { value: '2' } })
     fireEvent.change(screen.getByLabelText('Unit cost'), { target: { value: '100' } })
     expect(screen.getByText('$272.00')).toBeTruthy()
-    await waitFor(() => expect(fake.rows.get('new-estimate').document.sections[0]?.items[0]?.quantity).toBe('2'), { timeout: 2000 })
+    await waitFor(() => expect(fake.rows.get('new-estimate').document.sections[0]?.items[0]?.quantity).toBe(2), { timeout: 2000 })
     page.unmount()
     await i18n.changeLanguage('es')
     page = setup('/estimates', true)

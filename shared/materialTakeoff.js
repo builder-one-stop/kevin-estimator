@@ -14,6 +14,9 @@ export function packageGallons(entry) {
   if (entry?.conversion?.to_unit === 'US_fl_oz' && entry?.conversion?.factor) return new Decimal(entry.conversion.factor).div(128).toNumber()
   if (entry?.packageData?.unit === 'US_gallon') return Number(entry.packageData.amount)
   if (entry?.packageData?.unit === 'US_fl_oz') return new Decimal(entry.packageData.amount).div(128).toNumber()
+  // Managed products may state an explicit US package size without research conversion metadata.
+  const stated = entry?.package?.match(/^(\d+(?:\.\d+)?)\s+US\s+(gal|qt|fl oz)\b/i)
+  if (stated) return new Decimal(stated[1]).div({ gal: 1, qt: 4, 'fl oz': 128 }[stated[2].toLowerCase()]).toNumber()
   return null
 }
 

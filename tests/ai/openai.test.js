@@ -24,7 +24,7 @@ describe('Responses adapter, mocked transport only',()=>{
   const p=new ResponsesProvider({});const calls=[];let n=0
   p.client={responses:{create:async args=>{calls.push(structuredClone(args));return n++===0?response([{type:'function_call',name:'read_preferences',arguments:'{}',call_id:'p'}]):response([{type:'function_call',name:'propose_plan',arguments:JSON.stringify({message:'Review',plan:fixturePlan}),call_id:'plan'}])}}}
   const args=input();args.settings.preferences=[{id:'fixture',label:'Brand',value:'Previous default',source:'explicit-user'}]
-  const result=await p.run(args);expect(JSON.parse(calls[1].input.at(-1).output)).toEqual({preferences:args.settings.preferences,labor:args.settings.labor})
+  const result=await p.run(args);expect(JSON.parse(calls[1].input.at(-1).output)).toEqual({preferences:args.settings.preferences,labor:args.settings.labor,paintTemplate:args.settings.paintTemplate})
   expect(calls[0].instructions).toContain('Current user instructions override saved preferences');expect(result.metrics.estimatedCostUsd).toBeNull();expect(result.metrics.usage.input_tokens).toBe(200)
  })
  it('withholds the authorized signature from initial context and read_context tool outputs',async()=>{

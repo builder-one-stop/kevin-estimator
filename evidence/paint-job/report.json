@@ -1,0 +1,57 @@
+{
+  "environment": "Local Chrome, migrated ephemeral PGlite, controlled single-room AI fixture; no live supplier or real AI",
+  "checks": [
+    "Chat approval creates 352 sf gross walls, two coats, three whole paint packages and five separate labor phases from saved rules",
+    "Saved estimate, proposal and downloaded PDF use the same initial line quantities and totals",
+    "In-chat product switch updates package unit and price source, then restores the chosen one-gallon product",
+    "Reload, new dimensions and repeated recalculation retain manually overridden paint price and quantity while other phases update",
+    "Spanish proposal and downloaded PDF retain revised manual values",
+    "390px phone view stays within the viewport after reload, in Spanish",
+    "Interrupted chat change leaves the saved manual painting estimate intact"
+  ],
+  "errors": [],
+  "initialTotals": {
+    "sections": [
+      {
+        "id": "bedroom-walls",
+        "costCents": 74577
+      }
+    ],
+    "costsByType": {
+      "material": 21226,
+      "labor": 49800,
+      "equipment": 0,
+      "other": 3551
+    },
+    "laborHours": 6.64,
+    "costCents": 74577,
+    "markupCents": 24857,
+    "profitCents": 24857,
+    "priceCents": 99434,
+    "marginPercent": 24.99849146167307
+  },
+  "revisedTotals": {
+    "sections": [
+      {
+        "id": "bedroom-walls",
+        "costCents": 82928
+      }
+    ],
+    "costsByType": {
+      "material": 27004,
+      "labor": 51975,
+      "equipment": 0,
+      "other": 3949
+    },
+    "laborHours": 6.93,
+    "costCents": 82928,
+    "markupCents": 27640,
+    "profitCents": 27640,
+    "priceCents": 110568,
+    "marginPercent": 24.99819115838217
+  },
+  "phoneWidth": {
+    "window": 390,
+    "document": 390
+  }
+}
