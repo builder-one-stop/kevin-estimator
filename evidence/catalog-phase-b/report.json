@@ -1,0 +1,105 @@
+{
+  "environment": "Local Chrome, migrated PGlite, controlled AI fixture; no real AI or supplier access",
+  "checks": [
+    "Public catalog price selected in chat with public, nonlocal provenance",
+    "352 sf, two coats and stated 350 sf/gal assumption calculate three purchased gallons; minor patch uses one priced container",
+    "Reload, manual override and repeated catalog reselection persist with correct provenance",
+    "Chat, saved estimate, proposal preview, and browser back/forward retain one price snapshot",
+    "Actual saved proposal PDF downloaded after proposal preview",
+    "Spanish proposal and PDF translate price provenance while preserving the saved numeric line",
+    "Cancellation keeps the saved estimate",
+    "390px phone and desktop render without page-level horizontal overflow",
+    "Operator reads research but cannot import or update managed catalog",
+    "Admin imports 25 records, updates a price, and reloads version 2 with the original price retained in history"
+  ],
+  "errors": [],
+  "savedTotals": {
+    "sections": [
+      {
+        "id": "task-1",
+        "costCents": 43492
+      },
+      {
+        "id": "task-2",
+        "costCents": 41250
+      },
+      {
+        "id": "task-3",
+        "costCents": 45000
+      },
+      {
+        "id": "task-4",
+        "costCents": 30500
+      },
+      {
+        "id": "task-5",
+        "costCents": 37250
+      },
+      {
+        "id": "task-6",
+        "costCents": 84000
+      },
+      {
+        "id": "task-7",
+        "costCents": 15500
+      }
+    ],
+    "costsByType": {
+      "material": 150742,
+      "labor": 146250,
+      "equipment": 0,
+      "other": 0
+    },
+    "laborHours": 19.5,
+    "costCents": 296992,
+    "markupCents": 106917,
+    "profitCents": 106917,
+    "priceCents": 403909,
+    "marginPercent": 26.470566389954175
+  },
+  "paintSaleCents": 19168,
+  "repairSaleCents": 1561,
+  "phoneGeometry": {
+    "scrollX": 0,
+    "body": {
+      "left": 0,
+      "right": 390,
+      "width": 390,
+      "scrollLeft": 0,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "sidebar": {
+      "left": -264,
+      "right": 0,
+      "width": 264,
+      "scrollLeft": 0,
+      "scrollWidth": 264,
+      "clientWidth": 264
+    },
+    "main": {
+      "left": 0,
+      "right": 390,
+      "width": 390,
+      "scrollLeft": 0,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "thread": {
+      "left": 0,
+      "right": 390,
+      "width": 390,
+      "scrollLeft": 0,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "document": {
+      "left": 31,
+      "right": 359,
+      "width": 328,
+      "scrollLeft": 0,
+      "scrollWidth": 326,
+      "clientWidth": 326
+    }
+  }
+}

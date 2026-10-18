@@ -37,10 +37,21 @@ export function parseModelResult(value) {
 }
 export const preferenceSchema = z.object({ id: z.string().uuid(), label: z.string().min(1).max(100), value: text, source: z.literal('explicit-user'), updatedAt: z.string().datetime() }).strict()
 export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string().min(1).max(200), brand: z.string().max(100),
-  package: z.string().max(100), unit, unitCost: z.number().min(0).max(1000000), currency: z.literal('USD'),
+  package: z.string().max(100), unit, unitCost: z.number().min(0).max(1000000).nullable(), currency: z.literal('USD'),
   vendor: z.string().max(200), location: z.string().max(200), url: z.union([z.literal(''),z.string().url().max(1000)]),
-  sku: z.string().max(100), checkedAt: z.string().date(), status: z.enum(['manual','provisional','verified']), evidence: text,
-}).strict().refine(x => x.status !== 'verified' || (x.evidence && x.vendor && x.location && (x.url || x.sku)), 'Verification requires source evidence, vendor, location and URL/SKU')
+  sku: z.string().max(100), checkedAt: z.string().date(), status: z.enum(['manual','provisional','public_observed','quote_required','verified']), evidence: text,
+  sourceId: z.string().max(80).optional(), sourceVersion: z.string().max(80).optional(), sourceUrl: z.string().url().max(1000).optional(),
+  verifiedZip: z.string().regex(/^\d{5}$/).nullable().optional(), validUntil: z.string().date().nullable().optional(),
+  localPriceEvidence: text.optional(),
+  priceVersion: z.number().int().min(1).optional(),
+  priceHistory: z.array(z.object({ version: z.number().int().min(1), product: z.string(), brand: z.string(), package: z.string(),
+    unit, vendor: z.string(), location: z.string(), url: z.string(), sku: z.string(),
+    unitCost: z.number().min(0).max(1000000).nullable(),
+    status: z.string().max(40), checkedAt: z.string().date(), validUntil: z.string().date().nullable(),
+    verifiedZip: z.string().nullable(), evidence: text, localPriceEvidence: text }).strict()).max(100).optional(),
+}).strict().refine(x => x.status !== 'verified' || (x.unitCost !== null && x.verifiedZip && x.localPriceEvidence && x.vendor && x.location && x.url), 'Local verification requires exact ZIP, price and product/branch evidence')
+  .refine(x => x.status !== 'public_observed' || x.unitCost !== null, 'An observed price requires a value')
+  .refine(x => x.status !== 'quote_required' || x.unitCost === null, 'A quote-required record has no observed price')
 export const settingsSchema = z.object({ preferences: z.array(preferenceSchema).max(40), catalog: z.array(catalogSchema).max(500),
   business: z.object({ name: z.string().max(120), address: text, phone: z.string().max(80), license: z.string().max(80), signerName: z.string().max(120).optional(), signerTitle: z.string().max(120).optional(), signatureImage: z.string().max(140000).regex(/^(?:data:image\/(?:png|jpeg);base64,[A-Za-z0-9+/]+={0,2})?$/).optional() }).strict(),
   labor: z.object({ hourlyRate: z.number().min(0).max(10000), productivity: text }).strict(),

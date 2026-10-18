@@ -17,7 +17,7 @@ export function buildApprovedPdf(estimate,{format='proposal',includeCosts=false}
  function heading(text){ensure(42);block(text,12,true,4)}
  function tableHead(){pdf.setFillColor(37,43,49);pdf.rect(left,y-12,right-left,26,'F');style(9,true,255);['description','quantity','unit','unitPrice','amount'].forEach((k,i)=>pdf.text(t(k),i===0?xs[i]+7:xs[i]+widths[i]-7,y+4,{align:i===0?'left':'right'}));y+=27}
  function tableRow(item){
-  const description=lines(item.label+(item.notes?'\n'+item.notes:''),widths[0]-14,9)
+  const description=lines(item.label+(item.notes?'\n'+item.notes:'')+(item.priceSource?'\n'+item.priceSource+(item.priceDate?' · '+item.priceDate:''):''),widths[0]-14,9)
   const height=Math.max(30,description.length*12+14)
   // Ordinary rows move intact. Exceptional long text continues explicitly with repeated headers.
   if(height<=bottom-100)ensure(height)

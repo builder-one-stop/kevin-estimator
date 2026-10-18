@@ -15,6 +15,9 @@ import EstimateDocument from '../components/estimates/EstimateDocument.jsx'
 import { bridgeText } from '../../shared/estimatePresentation.js'
 import { assertDocument } from '../../shared/aiDomain.js'
 import { aiRequest } from '../services/ai.js'
+import { effectiveCatalog } from '../../shared/researchCatalog.js'
+import { applyCatalogPrice } from '../../shared/catalogPricing.js'
+import { paintPackages, packageGallons, takeoffSummary } from '../../shared/materialTakeoff.js'
 
 const editable = (record) => ({ title: record.title, client_id: record.client_id, project_id: record.project_id, status: record.status, markup_bps: record.markup_bps, document: record.document })
 const money = (cents) => formatMoney(cents / 100)
@@ -41,6 +44,7 @@ export default function EstimateWorkspace({ estimateId, embedded = false, editor
   const [assistantOpen, setAssistantOpen] = useState(() => typeof window === 'undefined' || window.innerWidth > 720)
   const [assistantWidth, setAssistantWidth] = useState(285)
   const [detailId, setDetailId] = useState(null)
+  const [catalog, setCatalog] = useState(() => effectiveCatalog())
   const [retry, setRetry] = useState(0)
   const savedRef = useRef(null)
   const draftRef = useRef(null)
@@ -74,7 +78,7 @@ export default function EstimateWorkspace({ estimateId, embedded = false, editor
   useEffect(() => {
     let active = true
     activeRef.current = true
-    Promise.all([getEstimate(id), getClients(), getProjects()]).then(([record, clientRows, projectRows]) => {
+    Promise.all([getEstimate(id), getClients(), getProjects(), aiRequest('settings').catch(() => null)]).then(([record, clientRows, projectRows, settings]) => {
       if (!active) return
       if (!record) { setError(tRef.current('estimateEditor.notFound')); return }
       savedRef.current = record; setSavedVersion(record.version)
@@ -97,6 +101,7 @@ export default function EstimateWorkspace({ estimateId, embedded = false, editor
         refreshBackups()
       } catch { setError(tRef.current('estimateEditor.backupError')) }
       draftRef.current = initial; setDraft(initial); setClients(clientRows); setProjects(projectRows)
+      setCatalog(effectiveCatalog(settings?.data?.catalog || []))
     }).catch(() => { if (active) setError(tRef.current('estimateEditor.loadError')) })
     const changed = () => refreshBackups()
     window.addEventListener('storage', changed)
@@ -155,6 +160,22 @@ export default function EstimateWorkspace({ estimateId, embedded = false, editor
   function updateDocument(change) { edit((current) => ({ ...current, document: change(current.document) })) }
   function updateSection(sectionId, change) { updateDocument((doc) => ({ ...doc, sections: doc.sections.map((section) => section.id === sectionId ? change(section) : section) })) }
   function updateItem(sectionId, itemId, change) { updateSection(sectionId, (section) => ({ ...section, items: section.items.map((item) => item.id === itemId ? change(item) : item) })) }
+  function selectCatalogItem(sectionId, itemId, catalogId) {
+    const entry = catalog.find(row => row.id === catalogId)
+    if (!entry) return
+    updateItem(sectionId, itemId, item => applyCatalogPrice(item, entry, draftRef.current.document.scope?.plan?.zip || '', language))
+  }
+  function calculatePaintItem(sectionId, itemId, item) {
+    try {
+      const entry = catalog.find(row => row.id === item.catalogId)
+      const pack = packageGallons(entry) || (item.unit === 'gal' ? 1 : null)
+      const takeoff = { areaSqFt: Number(item.takeoff?.areaSqFt), coats: Number(item.takeoff?.coats),
+        coverageSqFtPerGallon: Number(item.takeoff?.coverageSqFtPerGallon), wastePercent: Number(item.takeoff?.wastePercent || 0), packageGallons: pack }
+      const result = paintPackages(takeoff)
+      updateItem(sectionId, itemId, row => ({ ...row, quantity: result.packages, takeoff: { ...takeoff, ...result } }))
+      setError('')
+    } catch { setError(language === 'es' ? 'Completa área, manos y rendimiento con valores positivos.' : 'Enter positive area, coats and coverage values.') }
+  }
   function projectChanged(projectId) {
     const project = projects.find((item) => item.id === projectId)
     edit((current) => ({ ...current, project_id: projectId || null, client_id: project?.client_id ?? current.client_id }))
@@ -323,13 +344,13 @@ export default function EstimateWorkspace({ estimateId, embedded = false, editor
             </div>
             {!section.collapsed && <><div className="estimate-grid-labels"><span>{t('estimateEditor.description')}</span><span>{t('estimateEditor.qty')}</span><span>{t('estimateEditor.unit')}</span><span>{t('estimateEditor.unitCost')}</span><span>{t('estimateEditor.costType')}</span><span>{t('estimateEditor.cost')}</span><span /></div>
               {section.items.map((item, itemIndex) => <div className="estimate-item-wrap" key={item.id}><div className="estimate-item-row">
-                <input aria-label={t('estimateEditor.description')} value={item.description} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, description: event.target.value, translations: undefined, origin: 'manual' }))} placeholder={t('estimateEditor.description')} />
-                <input aria-label={t('estimateEditor.qty')} type="number" min="0" step="0.01" value={item.quantity} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, quantity: event.target.value }))} />
+                <input aria-label={t('estimateEditor.description')} value={item.description} onChange={(event) => updateItem(section.id, item.id, (row) => reviseManualPrice(row, { description: event.target.value, translations: undefined }, language))} placeholder={t('estimateEditor.description')} />
+                <input aria-label={t('estimateEditor.qty')} type="number" min="0" step="0.01" value={item.quantity} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, quantity: event.target.value, takeoff: undefined }))} />
                 <select aria-label={t('estimateEditor.unit')} value={item.unit} onChange={(event) => updateItem(section.id, item.id, (row) => reviseManualPrice(row, { unit: event.target.value }, language))}>{UNITS.map((unit) => <option key={unit}>{unit}</option>)}</select>
                 <input aria-label={t('estimateEditor.unitCost')} type="number" min="0" step="0.01" value={item.unitCost} onChange={(event) => updateItem(section.id, item.id, (row) => reviseManualPrice(row, { unitCost: event.target.value }, language))} />
                 <select aria-label={t('estimateEditor.costType')} value={item.costType} onChange={(event) => updateItem(section.id, item.id, (row) => reviseManualPrice(row, { costType: event.target.value }, language))}>{COST_TYPES.map((type) => <option key={type} value={type}>{t(`costType.${type}`)}</option>)}</select>
                 <strong>{money(itemCostCents(item))}</strong><button aria-label={t('estimateEditor.details')} onClick={() => setDetailId(detailId === item.id ? null : item.id)}><ChevronDown size={17} /></button>
-              </div>{detailId === item.id && <div className="estimate-item-detail"><label>{t('estimateEditor.notes')}<textarea value={item.notes || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, notes: event.target.value }))} /></label><label>{t('estimateEditor.priceSource')}<input value={item.priceSource || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, priceSource: event.target.value }))} /></label><label>{t('estimateEditor.priceDate')}<input type="date" value={item.priceDate || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, priceDate: event.target.value }))} /></label><label className="estimate-checkbox"><input type="checkbox" checked={Boolean(item.needsReview)} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, needsReview: event.target.checked }))} />{t('estimateEditor.needsReview')}</label><label>{a('markup')}<input type="number" min="0" max="1000" step="0.01" value={item.markupBps == null ? '' : item.markupBps / 100} placeholder={String(draft.markup_bps / 100)} onChange={event => updateItem(section.id, item.id, row => ({ ...row, markupBps: event.target.value === '' ? null : Math.round(Number(event.target.value) * 100) }))} /></label><div className="estimate-detail-actions"><button disabled={itemIndex === 0} onClick={() => updateSection(section.id, (row) => ({ ...row, items: moveInArray(row.items, itemIndex, -1) }))}>{t('estimateEditor.moveUp')}</button><button disabled={itemIndex === section.items.length - 1} onClick={() => updateSection(section.id, (row) => ({ ...row, items: moveInArray(row.items, itemIndex, 1) }))}>{t('estimateEditor.moveDown')}</button><button onClick={() => updateSection(section.id, (row) => ({ ...row, items: [...row.items.slice(0, itemIndex + 1), { ...structuredClone(item), id: crypto.randomUUID() }, ...row.items.slice(itemIndex + 1)] }))}>{t('estimateEditor.duplicate')}</button><button onClick={() => updateSection(section.id, (row) => ({ ...row, items: row.items.filter((entry) => entry.id !== item.id) }))}>{t('estimateEditor.delete')}</button></div></div>}</div>)}
+              </div>{detailId === item.id && <div className="estimate-item-detail"><label>{t('estimateEditor.notes')}<textarea value={item.notes || ''} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, notes: event.target.value }))} /></label><label>{language === 'es' ? 'Producto y precio del catálogo' : 'Catalog product and price'}<select aria-label={language === 'es' ? 'Producto y precio del catálogo' : 'Catalog product and price'} value={item.catalogId || ''} onChange={event => selectCatalogItem(section.id, item.id, event.target.value)}><option value="">{language === 'es' ? 'Elegir referencia pública' : 'Choose public reference'}</option>{catalog.filter(entry => entry.unitCost !== null && entry.package && (entry.status !== 'verified' || entry.verifiedZip === (draft.document.scope?.plan?.zip || '')) && (!entry.validUntil || entry.validUntil >= new Date().toISOString().slice(0, 10))).map(entry => <option key={entry.id} value={entry.id}>{entry.vendor} · {entry.brand} {entry.product} · {entry.package} · USD {entry.unitCost}/{entry.unit}</option>)}</select></label><p>{item.origin || 'manual'} · {item.price?.status || 'provisional'} · {item.priceSource || (language === 'es' ? 'Supuesto editable, sin precio respaldado' : 'Editable assumption; no backed price')} · {item.priceDate || ''}</p>{item.price?.url && <a href={item.price.url} target="_blank" rel="noreferrer">{language === 'es' ? 'Ficha de origen' : 'Source product page'}</a>}{item.price?.sourceUrl && <a href={item.price.sourceUrl} target="_blank" rel="noreferrer">{language === 'es' ? 'Investigación' : 'Research evidence'}</a>}{item.costType === 'material' && (item.unit === 'gal' || packageGallons(catalog.find(row => row.id === item.catalogId))) && <div className="ai-grid"><strong>{language === 'es' ? 'Cálculo de envases (rendimiento supuesto)' : 'Package takeoff (assumed coverage)'}</strong>{[['areaSqFt',language === 'es' ? 'Área (sf)' : 'Area (sf)'],['coats',language === 'es' ? 'Manos' : 'Coats'],['coverageSqFtPerGallon',language === 'es' ? 'Rendimiento (sf/gal)' : 'Coverage (sf/gal)'],['wastePercent',language === 'es' ? 'Merma (%)' : 'Waste (%)']].map(([key,label]) => <label key={key}>{label}<input type="number" min="0" step="any" value={item.takeoff?.[key] ?? ''} onChange={event => updateItem(section.id, item.id, row => ({ ...row, takeoff: { ...row.takeoff, [key]: event.target.value, packages: null, requiredGallons: null } }))} /></label>)}<button type="button" onClick={() => calculatePaintItem(section.id, item.id, item)}>{language === 'es' ? 'Calcular envases' : 'Calculate packages'}</button>{item.takeoff?.packages && <p>{takeoffSummary(item.takeoff, language)}</p>}</div>}<label className="estimate-checkbox"><input type="checkbox" checked={Boolean(item.needsReview)} onChange={(event) => updateItem(section.id, item.id, (row) => ({ ...row, needsReview: event.target.checked }))} />{t('estimateEditor.needsReview')}</label><label>{a('markup')}<input type="number" min="0" max="1000" step="0.01" value={item.markupBps == null ? '' : item.markupBps / 100} placeholder={String(draft.markup_bps / 100)} onChange={event => updateItem(section.id, item.id, row => ({ ...row, markupBps: event.target.value === '' ? null : Math.round(Number(event.target.value) * 100) }))} /></label><div className="estimate-detail-actions"><button disabled={itemIndex === 0} onClick={() => updateSection(section.id, (row) => ({ ...row, items: moveInArray(row.items, itemIndex, -1) }))}>{t('estimateEditor.moveUp')}</button><button disabled={itemIndex === section.items.length - 1} onClick={() => updateSection(section.id, (row) => ({ ...row, items: moveInArray(row.items, itemIndex, 1) }))}>{t('estimateEditor.moveDown')}</button><button onClick={() => updateSection(section.id, (row) => ({ ...row, items: [...row.items.slice(0, itemIndex + 1), { ...structuredClone(item), id: crypto.randomUUID() }, ...row.items.slice(itemIndex + 1)] }))}>{t('estimateEditor.duplicate')}</button><button onClick={() => updateSection(section.id, (row) => ({ ...row, items: row.items.filter((entry) => entry.id !== item.id) }))}>{t('estimateEditor.delete')}</button></div></div>}</div>)}
               <button className="estimate-add-item" onClick={() => updateSection(section.id, (row) => ({ ...row, items: [...row.items, { ...newItem(language), ...(draft.document.scope ? { taskId: section.id, origin: 'manual' } : {}) }] }))}><Plus size={16} />{t('estimateEditor.addItem')}</button></>}
           </section>)}
           <div className="estimate-summary"><label>{t('estimateEditor.markupRate')}<span className="estimate-markup-input"><input type="number" min="0" max="1000" step="0.1" value={draft.markup_bps / 100} onChange={(event) => edit((current) => ({ ...current, markup_bps: Math.round(Number(event.target.value) * 100) }))} />%</span></label><dl><div><dt>{t('estimateEditor.costTotal')}</dt><dd>{money(totals.costCents)}</dd></div><div><dt>{t('estimateEditor.markup')}</dt><dd>{money(totals.markupCents)}</dd></div><div><dt>{t('estimateEditor.profit')}</dt><dd>{money(totals.profitCents)}</dd></div><div className="grand"><dt>{t('estimateEditor.salePrice')}</dt><dd>{money(totals.priceCents)}</dd></div></dl><small>{t('estimateEditor.marginInfo', { value: totals.marginPercent.toFixed(1) })}</small></div>

@@ -9,7 +9,10 @@ export const newItem = (language = 'en') => reviseManualPrice({ id: crypto.rando
 
 // A changed cost/unit is new manual evidence, never a verified catalog quote.
 export function reviseManualPrice(item, changes, language = 'en') {
+  const priceOnly = Object.keys(changes).every(key => key === 'unitCost')
   return { ...item, ...changes, catalogId: null, origin: 'manual', needsReview: true,
+    previousCatalogId: priceOnly ? item.catalogId || item.previousCatalogId || null : null,
+    takeoff: priceOnly ? item.takeoff : undefined,
     priceSource: language === 'es' ? 'Entrada manual — provisional' : 'Manual entry — provisional', priceDate: '',
     price: { status: 'manual', source: 'manual-entry', category: 'provisional-assumption', internalPriceApproval: 'not-recorded',
       previousSource: item.price?.previousSource || item.price?.source || null,

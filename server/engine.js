@@ -2,6 +2,7 @@ import { estimatePublicMessage } from './publicText.js'
 import { directEstimateChange } from '../shared/estimateCommands.js'
 import { isPdfRequest } from '../shared/estimatePresentation.js'
 import { ESTIMATING_MARKET, pricingAvailability } from '../shared/estimatingMarket.js'
+import { effectiveCatalog } from '../shared/researchCatalog.js'
 import { randomUUID } from 'node:crypto'
 import { compactTitle } from '../shared/chatPresentation.js'
 import { z } from 'zod'
@@ -142,6 +143,7 @@ export class EstimatorEngine {
   try {
    const context=await this.context(owner,row)
    const settings=(await this.repo.settings(owner))?.data||defaultSettings()
+   settings.catalog=effectiveCatalog(settings.catalog)
    const assets=await this.repo.assets(owner,row.id)
    if(assets.length)await stage('images')
    const images=await Promise.all(assets.map(a=>this.repo.image(owner,a.id)))

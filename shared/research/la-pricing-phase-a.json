@@ -1,0 +1,1051 @@
+{
+  "schema_version": "phase-A-research-1",
+  "market": {
+    "city": "Los Angeles",
+    "state": "California",
+    "country": "US",
+    "currency": "USD"
+  },
+  "observed_date": "2026-10-17",
+  "scope": "Investigación de materiales únicamente. No importado, aprobado ni activado en One Stop.",
+  "semantics": {
+    "supplier_id": "Referencia a proveedor, localización/cobertura y fuente en suppliers; se hereda ese contexto, no inventa una oferta local.",
+    "price_usd": "Importe público observado de esa presentación; null si no publicado o requiere acceso/cotización. No implica verificación LA.",
+    "la_verified_price_usd": "Solo se llenaría con precio de variante asociado a sucursal/ZIP concreto; todos null en este piloto.",
+    "sales_tax": "unknown significa que no se pudo comprobar si el impuesto sobre venta está incluido; no equivale a 0 ni a excluido.",
+    "freight": "unknown: importe de envío/entrega por pedido no calculado. Ver políticas de proveedor, no sumarlas automáticamente por producto.",
+    "conversion": "Conversión matemática del envase o dimensiones publicadas, no rendimiento/consumo, cobertura de pintura ni productividad.",
+    "freshness": "Lecturas HTTP anónimas directas el 17-10-2026 salvo HD, cuyas páginas se abrieron con web y cuya lectura HTTP directa fue 403.",
+    "approval": "Todo pendiente de revisión; precios sin vigencia garantizada, tarifas negociadas no consultadas."
+  },
+  "suppliers": [
+    {
+      "id": "HD",
+      "name": "The Home Depot",
+      "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+      "zip": "90028",
+      "coverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+      "source": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+      "access": "Página oficial abierta con herramienta web; lectura HTTP directa respondió 403."
+    },
+    {
+      "id": "LOWES",
+      "name": "Lowe's",
+      "location": "Mid-city #2714, 4550 West Pico Blvd Unit D-101, Los Angeles, CA 90019",
+      "zip": "90019",
+      "coverage": "Sucursal local comprobada; fichas de productos sin tienda o ZIP asociado.",
+      "source": "https://www.lowes.com/store/ca-los-angeles/2714",
+      "access": "HTTP 200 público sin sesión; ofertas estructuradas no identifican sucursal."
+    },
+    {
+      "id": "DE",
+      "name": "Dunn-Edwards",
+      "location": "Santa Monica - 049, 11710 Santa Monica Blvd, Los Angeles, CA 90025",
+      "zip": "90025",
+      "coverage": "Sucursal en Los Ángeles comprobada; oferta web no validada para retiro ni entrega a ese ZIP.",
+      "source": "https://www.dunnedwards.com/paint-store/santa-monica-049/",
+      "access": "Sucursal abierta en web; HTTP directo de sucursal 403. Cinco fichas comerciales HTTP 200."
+    },
+    {
+      "id": "SW",
+      "name": "Sherwin-Williams",
+      "location": "#701550, 805 N Highland Ave, Los Angeles, CA 90038-3416",
+      "zip": "90038",
+      "coverage": "Sucursal local comprobada; precio y disponibilidad de las variantes requieren autenticación.",
+      "source": "https://www.sherwin-williams.com/store-locator/paint-store/los-angeles/ca/701550",
+      "access": "HTTP 200 público. Sin registro ni inicio de sesión."
+    },
+    {
+      "id": "SH",
+      "name": "Shilpark Paint",
+      "location": "West LA, 11240 W Olympic Blvd, Los Angeles, CA 90064",
+      "zip": "90064",
+      "coverage": "Sucursal y familias del catálogo comprobadas; presentación, SKU, precio y stock de sucursal pendientes.",
+      "source": "https://shilpark.com/locations/",
+      "access": "HTTP 200 público de ubicaciones y categorías."
+    },
+    {
+      "id": "CAT",
+      "name": "Catalina Paints",
+      "location": null,
+      "zip": null,
+      "coverage": "Red de tiendas en Los Ángeles declarada en web oficial. Retiro en sus tiendas; entrega dentro de 7 millas de cada tienda sujeta a elegibilidad de ZIP. No se comprobó sucursal o dirección de entrega concreta.",
+      "source": "https://catalinapaintstore.com/",
+      "access": "HTTP 200 público; cinco ofertas de variantes comprobadas en HTML. Localizador dinámico no expuso direcciones en la lectura disponible."
+    }
+  ],
+  "shipping_policies": [
+    {
+      "supplier_id": "CAT",
+      "source": "https://catalinapaintstore.com/",
+      "pickup": "Retiro anunciado en sus tiendas; no se comprobó stock ni tienda por producto.",
+      "local_delivery": "Dentro de 7 millas de cada tienda; requiere comprobar elegibilidad de ZIP.",
+      "published_delivery_fee_usd": 50,
+      "free_delivery_condition": "Pedido superior a USD 500; igualdad exacta en USD 500 no aclarada.",
+      "note": "Política general publicada, no cotización de flete para una dirección ni garantía de cobertura de toda LA."
+    },
+    {
+      "supplier_id": "DE",
+      "source": "https://shop.dunnedwards.com/",
+      "published_policy": "Banner anuncia envío gratis en pedidos sobre USD 50.",
+      "note": "Condiciones/elegibilidad/destino del pedido no verificadas. No aplicar automáticamente ni asumir retiro en sucursal."
+    }
+  ],
+  "observations": [
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "HD01",
+      "supplier_id": "HD",
+      "category": "interior_paint",
+      "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+      "brand": "BEHR",
+      "sku": "433052",
+      "model": "275001",
+      "url": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+      "package": {
+        "amount": 1,
+        "unit": "US_gallon",
+        "sheen": "eggshell",
+        "color": "Ultra Pure White"
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 128,
+        "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido."
+      },
+      "price_usd": 46.98,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_product_page_opened_in_web_direct_HTTP_403",
+      "freshness": "web_page_observation_direct_freshness_not_confirmed",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "La ficha muestra Select store. No se aplicó promoción de tarjeta. Precio leído al abrir página original en web; HTTP directo 403."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "HD02",
+      "supplier_id": "HD",
+      "category": "primer",
+      "product": "KILZ 2 ALL PURPOSE White Interior/Exterior Primer",
+      "brand": "KILZ",
+      "sku": null,
+      "model": "20941",
+      "url": "https://www.homedepot.com/p/KILZ-KILZ-2-ALL-PURPOSE-1-gal-White-Interior-Exterior-Multi-Surface-Primer-Sealer-and-Stain-Blocker-20941/100096395",
+      "package": {
+        "amount": 1,
+        "unit": "US_gallon",
+        "color": "White"
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 128,
+        "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido."
+      },
+      "price_usd": 22.98,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_product_page_opened_in_web_direct_HTTP_403",
+      "freshness": "web_page_observation_direct_freshness_not_confirmed",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Modelo observado 20941, no sustituir por otro código histórico de KILZ 2.",
+        "Precio no vinculado a Sunset #6616; HTTP directo 403."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "HD03",
+      "supplier_id": "HD",
+      "category": "patch",
+      "product": "DryDex Dry Time Indicator Spackling Paste",
+      "brand": "DAP",
+      "sku": "283433",
+      "model": "12327",
+      "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+      "package": {
+        "amount": 32,
+        "unit": "oz_as_labeled",
+        "purchase_unit": "container"
+      },
+      "conversion": null,
+      "price_usd": 11.48,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_product_page_opened_in_web_direct_HTTP_403",
+      "freshness": "web_page_observation_direct_freshness_not_confirmed",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "No convertir oz a fl oz sin confirmar volumen/peso en especificación.",
+        "No es el mismo modelo que DAP 12330 vendido por Lowe's; no asumir equivalencia exacta.",
+        "HTTP directo 403."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "HD04",
+      "supplier_id": "HD",
+      "category": "abrasive",
+      "product": "General Purpose Sanding Sponge 120 Fine Grit",
+      "brand": "3M",
+      "sku": null,
+      "model": "CP001-3PK-LG",
+      "url": "https://www.homedepot.com/p/3M-General-Purpose-Sanding-Sponge-4-5-in-x-2-5-in-x-1-in-120-Fine-Grit-3-Pack-CP001-3PK-LG/203212459",
+      "package": {
+        "amount": 3,
+        "unit": "sponges",
+        "dimensions_in": [
+          4.5,
+          2.5,
+          1
+        ],
+        "grit": 120
+      },
+      "conversion": {
+        "to_unit": "sponge",
+        "factor": 3
+      },
+      "price_usd": 8.48,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_product_page_opened_in_web_direct_HTTP_403",
+      "freshness": "web_page_observation_direct_freshness_not_confirmed",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Precio del paquete de 3, no de una esponja.",
+        "HTTP directo 403."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "HD05",
+      "supplier_id": "HD",
+      "category": "protection",
+      "product": "Heavy Duty Canvas Drop Cloth",
+      "brand": "Everbilt",
+      "sku": null,
+      "model": "51831/4HD",
+      "url": "https://www.homedepot.com/p/Everbilt-9-Ft-x-12-Ft-Heavy-Duty-Canvas-Drop-Cloth-51831-4HD/307244016",
+      "package": {
+        "amount": 1,
+        "unit": "cloth",
+        "dimensions_ft": [
+          9,
+          12
+        ],
+        "fabric_weight_label": "10 oz"
+      },
+      "conversion": {
+        "to_unit": "nominal_sq_ft",
+        "factor": 108
+      },
+      "price_usd": 39.98,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_product_page_opened_in_web_direct_HTTP_403",
+      "freshness": "web_page_observation_direct_freshness_not_confirmed",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Área geométrica nominal; no supone cobertura efectiva en obra.",
+        "10 oz es designación de tela, no volumen.",
+        "No se aplicó promoción de tarjeta; HTTP directo 403."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "LO01",
+      "supplier_id": "LOWES",
+      "category": "interior_paint",
+      "product": "2000 Pastel Tintable Interior Paint + Primer",
+      "brand": "Valspar",
+      "sku": "31103",
+      "model": "007.0031103.007",
+      "url": "https://www.lowes.com/pd/Valspar-2000-Eggshell-Tintable-Interior-Paint-1-Gallon/1000380983",
+      "package": {
+        "amount": 1,
+        "unit": "nominal_US_gallon_can",
+        "actual_net_fl_oz": 124,
+        "sheen": "eggshell",
+        "base": "Pastel Tintable"
+      },
+      "conversion": {
+        "to_unit": "US_gallon",
+        "factor": 0.96875,
+        "note": "124 fl oz / 128. No tratar esta base como 128 fl oz netas."
+      },
+      "price_usd": 25.98,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Precio público HTML/JSON-LD; Place no especifica tienda.",
+        "Color/tintado final y disponibilidad local pendientes.",
+        "Sin descuento de tarjeta ni membresía."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "LO02",
+      "supplier_id": "LOWES",
+      "category": "patch",
+      "product": "DryDex Color-Changing Spackling",
+      "brand": "DAP",
+      "sku": "23229",
+      "model": "12330",
+      "url": "https://www.lowes.com/pd/DAP-DryDex-32-oz-White-Spackling/3962333",
+      "package": {
+        "amount": 1,
+        "unit": "US_quart",
+        "label": "32 Ounce(s); Container Size 1-quart"
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 32,
+        "note": "Conversión de quart estadounidense nominal."
+      },
+      "price_usd": 12.98,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "La conversión se basa en Container Size 1-quart, no en asumir que cualquier oz es fl oz.",
+        "Sin tienda/ZIP asociado; no usar fechas de entrega genéricas de la página como promesa local.",
+        "Modelo distinto de HD 12327."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "LO03",
+      "supplier_id": "LOWES",
+      "category": "abrasive",
+      "product": "PRO Grade Precision Medium 120 Grit Sheet Sandpaper",
+      "brand": "3M",
+      "sku": "6014059",
+      "model": "SHT120-PGP-6T",
+      "url": "https://www.lowes.com/pd/3M-3M-Pro-Grade-Precision-rd-Sheets-Sandpaper-Purple-Abrasive-120-grit/5015565859",
+      "package": {
+        "amount": 6,
+        "unit": "sheets",
+        "dimensions_in": [
+          3.67,
+          9
+        ],
+        "grit": 120
+      },
+      "conversion": {
+        "to_unit": "sheet",
+        "factor": 6
+      },
+      "price_usd": 6.98,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Paquete de 6; no confundir con SandBlaster Pro 20120-SBP-5 discontinuado en web.",
+        "Sin disponibilidad local confirmada."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "LO04",
+      "supplier_id": "LOWES",
+      "category": "protection",
+      "product": "Original Multi-Surface 2090 Painter's Tape",
+      "brand": "ScotchBlue",
+      "sku": "590695",
+      "model": "2090-48C",
+      "url": "https://www.lowes.com/pd/ScotchBlue-1-88-in-x-60-yd-Painters-Tape/1003202270",
+      "package": {
+        "amount": 1,
+        "unit": "roll",
+        "width_in": 1.88,
+        "length_yd": 60
+      },
+      "conversion": {
+        "to_unit": "linear_ft",
+        "factor": 180
+      },
+      "price_usd": 8.28,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Precio de un rollo; sin suscripción ni descuento.",
+        "Datos de entrega sin ubicación no prueban entrega a LA."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "LO05",
+      "supplier_id": "LOWES",
+      "category": "protection",
+      "product": "Light Duty Plastic Drop Cloth",
+      "brand": "Project Source",
+      "sku": "3487100",
+      "model": "110SG0912LOWES.7C",
+      "url": "https://www.lowes.com/pd/Project-Source-9-ft-x-12-ft-Clear-0-7-mil-Light-duty-Plastic-Sheeting/5003330935",
+      "package": {
+        "amount": 1,
+        "unit": "sheet",
+        "dimensions_ft": [
+          9,
+          12
+        ],
+        "thickness_mil": 0.7
+      },
+      "conversion": {
+        "to_unit": "nominal_sq_ft",
+        "factor": 108
+      },
+      "price_usd": 3.98,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Precio individual, no bundle o multipack.",
+        "Área nominal sin traslapos; uso/protección adecuada deben revisarse.",
+        "No hay sucursal/ZIP para la oferta."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "DE01",
+      "supplier_id": "DE",
+      "category": "interior_paint",
+      "product": "SUPREMA Ultra Premium Ultra-Low VOC Interior Paint",
+      "brand": "Dunn-Edwards",
+      "sku": "SPMA30-0-L-1",
+      "model": null,
+      "url": "https://shop.dunnedwards.com/collections/paint/products/copy-of-suprema%C2%AE-ultra-premium-interior-paint-consumer?variant=39685892538423",
+      "package": {
+        "amount": 1,
+        "unit": "US_gallon",
+        "sheen": "eggshell",
+        "color": null
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 128,
+        "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido."
+      },
+      "price_usd": 81.5,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "included_where_applicable_including_CA",
+      "limitations": [
+        "Variante Eggshell / Gallon identificada en opciones y oferta estructurada del HTML original.",
+        "No usar el precio predeterminado de quart flat (21.50) para este galón eggshell.",
+        "Color/base final pendientes; pintura tintada no retornable; ZIP/retiro sin comprobar."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "DE02",
+      "supplier_id": "DE",
+      "category": "interior_paint",
+      "product": "SPARTAWALL Premium Zero & Ultra-Low VOC Interior Acrylic Paint",
+      "brand": "Dunn-Edwards",
+      "sku": "SWLL10-0-L-1",
+      "model": null,
+      "url": "https://shop.dunnedwards.com/collections/interior-paint/products/spartawall%C2%AE-premium-zero-ultra-low-voc-interior-acrylic-paint?variant=31888042229815",
+      "package": {
+        "amount": 1,
+        "unit": "US_gallon",
+        "sheen": "flat",
+        "color": null
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 128,
+        "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido."
+      },
+      "price_usd": 61,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "included_where_applicable_including_CA",
+      "limitations": [
+        "Color/base final pendientes; no intercambiable con eggshell.",
+        "No se confirmó retiro/entrega al ZIP 90025; pintura tintada no retornable."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "DE03",
+      "supplier_id": "DE",
+      "category": "primer",
+      "product": "ULTRA-GRIP Premium Ultra-Low VOC Multi-Surface Primer",
+      "brand": "Dunn-Edwards",
+      "sku": "UGPR00-1-WH-1",
+      "model": null,
+      "url": "https://shop.dunnedwards.com/collections/d-e-primers/products/ultra-grip%C2%AE-premium-ultra-low-voc-multi-purpose-primer?variant=31786228449335",
+      "package": {
+        "amount": 1,
+        "unit": "US_gallon",
+        "color": "White"
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 128,
+        "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido."
+      },
+      "price_usd": 69,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "included_where_applicable_including_CA",
+      "limitations": [
+        "Precio del galón; el precio desde 20.50 corresponde a quart.",
+        "No inferir que este primer sea obligatorio o idóneo para todo muro.",
+        "Retiro/entrega local sin validar."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "DE04",
+      "supplier_id": "DE",
+      "category": "patch",
+      "product": "Lightweight Spackling Compound",
+      "brand": "Dunn-Edwards",
+      "sku": "DE-LWS14",
+      "model": null,
+      "url": "https://shop.dunnedwards.com/collections/patch/products/lt-wgt-spackling-compound-qt",
+      "package": {
+        "amount": 1,
+        "unit": "US_quart"
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 32,
+        "note": "Conversión de quart estadounidense nominal."
+      },
+      "price_usd": 10.19,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "No sustituir por presentación pint DE-LWS16.",
+        "Precio web sin confirmación de sucursal/ZIP."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "DE05",
+      "supplier_id": "DE",
+      "category": "protection",
+      "product": "Light Duty Canvas Drop Cloth",
+      "brand": "Contractor's Edge",
+      "sku": "CE-D100-9A",
+      "model": null,
+      "url": "https://shop.dunnedwards.com/collections/drop-cloths/products/cntrs-edge-canvas-drop-4oz",
+      "package": {
+        "amount": 1,
+        "unit": "cloth",
+        "dimensions_ft": [
+          9,
+          12
+        ],
+        "fabric_weight_label": "4 oz"
+      },
+      "conversion": {
+        "to_unit": "nominal_sq_ft",
+        "factor": 108
+      },
+      "price_usd": 20.99,
+      "price_type": "public_online",
+      "local_context": "supplier_has_LA_branch_online_price_not_localized",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Tela ligera de 4 oz; no equivalente a lona pesada 10 oz.",
+        "Área nominal, sin traslapos; flete/stock local pendientes."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "SW01",
+      "supplier_id": "SW",
+      "category": "primer",
+      "product": "Premium Wall & Wood Primer",
+      "brand": "Sherwin-Williams",
+      "sku": "650132764",
+      "model": "B28W08111",
+      "url": "https://www.sherwin-williams.com/homeowners/products/premium-wall-wood-primer",
+      "package": {
+        "amount": 1,
+        "unit": "US_gallon",
+        "color": "White"
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 128,
+        "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido."
+      },
+      "price_usd": null,
+      "price_type": "account_login_required",
+      "local_context": "local_branch_exists_price_requires_login",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Variante blanca 1 Gallon identificada; la ficha solicita registrarse/iniciar sesión para confirmar precio y disponibilidad.",
+        "No se usó ninguna sesión privada."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "SW02",
+      "supplier_id": "SW",
+      "category": "patch",
+      "product": "Shrink Free Spackling",
+      "brand": "Sherwin-Williams",
+      "sku": "1510619",
+      "model": null,
+      "url": "https://www.sherwin-williams.com/homeowners/products/shrink-free-spackling",
+      "package": {
+        "amount": 1,
+        "unit": "US_quart"
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 32,
+        "note": "Conversión de quart estadounidense nominal."
+      },
+      "price_usd": null,
+      "price_type": "account_login_required",
+      "local_context": "local_branch_exists_price_requires_login",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Variante 1 Quart identificada; precio/disponibilidad tras login no consultados."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "SW03",
+      "supplier_id": "SW",
+      "category": "protection",
+      "product": "Contractor Series Canvas Drop Cloth 8 oz",
+      "brand": "Sherwin-Williams",
+      "sku": "1980929",
+      "model": "58401SW",
+      "url": "https://www.sherwin-williams.com/homeowners/products/contractor-series-canvas-drop-cloth-8oz",
+      "package": {
+        "amount": 1,
+        "unit": "cloth",
+        "dimensions_ft": [
+          9,
+          12
+        ],
+        "fabric_weight_label": "8 oz Medium Duty"
+      },
+      "conversion": {
+        "to_unit": "nominal_sq_ft",
+        "factor": 108
+      },
+      "price_usd": null,
+      "price_type": "account_login_required",
+      "local_context": "local_branch_exists_price_requires_login",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Variante 9x12 de una unidad; precio requiere login.",
+        "Rangos de precio de recomendaciones no se asignan a esta variante."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "SH01",
+      "supplier_id": "SH",
+      "category": "interior_paint",
+      "product": "Regal Select Interior",
+      "brand": "Benjamin Moore",
+      "sku": null,
+      "model": null,
+      "url": "https://shilpark.com/product_category/interior-paint/",
+      "package": null,
+      "conversion": null,
+      "price_usd": null,
+      "price_type": "quote_required",
+      "local_context": "local_supplier_product_family_only",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Solo familia publicada por el distribuidor; falta brillo/base/color/envase/SKU.",
+        "No constituye un producto intercambiable ni una oferta de precio."
+      ],
+      "record_level": "product_family_incomplete"
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "SH02",
+      "supplier_id": "SH",
+      "category": "primer",
+      "product": "High Hide PVA Primer",
+      "brand": "EVER-GARD",
+      "sku": null,
+      "model": null,
+      "url": "https://shilpark.com/product_category/primers/",
+      "package": null,
+      "conversion": null,
+      "price_usd": null,
+      "price_type": "quote_required",
+      "local_context": "local_supplier_product_family_only",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Solo familia publicada; falta presentación, SKU y especificación detallada.",
+        "Solicitar cotización en una fase autorizada posterior; no se contactó al proveedor."
+      ],
+      "record_level": "product_family_incomplete"
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "CA01",
+      "supplier_id": "CAT",
+      "category": "interior_paint",
+      "product": "Ultra Spec 500 Interior Paint",
+      "brand": "Benjamin Moore",
+      "sku": "T538XX01",
+      "model": null,
+      "url": "https://catalinapaintstore.com/products/ultra-spec-500?variant=31816236597317",
+      "package": {
+        "amount": 1,
+        "unit": "US_gallon",
+        "sheen": "eggshell",
+        "color": null
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 128,
+        "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido."
+      },
+      "price_usd": 56.66,
+      "price_type": "public_online",
+      "local_context": "local_supplier_online_offer_zip_pending",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "California_fee_included",
+      "limitations": [
+        "Precio de Eggshell / Gallon, identificado por variante en opciones HTML y JSON-LD; no es el desde 46.80 flat.",
+        "Oferta pública de comercio con cobertura LA; retiro/stock en sucursal y ZIP de entrega pendientes.",
+        "Color/tintado pendiente; producto tintado no retornable."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "CA02",
+      "supplier_id": "CAT",
+      "category": "primer",
+      "product": "Fresh Start High Hiding All-Purpose Primer",
+      "brand": "Benjamin Moore",
+      "sku": "0460001",
+      "model": null,
+      "url": "https://catalinapaintstore.com/products/fresh-start-high-hiding-all-purpose?variant=31816202616901",
+      "package": {
+        "amount": 1,
+        "unit": "US_gallon"
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 128,
+        "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido."
+      },
+      "price_usd": 52.1,
+      "price_type": "public_online",
+      "local_context": "local_supplier_online_offer_zip_pending",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Variante Gallon identificada en opciones y JSON-LD; no usar desde 26.30 que corresponde a quart.",
+        "No se confirmó variante por sucursal ni entrega a ZIP."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "CA03",
+      "supplier_id": "CAT",
+      "category": "patch",
+      "product": "Vinyl Spackling Paste",
+      "brand": "Crawford's",
+      "sku": null,
+      "model": null,
+      "url": "https://catalinapaintstore.com/products/crawfords-spackle?variant=31757477085253",
+      "package": {
+        "amount": 1,
+        "unit": "US_quart"
+      },
+      "conversion": {
+        "to_unit": "US_fl_oz",
+        "factor": 32,
+        "note": "Conversión de quart estadounidense nominal."
+      },
+      "price_usd": 21.29,
+      "price_type": "public_online",
+      "local_context": "local_supplier_online_offer_zip_pending",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Variante Quart identificada en opciones y JSON-LD; desde 8.80 corresponde a 1/2 Pint.",
+        "SKU no publicado en la oferta estructurada consultada; stock/retiro por sucursal pendiente."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "CA04",
+      "supplier_id": "CAT",
+      "category": "abrasive",
+      "product": "6 Pack Sanding Blocks",
+      "brand": "Catalina Paints",
+      "sku": "776960805367",
+      "model": null,
+      "url": "https://catalinapaintstore.com/products/sanding-block-6-pack-catalina?variant=31757438025797",
+      "package": {
+        "amount": 6,
+        "unit": "blocks",
+        "grit": null
+      },
+      "conversion": {
+        "to_unit": "block",
+        "factor": 6
+      },
+      "price_usd": 8.96,
+      "price_type": "public_online",
+      "local_context": "local_supplier_online_offer_zip_pending",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "Grano/dimensiones no especificados en ficha leída: no intercambiar automáticamente con grano 120.",
+        "Disponibilidad de sucursal pendiente."
+      ]
+    },
+    {
+      "observed_date": "2026-10-17",
+      "currency": "USD",
+      "sales_tax": "unknown",
+      "freight": "unknown",
+      "la_verified_price_usd": null,
+      "la_product_branch_zip_price_verified": false,
+      "branch_inventory_verified": false,
+      "id": "CA05",
+      "supplier_id": "CAT",
+      "category": "protection",
+      "product": "Brown Rosin Paper",
+      "brand": "Trimaco",
+      "sku": "MPR",
+      "model": null,
+      "url": "https://catalinapaintstore.com/products/red-rosin-paper?variant=31757451624517",
+      "package": {
+        "amount": 1,
+        "unit": "roll",
+        "width_in": 35,
+        "length_ft": 167
+      },
+      "conversion": {
+        "to_unit": "nominal_sq_ft",
+        "factor": 487.0833333333,
+        "note": "35/12 × 167; cálculo geométrico, sin traslapos."
+      },
+      "price_usd": 10.95,
+      "price_type": "public_online",
+      "local_context": "local_supplier_online_offer_zip_pending",
+      "evidence_method": "official_public_HTML_HTTP_200",
+      "freshness": "direct_public_retrieval_2026-10-17",
+      "paintcare_fee": "unknown_or_not_applicable",
+      "limitations": [
+        "El slug dice red pero título/contenido de la ficha dicen Brown; conservar esa discrepancia para revisión.",
+        "No asumir impermeabilidad ni equivalencia con lona/plástico.",
+        "Stock/retiro por sucursal pendiente."
+      ]
+    }
+  ],
+  "missing": [
+    "0 precios vinculados a producto+variante+sucursal/ZIP LA concreto; no convertir presencia de tienda en verificación de precio.",
+    "Confirmar inventario y retiro o elegibilidad de entrega por dirección, incluyendo las cinco ofertas del comercio local Catalina.",
+    "Precios de tres variantes Sherwin-Williams: requieren acceso; no consultados.",
+    "Presentación/SKU/brillo/base y cotización de dos familias Shilpark.",
+    "Impuesto sobre ventas y flete real por pedido/destino; PaintCare donde no se publicó explícitamente.",
+    "Color/base final y contenido neto exacto de pinturas salvo dato neto 124 fl oz de Valspar; grano del pack Catalina.",
+    "Lectura HTTP directa actual de cinco fichas HD bloqueada 403; precios conservados como observación web con revalidación pendiente.",
+    "No se midieron rendimientos, consumos, horas, tarifas laborales, merma, margen ni costos instalados.",
+    "No se investigaron términos de API, contratos de datos o permisos de extracción/actualización recurrente; no hay conexión externa implementada."
+  ],
+  "excluded": [
+    {
+      "supplier_id": "LOWES",
+      "product": "3M SandBlaster Pro 120 Grit 9x11 5-Pack",
+      "model": "20120-SBP-5",
+      "url": "https://www.lowes.com/pd/3M-SandBlaster-Pro-Medium-120-Grit-Sheet-Sandpaper-9-0-in-W-x-11-0-in-L-5-Pack/1000065499",
+      "reason": "Página original declara que ya no se vende en Lowes.com. Se reemplazó en el piloto por SHT120-PGP-6T; no se afirma sustitución técnica automática."
+    }
+  ]
+}

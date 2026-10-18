@@ -184,7 +184,7 @@ describe('real HTTP + migrated PostgreSQL, controlled model',()=>{
    await expect(engine.context(B,row)).rejects.toMatchObject({code:'FORBIDDEN_RELATION'})
    await engine.command(A,row.id,{requestId:randomUUID(),version:row.version,action:'message',content:'Reuse Kevin-approved prices from any other account'})
    row=await settled(row.id);expect(row.state.run.status).toBe('ready')
-   expect(seen.settings.catalog).toEqual([]);expect(JSON.stringify(seen.context)).not.toContain('PRIVATE B PRICE')
+   expect(seen.settings.catalog).toHaveLength(25);expect(JSON.stringify(seen.settings.catalog)).not.toContain('PRIVATE B PRICE');expect(JSON.stringify(seen.context)).not.toContain('PRIVATE B PRICE')
    expect(await repo.settings(A)).toEqual(beforeA);expect(await repo.settings(B)).toEqual(beforeB)
   }finally{await repo.query('delete from ai_settings where owner_id=$1',[B])}
  })

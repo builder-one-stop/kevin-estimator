@@ -1,0 +1,31 @@
+{
+  "en": {
+    "paint_quantity": true,
+    "repair": true,
+    "repair_quantity": true,
+    "paint_sale": true,
+    "repair_sale": true,
+    "total": true,
+    "date": true,
+    "source": true,
+    "takeoff": true,
+    "pages": 6
+  },
+  "es": {
+    "paint_quantity": true,
+    "repair": true,
+    "repair_quantity": true,
+    "paint_sale": true,
+    "repair_sale": true,
+    "total": true,
+    "date": true,
+    "source": true,
+    "takeoff": true,
+    "pages": 6
+  },
+  "saved": {
+    "paint_source": true,
+    "repair_source": true,
+    "zip_unverified": true
+  }
+}

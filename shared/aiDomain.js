@@ -1,6 +1,7 @@
 import { ESTIMATING_MARKET } from './estimatingMarket.js'
 import { planSchema, outputSchema } from './aiSchemas.js'
 import { calculateEstimate, validateEstimate } from '../src/lib/estimateDocument.js'
+import { catalogPriceSnapshot, priceSourceLabel } from './catalogPricing.js'
 export const localText = (value, language = 'en') => typeof value === 'string' ? value : value?.[language] || value?.en || ''
 export const fail = (code, status = 400) => Object.assign(new Error(code), { code, status })
 export function assertPlan(plan, approvable = false) {
@@ -10,14 +11,17 @@ export function assertPlan(plan, approvable = false) {
   if (approvable && plan.tasks.some(t => !t.included.en.trim() || !t.included.es.trim() || t.components.some(c => !c.en.trim() || !c.es.trim()) || (!t.confirmed && !t.assumptions.en.trim()))) throw fail('PLAN_UNCONFIRMED')
   return plan
 }
-function itemFromLine(line, catalog, language) {
+function itemFromLine(line, catalog, language, jobZip = '') {
   const entry = catalog.find(x => x.id === line.catalogId)
-  if (line.catalogId && (!entry || entry.unit !== line.unit)) throw fail('CATALOG_MISMATCH')
+  if (line.catalogId && (!entry || entry.unit !== line.unit || !entry.package || entry.unitCost === null ||
+    (entry.status === 'verified' && entry.verifiedZip !== jobZip) ||
+    (entry.validUntil && entry.validUntil < new Date().toISOString().slice(0, 10)))) throw fail('CATALOG_MISMATCH')
+  const price = entry ? catalogPriceSnapshot(entry, jobZip) : { status: 'provisional', source: 'model-proposal', category: 'provisional-assumption', internalPriceApproval: 'not-recorded', reason: 'NO_BACKED_PRICE' }
   return { ...line, description: localText(line.description, language), translations: line.description,
     unitCost: entry?.unitCost ?? line.unitCost,
-    price: entry ? { ...entry, source: 'owner-catalog', category: entry.status === 'verified' ? 'local-source' : 'provisional-assumption', internalPriceApproval: 'not-recorded' } : { status: 'provisional', source: 'model-proposal', category: 'provisional-assumption', internalPriceApproval: 'not-recorded' },
-    priceSource: entry ? `${entry.vendor} · ${entry.product} · ${entry.package}` : (language === 'es' ? 'Supuesto provisional — sin precio local verificado' : 'Provisional assumption — no verified local price'),
-    priceDate: entry?.checkedAt || '', needsReview: !entry || entry.status !== 'verified',
+    price,
+    priceSource: entry ? priceSourceLabel(entry, price, language) : (language === 'es' ? 'Supuesto provisional — sin precio local verificado' : 'Provisional assumption — no verified local price'),
+    priceDate: entry?.checkedAt || '', needsReview: price.status !== 'verified',
     notes: localText(line.basis, language), origin: 'ai-proposal' }
 }
 export function documentFromLines(plan, lines, language, catalog = [], business = {}, revision = 1) {
@@ -27,11 +31,11 @@ export function documentFromLines(plan, lines, language, catalog = [], business 
   if (lines.some(x => !taskIds.has(x.taskId))) throw fail('OUTSIDE_APPROVED_SCOPE')
   if (plan.tasks.some(t => !lines.some(x => x.taskId === t.id))) throw fail('UNPRICED_SCOPE')
   const doc = { sections: plan.tasks.map(task => ({ id: task.id, title: localText(task.room, language),
-    items: lines.filter(x => x.taskId === task.id).map(x => itemFromLine(x, catalog, language)) })),
+    items: lines.filter(x => x.taskId === task.id).map(x => itemFromLine(x, catalog, language, plan.zip)) })),
     proposal: { intro: '', scope: '', notes: '', exclusions: '', terms: '' },
     scope: { plan: structuredClone(plan), revision, approvalType: 'plan' }, market: { ...ESTIMATING_MARKET }, language, business: structuredClone(business) }
   for (const item of doc.sections.flatMap(s => s.items)) {
-    if (item.price?.status === 'verified' && (!plan.zip || !item.price.location.includes(plan.zip))) {
+    if (item.price?.status === 'verified' && item.price.verifiedZip !== plan.zip) {
       item.price.status = 'provisional'; item.price.category = 'provisional-assumption'; item.price.reason = 'JOB_LOCATION_UNCONFIRMED'; item.needsReview = true
     }
   }
@@ -82,7 +86,7 @@ export function proposedChange(estimate, output, catalog, revision) {
         if (!task) throw fail('OUTSIDE_APPROVED_SCOPE')
         section = { id: task.id, title: localText(task.room, document.language), items: [] }; document.sections.push(section)
       }
-      const proposedItem = itemFromLine(op.line, catalog, document.language)
+      const proposedItem = itemFromLine(op.line, catalog, document.language, plan.zip)
       const previousItem = before.get(op.id)
       const samePrice = previousItem && Number(previousItem.unitCost) === proposedItem.unitCost && previousItem.unit === proposedItem.unit && (previousItem.catalogId ?? null) === op.line.catalogId
       const item = { ...previousItem, ...proposedItem,
@@ -98,7 +102,7 @@ export function proposedChange(estimate, output, catalog, revision) {
   if (estimate.document.sections.some(s => !plan.tasks.some(t => t.id === s.id) && s.items.some(i => !output.changes.some(o => o.id === i.id && o.action === 'remove')))) throw fail('IMPLICIT_DELETION')
   document.scope = { plan: structuredClone(plan), revision, approvalType: 'plan' }
   for (const item of document.sections.flatMap(s => s.items)) {
-    if (item.price?.status === 'verified' && (!plan.zip || !item.price.location.includes(plan.zip))) {
+    if (item.price?.status === 'verified' && item.price.verifiedZip !== plan.zip) {
       item.price.status = 'provisional'; item.price.category = 'provisional-assumption'; item.price.reason = 'JOB_LOCATION_UNCONFIRMED'; item.needsReview = true
     }
   }

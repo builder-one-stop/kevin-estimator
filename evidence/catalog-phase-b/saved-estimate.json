@@ -1,0 +1,1552 @@
+{
+  "id": "4c9eebf6-f049-4233-a3ba-9015a1a8f251",
+  "owner_id": "10000000-0000-4000-8000-000000000001",
+  "client_id": null,
+  "project_id": null,
+  "title": "Validation — interior painting",
+  "status": "Draft",
+  "markup_bps": 3600,
+  "document": {
+    "scope": {
+      "plan": {
+        "zip": "",
+        "tasks": [
+          {
+            "id": "task-1",
+            "room": {
+              "en": "Bedroom 1",
+              "es": "Dormitorio 1"
+            },
+            "work": {
+              "en": "Painting",
+              "es": "Pintura"
+            },
+            "finish": {
+              "en": "Satin or eggshell: selection pending",
+              "es": "Satín o eggshell: selección pendiente"
+            },
+            "product": {
+              "en": "Duration Home walls; Duration Semi-Gloss baseboards",
+              "es": "Duration Home walls; Duration Semi-Gloss baseboards"
+            },
+            "excluded": {
+              "en": "Ceiling",
+              "es": "Techo"
+            },
+            "included": {
+              "en": "Walls and baseboards",
+              "es": "Paredes y zócalos"
+            },
+            "confirmed": true,
+            "components": [
+              {
+                "en": "Walls",
+                "es": "Walls"
+              },
+              {
+                "en": "Baseboards",
+                "es": "Baseboards"
+              },
+              {
+                "en": "Preparation",
+                "es": "Preparation"
+              },
+              {
+                "en": "Labor",
+                "es": "Labor"
+              }
+            ],
+            "provenance": {
+              "en": "Explicit test request; heights reviewed assumption",
+              "es": "Pedido explícito de prueba; altura supuesta revisada"
+            },
+            "assumptions": {
+              "en": "",
+              "es": ""
+            },
+            "preparation": {
+              "en": "Protect and patch",
+              "es": "Proteger y reparar"
+            },
+            "measurements": {
+              "en": "9 × 12 ft, height 8 ft",
+              "es": "9 × 12 ft, height 8 ft"
+            }
+          },
+          {
+            "id": "task-2",
+            "room": {
+              "en": "Bedroom 2",
+              "es": "Dormitorio 2"
+            },
+            "work": {
+              "en": "Painting",
+              "es": "Pintura"
+            },
+            "finish": {
+              "en": "Satin or eggshell: selection pending",
+              "es": "Satín o eggshell: selección pendiente"
+            },
+            "product": {
+              "en": "Duration Home walls; Duration Semi-Gloss baseboards",
+              "es": "Duration Home walls; Duration Semi-Gloss baseboards"
+            },
+            "excluded": {
+              "en": "Ceiling",
+              "es": "Techo"
+            },
+            "included": {
+              "en": "Walls and baseboards",
+              "es": "Paredes y zócalos"
+            },
+            "confirmed": false,
+            "components": [
+              {
+                "en": "Walls",
+                "es": "Walls"
+              },
+              {
+                "en": "Baseboards",
+                "es": "Baseboards"
+              },
+              {
+                "en": "Preparation",
+                "es": "Preparation"
+              },
+              {
+                "en": "Labor",
+                "es": "Labor"
+              }
+            ],
+            "provenance": {
+              "en": "Explicit test request; heights reviewed assumption",
+              "es": "Pedido explícito de prueba; altura supuesta revisada"
+            },
+            "assumptions": {
+              "en": "Height assumed 8 ft",
+              "es": "Altura supuesta de 8 ft"
+            },
+            "preparation": {
+              "en": "Protect and patch",
+              "es": "Proteger y reparar"
+            },
+            "measurements": {
+              "en": "9 × 13 ft, height 8 ft assumed",
+              "es": "9 × 13 ft, height 8 ft assumed"
+            }
+          },
+          {
+            "id": "task-3",
+            "room": {
+              "en": "Bedroom 3",
+              "es": "Dormitorio 3"
+            },
+            "work": {
+              "en": "Painting",
+              "es": "Pintura"
+            },
+            "finish": {
+              "en": "Satin or eggshell: selection pending",
+              "es": "Satín o eggshell: selección pendiente"
+            },
+            "product": {
+              "en": "Duration Home walls; Duration Semi-Gloss baseboards",
+              "es": "Duration Home walls; Duration Semi-Gloss baseboards"
+            },
+            "excluded": {
+              "en": "Ceiling",
+              "es": "Techo"
+            },
+            "included": {
+              "en": "Walls and baseboards",
+              "es": "Paredes y zócalos"
+            },
+            "confirmed": false,
+            "components": [
+              {
+                "en": "Walls",
+                "es": "Walls"
+              },
+              {
+                "en": "Baseboards",
+                "es": "Baseboards"
+              },
+              {
+                "en": "Preparation",
+                "es": "Preparation"
+              },
+              {
+                "en": "Labor",
+                "es": "Labor"
+              }
+            ],
+            "provenance": {
+              "en": "Explicit test request; heights reviewed assumption",
+              "es": "Pedido explícito de prueba; altura supuesta revisada"
+            },
+            "assumptions": {
+              "en": "Height assumed 8 ft",
+              "es": "Altura supuesta de 8 ft"
+            },
+            "preparation": {
+              "en": "Protect and patch",
+              "es": "Proteger y reparar"
+            },
+            "measurements": {
+              "en": "12 × 13 ft, height 8 ft assumed",
+              "es": "12 × 13 ft, height 8 ft assumed"
+            }
+          },
+          {
+            "id": "task-4",
+            "room": {
+              "en": "Bathroom",
+              "es": "Baño"
+            },
+            "work": {
+              "en": "Painting",
+              "es": "Pintura"
+            },
+            "finish": {
+              "en": "Satin or eggshell: selection pending",
+              "es": "Satín o eggshell: selección pendiente"
+            },
+            "product": {
+              "en": "Duration Home walls; Duration Semi-Gloss baseboards",
+              "es": "Duration Home walls; Duration Semi-Gloss baseboards"
+            },
+            "excluded": {
+              "en": "Ceiling",
+              "es": "Techo"
+            },
+            "included": {
+              "en": "Walls and baseboards",
+              "es": "Paredes y zócalos"
+            },
+            "confirmed": false,
+            "components": [
+              {
+                "en": "Walls",
+                "es": "Walls"
+              },
+              {
+                "en": "Spot primer",
+                "es": "Spot primer"
+              },
+              {
+                "en": "Baseboards",
+                "es": "Baseboards"
+              },
+              {
+                "en": "Preparation",
+                "es": "Preparation"
+              },
+              {
+                "en": "Labor",
+                "es": "Labor"
+              }
+            ],
+            "provenance": {
+              "en": "Explicit test request; heights reviewed assumption",
+              "es": "Pedido explícito de prueba; altura supuesta revisada"
+            },
+            "assumptions": {
+              "en": "Height assumed 8 ft",
+              "es": "Altura supuesta de 8 ft"
+            },
+            "preparation": {
+              "en": "Spot-prime only; protect and patch",
+              "es": "Primer localizado; proteger y reparar"
+            },
+            "measurements": {
+              "en": "6 × 7 ft, height 8 ft assumed",
+              "es": "6 × 7 ft, height 8 ft assumed"
+            }
+          },
+          {
+            "id": "task-5",
+            "room": {
+              "en": "Hallway",
+              "es": "Pasillo"
+            },
+            "work": {
+              "en": "Painting",
+              "es": "Pintura"
+            },
+            "finish": {
+              "en": "Satin or eggshell: selection pending",
+              "es": "Satín o eggshell: selección pendiente"
+            },
+            "product": {
+              "en": "Duration Home walls; Duration Semi-Gloss baseboards",
+              "es": "Duration Home walls; Duration Semi-Gloss baseboards"
+            },
+            "excluded": {
+              "en": "Ceiling",
+              "es": "Techo"
+            },
+            "included": {
+              "en": "Walls and baseboards",
+              "es": "Paredes y zócalos"
+            },
+            "confirmed": false,
+            "components": [
+              {
+                "en": "Walls",
+                "es": "Walls"
+              },
+              {
+                "en": "Baseboards",
+                "es": "Baseboards"
+              },
+              {
+                "en": "Preparation",
+                "es": "Preparation"
+              },
+              {
+                "en": "Labor",
+                "es": "Labor"
+              }
+            ],
+            "provenance": {
+              "en": "Explicit test request; heights reviewed assumption",
+              "es": "Pedido explícito de prueba; altura supuesta revisada"
+            },
+            "assumptions": {
+              "en": "Height assumed 8 ft",
+              "es": "Altura supuesta de 8 ft"
+            },
+            "preparation": {
+              "en": "Protect and patch",
+              "es": "Proteger y reparar"
+            },
+            "measurements": {
+              "en": "16 × 3 ft, height 8 ft assumed",
+              "es": "16 × 3 ft, height 8 ft assumed"
+            }
+          },
+          {
+            "id": "task-6",
+            "room": {
+              "en": "Living Room",
+              "es": "Sala"
+            },
+            "work": {
+              "en": "Painting",
+              "es": "Pintura"
+            },
+            "finish": {
+              "en": "Satin or eggshell: selection pending",
+              "es": "Satín o eggshell: selección pendiente"
+            },
+            "product": {
+              "en": "Duration Home walls; Interior Latex Flat Ceiling Paint ceiling",
+              "es": "Duration Home walls; Interior Latex Flat Ceiling Paint ceiling"
+            },
+            "excluded": {
+              "en": "No other surfaces",
+              "es": "Ninguna otra superficie"
+            },
+            "included": {
+              "en": "Walls, ceiling and baseboards",
+              "es": "Paredes, techo y zócalos"
+            },
+            "confirmed": false,
+            "components": [
+              {
+                "en": "Walls",
+                "es": "Walls"
+              },
+              {
+                "en": "Interior Latex Flat Ceiling Paint",
+                "es": "Interior Latex Flat Ceiling Paint"
+              },
+              {
+                "en": "Baseboards",
+                "es": "Baseboards"
+              },
+              {
+                "en": "Preparation",
+                "es": "Preparation"
+              },
+              {
+                "en": "Labor",
+                "es": "Labor"
+              }
+            ],
+            "provenance": {
+              "en": "Explicit test request; heights reviewed assumption",
+              "es": "Pedido explícito de prueba; altura supuesta revisada"
+            },
+            "assumptions": {
+              "en": "Height assumed 8 ft",
+              "es": "Altura supuesta de 8 ft"
+            },
+            "preparation": {
+              "en": "Protect and patch",
+              "es": "Proteger y reparar"
+            },
+            "measurements": {
+              "en": "18 × 19 ft, height 8 ft assumed",
+              "es": "18 × 19 ft, height 8 ft assumed"
+            }
+          },
+          {
+            "id": "task-7",
+            "room": {
+              "en": "Kitchen",
+              "es": "Cocina"
+            },
+            "work": {
+              "en": "Painting",
+              "es": "Pintura"
+            },
+            "finish": {
+              "en": "Satin or eggshell: selection pending",
+              "es": "Satín o eggshell: selección pendiente"
+            },
+            "product": {
+              "en": "Duration Home walls",
+              "es": "Duration Home walls"
+            },
+            "excluded": {
+              "en": "Ceiling and baseboards",
+              "es": "Techo y zócalos"
+            },
+            "included": {
+              "en": "Walls only",
+              "es": "Solo paredes"
+            },
+            "confirmed": true,
+            "components": [
+              {
+                "en": "Walls",
+                "es": "Walls"
+              },
+              {
+                "en": "Preparation",
+                "es": "Preparation"
+              },
+              {
+                "en": "Labor",
+                "es": "Labor"
+              }
+            ],
+            "provenance": {
+              "en": "Explicit test request; heights reviewed assumption",
+              "es": "Pedido explícito de prueba; altura supuesta revisada"
+            },
+            "assumptions": {
+              "en": "",
+              "es": ""
+            },
+            "preparation": {
+              "en": "Protect and patch",
+              "es": "Proteger y reparar"
+            },
+            "measurements": {
+              "en": "24 LF × 5 ft high",
+              "es": "24 LF × 5 ft high"
+            }
+          }
+        ],
+        "title": {
+          "en": "Validation — interior painting",
+          "es": "Validación — pintura interior"
+        },
+        "address": "",
+        "pending": [],
+        "markupBps": 3600,
+        "assumptions": {
+          "en": "Unspecified heights assumed 8 ft after review. Fixed financial fixture, not supplier pricing.",
+          "es": "Alturas no indicadas: supuesto de 8 ft revisado. Fixture financiera, no precios de proveedor."
+        }
+      },
+      "revision": 2,
+      "approvalType": "plan"
+    },
+    "market": {
+      "id": "us-ca-los-angeles",
+      "city": "Los Angeles",
+      "region": "California",
+      "country": "US",
+      "areaUnit": "sf",
+      "currency": "USD",
+      "lengthUnit": "ft"
+    },
+    "business": {
+      "name": "One Stop Building & Remodeling",
+      "phone": "",
+      "address": "",
+      "license": ""
+    },
+    "language": "en",
+    "proposal": {
+      "intro": "",
+      "notes": "",
+      "scope": "",
+      "terms": "",
+      "exclusions": ""
+    },
+    "sections": [
+      {
+        "id": "task-1",
+        "items": [
+          {
+            "id": "line-1-1",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "sku": "433052",
+              "url": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+              "unit": "gal",
+              "brand": "BEHR",
+              "model": "275001",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "1 US gal · eggshell · Ultra Pure White",
+              "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD01",
+              "unitCost": 46.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "web_page_observation_direct_freshness_not_confirmed",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                "factor": 128,
+                "to_unit": "US_fl_oz"
+              },
+              "validUntil": null,
+              "limitations": [
+                "La ficha muestra Select store. No se aplicó promoción de tarjeta. Precio leído al abrir página original en web; HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "US_gallon",
+                "color": "Ultra Pure White",
+                "sheen": "eggshell",
+                "amount": 1
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "inventoryVerified": false,
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "manual",
+            "taskId": "task-1",
+            "takeoff": {
+              "coats": 2,
+              "areaSqFt": 352,
+              "packages": 3,
+              "wastePercent": 0,
+              "packageGallons": 1,
+              "requiredGallons": 2.0115,
+              "coverageSqFtPerGallon": 350
+            },
+            "costType": "material",
+            "quantity": 3,
+            "unitCost": 46.98,
+            "catalogId": "00000000-0000-4000-8000-000000000001",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "description": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White",
+            "needsReview": true,
+            "priceSource": "The Home Depot · BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White · public online price; branch/ZIP unverified"
+          },
+          {
+            "id": "line-1-2",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-1",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 70,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Baseboards",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Baseboards",
+              "es": "Baseboards"
+            }
+          },
+          {
+            "id": "line-1-3",
+            "unit": "lot",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-1",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 25,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Preparation",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Preparation",
+              "es": "Preparation"
+            }
+          },
+          {
+            "id": "line-1-4",
+            "unit": "hr",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-1",
+            "costType": "labor",
+            "quantity": 2.5,
+            "unitCost": 75,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Labor",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Labor",
+              "es": "Labor"
+            }
+          },
+          {
+            "id": "0b1f5cf8-dabf-4b6f-9808-06c3e971cc19",
+            "unit": "ea",
+            "notes": "",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "sku": "283433",
+              "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+              "unit": "ea",
+              "brand": "DAP",
+              "model": "12327",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "32 oz as labeled",
+              "product": "DryDex Dry Time Indicator Spackling Paste",
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD03",
+              "unitCost": 11.48,
+              "checkedAt": "2026-10-17",
+              "freshness": "web_page_observation_direct_freshness_not_confirmed",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": null,
+              "validUntil": null,
+              "limitations": [
+                "No convertir oz a fl oz sin confirmar volumen/peso en especificación.",
+                "No es el mismo modelo que DAP 12330 vendido por Lowe's; no asumir equivalencia exacta.",
+                "HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "oz_as_labeled",
+                "amount": 32,
+                "purchase_unit": "container"
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "inventoryVerified": false,
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "manual",
+            "taskId": "task-1",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 11.48,
+            "catalogId": "00000000-0000-4000-8000-000000000003",
+            "priceDate": "2026-10-17",
+            "description": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled",
+            "needsReview": true,
+            "priceSource": "The Home Depot · DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled · public online price; branch/ZIP unverified"
+          }
+        ],
+        "title": "Bedroom 1"
+      },
+      {
+        "id": "task-2",
+        "items": [
+          {
+            "id": "line-2-1",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-2",
+            "costType": "material",
+            "quantity": 2,
+            "unitCost": 65,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Walls",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Walls",
+              "es": "Walls"
+            }
+          },
+          {
+            "id": "line-2-2",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-2",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 70,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Baseboards",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Baseboards",
+              "es": "Baseboards"
+            }
+          },
+          {
+            "id": "line-2-3",
+            "unit": "lot",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-2",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 25,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Preparation",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Preparation",
+              "es": "Preparation"
+            }
+          },
+          {
+            "id": "line-2-4",
+            "unit": "hr",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-2",
+            "costType": "labor",
+            "quantity": 2.5,
+            "unitCost": 75,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Labor",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Labor",
+              "es": "Labor"
+            }
+          }
+        ],
+        "title": "Bedroom 2"
+      },
+      {
+        "id": "task-3",
+        "items": [
+          {
+            "id": "line-3-1",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-3",
+            "costType": "material",
+            "quantity": 2,
+            "unitCost": 65,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Walls",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Walls",
+              "es": "Walls"
+            }
+          },
+          {
+            "id": "line-3-2",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-3",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 70,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Baseboards",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Baseboards",
+              "es": "Baseboards"
+            }
+          },
+          {
+            "id": "line-3-3",
+            "unit": "lot",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-3",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 25,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Preparation",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Preparation",
+              "es": "Preparation"
+            }
+          },
+          {
+            "id": "line-3-4",
+            "unit": "hr",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-3",
+            "costType": "labor",
+            "quantity": 3,
+            "unitCost": 75,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Labor",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Labor",
+              "es": "Labor"
+            }
+          }
+        ],
+        "title": "Bedroom 3"
+      },
+      {
+        "id": "task-4",
+        "items": [
+          {
+            "id": "line-4-1",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-4",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 65,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Walls",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Walls",
+              "es": "Walls"
+            }
+          },
+          {
+            "id": "line-4-2",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-4",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 35,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Spot primer",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Spot primer",
+              "es": "Spot primer"
+            }
+          },
+          {
+            "id": "line-4-3",
+            "unit": "qt",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-4",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 35,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Baseboards",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Baseboards",
+              "es": "Baseboards"
+            }
+          },
+          {
+            "id": "line-4-4",
+            "unit": "lot",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-4",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 20,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Preparation",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Preparation",
+              "es": "Preparation"
+            }
+          },
+          {
+            "id": "line-4-5",
+            "unit": "hr",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-4",
+            "costType": "labor",
+            "quantity": 2,
+            "unitCost": 75,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Labor",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Labor",
+              "es": "Labor"
+            }
+          }
+        ],
+        "title": "Bathroom"
+      },
+      {
+        "id": "task-5",
+        "items": [
+          {
+            "id": "line-5-1",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-5",
+            "costType": "material",
+            "quantity": 2,
+            "unitCost": 65,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Walls",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Walls",
+              "es": "Walls"
+            }
+          },
+          {
+            "id": "line-5-2",
+            "unit": "qt",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-5",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 35,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Baseboards",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Baseboards",
+              "es": "Baseboards"
+            }
+          },
+          {
+            "id": "line-5-3",
+            "unit": "lot",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-5",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 20,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Preparation",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Preparation",
+              "es": "Preparation"
+            }
+          },
+          {
+            "id": "line-5-4",
+            "unit": "hr",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-5",
+            "costType": "labor",
+            "quantity": 2.5,
+            "unitCost": 75,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Labor",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Labor",
+              "es": "Labor"
+            }
+          }
+        ],
+        "title": "Hallway"
+      },
+      {
+        "id": "task-6",
+        "items": [
+          {
+            "id": "line-6-1",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-6",
+            "costType": "material",
+            "quantity": 3,
+            "unitCost": 65,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Walls",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Walls",
+              "es": "Walls"
+            }
+          },
+          {
+            "id": "line-6-2",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-6",
+            "costType": "material",
+            "quantity": 2,
+            "unitCost": 45,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Interior Latex Flat Ceiling Paint",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Interior Latex Flat Ceiling Paint",
+              "es": "Interior Latex Flat Ceiling Paint"
+            }
+          },
+          {
+            "id": "line-6-3",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-6",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 70,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Baseboards",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Baseboards",
+              "es": "Baseboards"
+            }
+          },
+          {
+            "id": "line-6-4",
+            "unit": "lot",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-6",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 35,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Preparation",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Preparation",
+              "es": "Preparation"
+            }
+          },
+          {
+            "id": "line-6-5",
+            "unit": "hr",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-6",
+            "costType": "labor",
+            "quantity": 6,
+            "unitCost": 75,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Labor",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Labor",
+              "es": "Labor"
+            }
+          }
+        ],
+        "title": "Living Room"
+      },
+      {
+        "id": "task-7",
+        "items": [
+          {
+            "id": "line-7-1",
+            "unit": "gal",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-7",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 65,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Walls",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Walls",
+              "es": "Walls"
+            }
+          },
+          {
+            "id": "line-7-2",
+            "unit": "lot",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-7",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 15,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Preparation",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Preparation",
+              "es": "Preparation"
+            }
+          },
+          {
+            "id": "line-7-3",
+            "unit": "hr",
+            "basis": {
+              "en": "Fixed arithmetic fixture; no productivity claim",
+              "es": "Fixture de aritmética; no valida productividad"
+            },
+            "notes": "Fixed arithmetic fixture; no productivity claim",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "model-proposal",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "ai-proposal",
+            "taskId": "task-7",
+            "costType": "labor",
+            "quantity": 1,
+            "unitCost": 75,
+            "catalogId": null,
+            "markupBps": null,
+            "priceDate": "",
+            "description": "Labor",
+            "needsReview": true,
+            "priceSource": "Provisional assumption — no verified local price",
+            "translations": {
+              "en": "Labor",
+              "es": "Labor"
+            }
+          }
+        ],
+        "title": "Kitchen"
+      }
+    ],
+    "conversationId": "02a4b297-c15d-4fb5-9718-6cd1f46690c2"
+  },
+  "version": 4,
+  "created_at": "2026-10-18T02:30:32.560Z",
+  "updated_at": "2026-10-18T02:30:38.930Z",
+  "finalized_at": null,
+  "finalized_version": null,
+  "finalization_request_id": null
+}

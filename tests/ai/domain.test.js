@@ -43,12 +43,13 @@ describe('money and approved scope',()=>{
   const lines=structuredClone(fixtureLines);lines[0].description={en:'Paint bedroom ceilings',es:'Pintar techos de dormitorios'}
   expect(()=>documentFromLines(fixturePlan,lines,'en')).toThrow('UNAPPROVED_DESCRIPTION')
  })
- it('rejects catalog substitutions and keeps a nonlocal price provisional',()=>{
+ it('rejects catalog substitutions and nonlocal verified prices',()=>{
   const plan=structuredClone(fixturePlan);plan.zip='90001';plan.tasks[0].product={en:'Brand Walls 1 GAL',es:'Brand Walls 1 GAL'}
   const lines=structuredClone(fixtureLines);lines[0].catalogId='catalog-item'
   const entry={id:'catalog-item',product:'Walls',brand:'Brand',package:'1 GAL',unit:'gal',unitCost:65,status:'verified',location:'90505'}
-  const document=documentFromLines(plan,lines,'en',[entry]);expect(document.sections[0].items[0].price.status).toBe('provisional')
-  expect(()=>documentFromLines(plan,lines,'en',[{...entry,brand:'Unapproved brand'}])).toThrow('UNAPPROVED_PRODUCT')
+  expect(()=>documentFromLines(plan,lines,'en',[entry])).toThrow('CATALOG_MISMATCH')
+  const document=documentFromLines(plan,lines,'en',[{...entry,verifiedZip:'90001'}]);expect(document.sections[0].items[0].price.status).toBe('verified')
+  expect(()=>documentFromLines(plan,lines,'en',[{...entry,verifiedZip:'90001',brand:'Unapproved brand'}])).toThrow('UNAPPROVED_PRODUCT')
  })
  it('validates readonly tool names/arguments and rejects fake catalog verification',()=>{
   expect(()=>validateTool('delete_user',{})).toThrow();expect(()=>validateTool('read_context',{ownerId:'other'})).toThrow();expect(()=>validateTool('lookup_catalog',{})).not.toThrow()
