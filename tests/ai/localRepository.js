@@ -2,8 +2,9 @@ import { PGlite } from '@electric-sql/pglite'
 import { readFileSync,readdirSync } from 'node:fs'
 import { fail } from '../../shared/aiDomain.js'
 export const A='10000000-0000-4000-8000-000000000001',B='10000000-0000-4000-8000-000000000002'
-export async function localDatabase(){
- const db=new PGlite()
+export async function localDatabase(dataDir){
+ const db=new PGlite(dataDir)
+ if(dataDir && (await db.query("select to_regclass('public.ai_conversations') as existing")).rows[0].existing)return db
  await db.exec(`create role anon;create role authenticated;create role service_role bypassrls;
  create schema auth;create table auth.users(id uuid primary key,email text,encrypted_password text,raw_app_meta_data jsonb default '{}'::jsonb,
  updated_at timestamptz,confirmation_token text,confirmation_sent_at timestamptz,recovery_token text,recovery_sent_at timestamptz,
@@ -18,12 +19,15 @@ grant usage on schema public,auth to anon,authenticated,service_role;grant execu
  alter table storage.objects enable row level security;
  grant usage on schema storage to anon,authenticated;grant all on storage.objects to anon,authenticated;
  create policy preexisting_global_policy on storage.objects for all to anon,authenticated using(true) with check(true);`)
- for(const file of readdirSync('supabase/migrations').sort())await db.exec(readFileSync(`supabase/migrations/${file}`,'utf8'))
+ // Historical fixture only; the registered production expansion is applied explicitly
+ // and tested with enrollment/rollback in productionPersistence/productionEnrollment.
+ for(const file of readdirSync('supabase/migrations').sort().filter(name=>name!=='20261023180600_one_stop_sales_commercial_hybrid_costs.sql'))await db.exec(readFileSync(`supabase/migrations/${file}`,'utf8'))
  await db.exec(`insert into auth.users(id) values('${A}'),('${B}');insert into beta_accounts(user_id,role) values('${A}','operator'),('${B}','admin');insert into auth.sessions(id,user_id) values('${A}','${A}'),('${B}','${B}');set request.jwt.claims = '{"amr":[{"method":"password"}]}';grant all on all tables in schema public to service_role;`)
  return db
 }
 export class LocalRepository{
  constructor(db){this.db=db;this.files=new Map()}
+ async priceReferenceEstimates(owner){return this.query('select id,owner_id,document,version,updated_at from estimates where owner_id=$1 order by updated_at desc limit 100',[owner])}
  async query(sql,args=[]){try{return (await this.db.query(sql,args)).rows}catch(e){if(/CONFLICT|23505|ai_one_run/.test(`${e.message} ${e.code}`))throw fail('CONFLICT',409);throw e}}
  async authenticate(token){const owner=token==='fixture-a'?A:token==='fixture-b'?B:null;if(!owner)throw fail('UNAUTHORIZED',401);if(!await this.access(owner))throw fail('BETA_ACCESS_DENIED',403);return owner}
  async access(owner){return (await this.query('select role from beta_accounts where user_id=$1',[owner]))[0]?.role||null}

@@ -1,0 +1,8 @@
+{
+  "version": "operator-rate-card-1",
+  "model": "gpt-6.1-sol",
+  "effectiveDate": null,
+  "sourceUrl": "https://openai.com/api/pricing/",
+  "ratesUsdPerMillionTokens": {"input": null, "cached": null, "output": null},
+  "note": "Documentation template only. Fill from your applicable API tariff/billing agreement; null means unknown, never free. These are not verified prices. Contains no credentials."
+}

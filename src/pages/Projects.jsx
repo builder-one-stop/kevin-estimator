@@ -12,8 +12,10 @@ import Chip from '../components/ui/Chip.jsx'
 import EmptyState from '../components/ui/EmptyState.jsx'
 import IconButton from '../components/ui/IconButton.jsx'
 import StatusDot from '../components/ui/StatusDot.jsx'
+import {localSalesEnabled} from '../services/sales.js'
 
 function ProjectActions({ project, onEdit, onDelete, t }) {
+  if(localSalesEnabled)return null
   return <span className="project-actions">
     <IconButton label={t('projects.editProject', { name: project.name })} onClick={() => onEdit(project)}><Pencil size={17} /></IconButton>
     <IconButton label={t('projects.deleteProject', { name: project.name })} onClick={() => onDelete(project)}><Trash2 size={17} /></IconButton>
@@ -38,7 +40,7 @@ export default function Projects() {
 
   useEffect(() => {
     let active = true
-    Promise.all([getProjects(), getClients()]).then(([projectRows, clientRows]) => {
+    Promise.all([getProjects(), localSalesEnabled?Promise.resolve([]):getClients()]).then(([projectRows, clientRows]) => {
       if (active) { setProjects(projectRows); setClients(clientRows); setLoading(false); setLoadError(false) }
     }).catch((cause) => {
       console.error('Failed to load projects', cause)
@@ -83,7 +85,7 @@ export default function Projects() {
 
   return (
     <div className="page">
-      <div className="page-head"><h1>{t('projects.title')}</h1><Button onClick={() => setDialog({ mode: 'create' })}><Plus size={18} />{t('projects.create')}</Button></div>
+      <div className="page-head"><h1>{t('projects.title')}</h1>{!localSalesEnabled&&<Button onClick={() => setDialog({ mode: 'create' })}><Plus size={18} />{t('projects.create')}</Button>}</div>
       <div className="filters project-filters">
         <select className="project-filter-select" value={stageFilter} onChange={(event) => setStageFilter(event.target.value)} aria-label={t('projects.filterStage')}>
           <option value="">{t('projects.allStages')}</option>
@@ -116,6 +118,7 @@ export default function Projects() {
                       <Link className="project-hitbox" to={`/projects/${project.id}`} aria-label={t('projects.openProject', { name: project.name })} />
                       <span className="id">{project.id.slice(0, 8).toUpperCase()}</span>
                       <span className="title">{project.name}</span>
+                      {localSalesEnabled&&<span className="sales-badge">{t('sales.seller',{defaultValue:'Seller'})}: {project.assigned_name||t('sales.unassigned',{defaultValue:'Unassigned'})}</span>}
                       {project.address && <span className="pill"><MapPin size={14} />{project.address}</span>}
                       {project.client && <span className="pill"><UserRound size={14} />{project.client.name}</span>}
                       <div className="project-card-foot"><StageSelect project={project} onChange={onStageChange} busy={Boolean(stageBusyId)} /><ProjectActions project={project} {...actionProps} /></div>
@@ -126,7 +129,7 @@ export default function Projects() {
             ) : (
               <div className="rows">{visible.map((project) => <div className="row row-projects project-openable" key={project.id}>
                 <Link className="project-hitbox" to={`/projects/${project.id}`} aria-label={t('projects.openProject', { name: project.name })} />
-                <div className="project-list-name"><b>{project.name}</b>{project.address && <span className="muted row-note">{project.address}</span>}</div>
+                <div className="project-list-name"><b>{project.name}</b>{localSalesEnabled&&<span className="sales-badge">{t('sales.seller',{defaultValue:'Seller'})}: {project.assigned_name||t('sales.unassigned',{defaultValue:'Unassigned'})}</span>}{project.address && <span className="muted row-note">{project.address}</span>}</div>
                 <span className="cell-ic"><UserRound size={16} /><span>{project.client?.name || t('projects.noClient')}</span></span>
                 <span className="project-list-stage"><StatusDot color={STATUS_COLORS[project.stage]} /><StageSelect project={project} onChange={onStageChange} busy={Boolean(stageBusyId)} /></span>
                 <ProjectActions project={project} {...actionProps} />

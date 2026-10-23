@@ -1,3 +1,4 @@
+import Followups from '../components/projects/Followups.jsx'
 import { useEffect, useState } from 'react'
 import { ArrowLeft, BriefcaseBusiness, MapPin, Pencil, UserRound } from 'lucide-react'
 import { Link, NavLink, Outlet, useNavigate, useOutletContext, useParams } from 'react-router-dom'
@@ -10,9 +11,13 @@ import StageSelect from '../components/projects/StageSelect.jsx'
 import Button from '../components/ui/Button.jsx'
 import EmptyState from '../components/ui/EmptyState.jsx'
 import StatusDot from '../components/ui/StatusDot.jsx'
+import {localSalesEnabled} from '../services/sales.js'
+import SalesPanel from '../components/projects/SalesPanel.jsx'
+import {useBetaAccess} from '../components/auth/BetaAccessContext.jsx'
 
 export default function ProjectWorkspace() {
   const { id } = useParams()
+  const seller=useBetaAccess()?.role==='seller'
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { showToast } = useOutletContext()
@@ -26,7 +31,7 @@ export default function ProjectWorkspace() {
 
   useEffect(() => {
     let active = true
-    Promise.all([getProjectById(id), getClients()]).then(([record, clientRows]) => {
+    Promise.all([getProjectById(id), localSalesEnabled?Promise.resolve([]):getClients()]).then(([record, clientRows]) => {
       if (active) { setProject(record); setClients(clientRows); setLoading(false); setLoadError(false) }
     }).catch((cause) => {
       console.error('Failed to load project workspace', cause)
@@ -61,22 +66,24 @@ export default function ProjectWorkspace() {
           <span className="workspace-code" title={project.id}>{t('workspace.projectCode', { code: project.id.slice(0, 8).toUpperCase() })}</span>
           <h1>{project.name}</h1>
           <div className="workspace-meta">
-            {project.client && <Link to={`/contacts?client=${project.client.id}`}><UserRound size={16} />{project.client.name}</Link>}
+            {project.client && (seller?<span>{project.client.name}</span>:<Link to={`/contacts?client=${project.client.id}`}><UserRound size={16} />{project.client.name}</Link>)}
             {project.address && <span><MapPin size={16} />{project.address}</span>}
           </div>
         </div>
         <div className="workspace-head-actions">
           <span className="workspace-stage"><StatusDot color={STATUS_COLORS[project.stage]} /><StageSelect project={project} onChange={changeStage} busy={stageBusy} /></span>
-          <Button variant="ghost" onClick={() => setEditing(true)}><Pencil size={16} />{t('workspace.editProject')}</Button>
+          {!localSalesEnabled&&<Button variant="ghost" onClick={() => setEditing(true)}><Pencil size={16} />{t('workspace.editProject')}</Button>}
         </div>
       </header>
       <nav className="workspace-tabs" aria-label={t('workspace.sections')}>
         <NavLink end to={`/projects/${id}`}>{t('workspace.overview')}</NavLink>
         <NavLink to={`/projects/${id}/estimates`}>{t('workspace.estimates')}</NavLink>
-        <NavLink to={`/projects/${id}/invoices`}>{t('workspace.invoices')}</NavLink>
+        {!seller&&<><NavLink to={`/projects/${id}/invoices`}>{t('workspace.invoices')}</NavLink>
       <NavLink to={`/projects/${id}/progress`}>{t('workers.progress')}</NavLink>
-        <NavLink to={`/projects/${id}/hours`}>{t('workers.hours')}</NavLink>
+        <NavLink to={`/projects/${id}/hours`}>{t('workers.hours')}</NavLink></>}
       </nav>
+      {localSalesEnabled&&<SalesPanel key={`${project.id}-${project.assignment_version}`} project={project} onUpdated={async()=>setProject(await getProjectById(id))}/>}
+      {localSalesEnabled&&<Followups projectId={project.id}/>}
       <Outlet context={{ project }} />
       {editing && <ProjectDialog mode="edit" project={project} clients={clients} onClose={() => setEditing(false)} onSaved={(saved) => { setProject(saved); setEditing(false) }} showToast={showToast} />}
     </div>

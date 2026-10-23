@@ -6,6 +6,16 @@ publish = "dist"
 directory = "netlify/functions"
 external_node_modules = ["sharp"]
 
+# Explicit Linux runtime files for releases packaged on Windows.
+[functions.ai]
+included_files = ["node_modules/@img/sharp-linux-x64/**", "node_modules/@img/sharp-libvips-linux-x64/**"]
+
+[functions.workers]
+included_files = ["node_modules/@img/sharp-linux-x64/**", "node_modules/@img/sharp-libvips-linux-x64/**"]
+
+[functions.worker-cleanup]
+included_files = ["node_modules/@img/sharp-linux-x64/**", "node_modules/@img/sharp-libvips-linux-x64/**"]
+
 [[redirects]]
 from = "/api/ai/*"
 to = "/.netlify/functions/ai/:splat"

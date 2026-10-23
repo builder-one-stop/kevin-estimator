@@ -1,6 +1,8 @@
+import { reconcileEstimateExpenses } from './estimateReconciliation.js'
 import Decimal from 'decimal.js'
 import { calculateEstimate, reviseManualPrice } from '../src/lib/estimateDocument.js'
 import { assertDocument } from './aiDomain.js'
+import { markReviewedPaintChange } from './paintReconciliation.js'
 const normalized=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[!?]|[.,](?!\d)/g,'').trim()
 const numbers={one:1,two:2,three:3,four:4,five:5,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5}
 // Narrow, deterministic edits. Anything else continues through the reviewed AI diff flow.
@@ -22,7 +24,13 @@ export function directEstimateChange(record,request,revision,language='en') {
   patch=i=>({...i,quantity:amount})
  }
  if(!candidates.length)return {message:es?'No encontré una partida de mano de obra. Indica cuál quieres modificar.':'No labor item was found. Specify which item to change.'}
- for(const {section,item} of candidates){const next=patch(item);section.items[section.items.indexOf(item)]=next;ops.push({action:'replace',id:item.id,before:item,after:next})}
+ for(const {section,item} of candidates){const next=markReviewedPaintChange(item,patch(item));section.items[section.items.indexOf(item)]=next;ops.push({action:'replace',id:item.id,before:item,after:next})}
+ document.sections=reconcileEstimateExpenses(document).sections
+ for(const section of document.sections)for(const item of section.items){
+  if(!['expenses:expenses','trade:expenses'].includes(item.ruleKey)||ops.some(op=>op.id===item.id))continue
+  const previous=record.document.sections.flatMap(s=>s.items).find(row=>row.id===item.id)
+  if(previous&&Number(previous.unitCost)!==Number(item.unitCost))ops.push({action:'replace',id:item.id,before:previous,after:item})
+ }
  assertDocument(document,record.markup_bps)
  const plan=structuredClone(document.scope.plan);plan.markupBps=record.markup_bps;document.scope={...document.scope,plan,revision}
  const before=calculateEstimate(record.document,record.markup_bps),after=calculateEstimate(document,record.markup_bps)

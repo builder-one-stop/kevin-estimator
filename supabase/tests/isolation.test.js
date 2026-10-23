@@ -4,7 +4,9 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest'
 
 const A = '10000000-0000-4000-8000-000000000001'
 const B = '10000000-0000-4000-8000-000000000002'
-const migrations = readdirSync('supabase/migrations').sort().map((file) => readFileSync(`supabase/migrations/${file}`, 'utf8'))
+const files = readdirSync('supabase/migrations').sort()
+const release = '20261023180600_one_stop_sales_commercial_hybrid_costs.sql'
+const migrations = files.map((file) => readFileSync(`supabase/migrations/${file}`, 'utf8'))
 const bootstrap = `create role anon; create role authenticated; create role service_role bypassrls;
 create schema auth; create table auth.users(id uuid primary key,email text,encrypted_password text,raw_app_meta_data jsonb default '{}'::jsonb,
  updated_at timestamptz,confirmation_token text,confirmation_sent_at timestamptz,recovery_token text,recovery_sent_at timestamptz,
@@ -21,8 +23,10 @@ const asUser = async (id) => db.exec(`reset role; set role authenticated; set re
 beforeAll(async () => {
   db = new PGlite()
   await db.exec(bootstrap)
-  for (const migration of migrations) await db.exec(migration)
-  await db.exec(`insert into auth.users(id) values ('${A}'), ('${B}'); insert into beta_accounts(user_id,role) values('${A}','operator'),('${B}','admin');insert into auth.sessions(id,user_id) values('${A}','${A}'),('${B}','${B}');`)
+  // Preserve legacy linked records across the actual organization migration.
+  // Fresh managed leads have additional retention FKs; these records predate enrollment.
+  for (const [index,migration] of migrations.entries()) if(files[index]!==release) await db.exec(migration)
+  await db.exec(`insert into auth.users(id,email) values ('${A}','isolation-a@example.invalid'), ('${B}','isolation-b@example.invalid'); insert into beta_accounts(user_id,role) values('${A}','operator'),('${B}','admin');insert into auth.sessions(id,user_id) values('${A}','${A}'),('${B}','${B}');`)
   for (const id of [A, B]) {
     await asUser(id)
     const client = await row("insert into clients(name) values ('Test client') returning *")
@@ -31,6 +35,10 @@ beforeAll(async () => {
     if (id === A) { clientA = client; projectA = project; estimateA = estimate }
     else { clientB = client; projectB = project; estimateB = estimate }
   }
+  await db.exec('reset role')
+  await db.exec(migrations[files.indexOf(release)])
+  await db.exec(`insert into sales_organizations(id,name) values('${A}','Isolation organization A'),('${B}','Isolation organization B');
+   insert into sales_memberships(user_id,organization_id,name,role,active) values('${A}','${A}','Isolation fixture A','manager',true),('${B}','${B}','Isolation fixture B','manager',true);`)
 }, 30000)
 afterAll(async () => { await db?.close() })
 
@@ -98,12 +106,27 @@ describe('actual SQL migrations and RLS (Postgres/PGlite)', () => {
     await asUser(B)
     expect((await db.query('select * from estimate_messages')).rows).toEqual([])
   })
-  it('runs the rollback-only remote verification script', async () => {
+  it('refuses the isolation script without the explicit local fixture opt-in',async()=>{
     await db.exec('reset role')
+    await expect(db.exec(readFileSync('supabase/tests/remote-isolation.sql','utf8'))).rejects.toThrow('LOCAL_ISOLATION_FIXTURE_REQUIRED')
+    await db.exec('rollback')
+  })
+  it('runs the guarded local rollback script without changing users, roles or memberships', async () => {
+    await db.exec('reset role')
+    const before=(await db.query('select user_id,role from beta_accounts order by user_id')).rows
+    const members=(await db.query('select * from sales_memberships order by user_id')).rows
+    const users=(await db.query('select id,email from auth.users order by id')).rows
+    const counts=(await db.query('select (select count(*) from clients) as clients,(select count(*) from projects) as projects,(select count(*) from estimates) as estimates')).rows
+    await db.exec("set app.one_stop_local_isolation='enabled'")
     const result = await db.exec(readFileSync('supabase/tests/remote-isolation.sql', 'utf8'))
     expect(result.at(-1).rows[0].result).toContain('PASS:')
+    expect((await db.query('select user_id,role from beta_accounts order by user_id')).rows).toEqual(before)
+    expect((await db.query('select * from sales_memberships order by user_id')).rows).toEqual(members)
+    expect((await db.query('select id,email from auth.users order by id')).rows).toEqual(users)
+    expect((await db.query('select (select count(*) from clients) as clients,(select count(*) from projects) as projects,(select count(*) from estimates) as estimates')).rows).toEqual(counts)
+    await db.exec('reset app.one_stop_local_isolation')
   })
-  it('keeps estimates when authorized linked records are deleted', async () => {
+  it('keeps legacy estimates when authorized linked legacy records are deleted', async () => {
     await asUser(B)
     await db.exec(`delete from clients where id='${clientB.id}'; delete from projects where id='${projectB.id}';`)
     expect(await row(`select client_id,project_id,owner_id from estimates where id='${estimateB.id}'`)).toEqual({ client_id: null, project_id: null, owner_id: B })

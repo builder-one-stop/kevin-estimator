@@ -13,6 +13,27 @@ import { packageGallons } from '../../shared/materialTakeoff.js'
 
 const byKey = (document, key) => document.sections[0].items.find(x => x.ruleKey === key)
 describe('interior wall paint rule engine', () => {
+  it('keeps the explicitly approved markup when it differs from the template margin', async () => {
+    const db=await localDatabase()
+    try {
+      class ApprovedMarkupProvider extends PaintProvider {
+        async run(input) { const output=await super.run(input); if(output.result.plan)output.result.plan.markupBps=2500; return output }
+      }
+      const repo=new LocalRepository(db),engine=new EstimatorEngine(repo,new ApprovedMarkupProvider(),{logger:()=>{}})
+      let row=await engine.create(A,{id:randomUUID(),title:'Approved markup QA',language:'en'})
+      const command=async(action,extra={})=>{row=await engine.command(A,row.id,{requestId:randomUUID(),version:row.version,action,...extra});for(let n=0;n<200&&row.state.run?.status==='working';n++){await new Promise(r=>setTimeout(r,10));row=await repo.get(A,row.id)}return row}
+      await command('message',{content:'Paint bedroom walls 12 x 10 x 8 ft.'})
+      expect(row.state.plan.markupBps).toBe(2500)
+      await command('approve',{revision:row.state.planRevision})
+      await command('generate')
+      expect(row.state.run.status).toBe('ready')
+      const saved=await repo.estimate(A,row.estimate_id)
+      expect(saved.markup_bps).toBe(2500)
+      expect(saved.document.scope.plan.markupBps).toBe(2500)
+      expect(saved.document.rules.paint['bedroom-walls'].template.marginPercent).toBe(20)
+      expect(calculateEstimate(saved.document,saved.markup_bps).marginPercent).toBeCloseTo(20,1)
+    } finally { await db.close() }
+  },30000)
   it('calculates gross wall area, two coats, whole packages, labor, expenses and true margin without duplicate phases', () => {
     const input = paintDimensions(paintPlan.tasks[0])
     expect(input).toMatchObject({lengthFt:12,widthFt:10,heightFt:8,useGrossWalls:true})

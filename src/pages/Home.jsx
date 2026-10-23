@@ -1,3 +1,4 @@
+import {hasMissingPrices} from '../../shared/estimatePricing.js'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowRight, BriefcaseBusiness, FileText, Sparkles } from 'lucide-react'
@@ -108,7 +109,7 @@ export default function Home() {
           <div className="home-section-head"><div><span className="home-eyebrow">{t('home.work')}</span><h2>{t('home.recentEstimates')}</h2></div><Link to="/estimates">{t('home.viewAll')}<ArrowRight size={16} /></Link></div>
           {estimateState === 'loading' ? <p role="status" className="muted">{t('estimateEditor.loading')}</p>
             : estimateState === 'error' ? <div className="home-section-empty"><FileText size={22} /><div><b>{estimateError}</b><button className="text-action" onClick={() => setRetry((value) => value + 1)}>{t('home.retry')}</button></div></div>
-              : recentEstimates.length ? <div className="home-project-list">{recentEstimates.map((row) => <Link key={row.id} to={`/estimates/${row.id}`}><span className="home-project-title">{row.title}</span><span className="home-project-meta">{t(`estimateStatus.${row.status}`)} · {formatMoney(calculateEstimate(row.document, row.markup_bps).priceCents / 100)}{row.client && ` · ${row.client.name}`}</span></Link>)}</div>
+              : recentEstimates.length ? <div className="home-project-list">{recentEstimates.map((row) => <Link key={row.id} to={`/estimates/${row.id}`}><span className="home-project-title">{row.title}</span><span className="home-project-meta">{t(`estimateStatus.${row.status}`)} · {hasMissingPrices(row.document)&&<span>{t('commercial.knownSubtotal')} · </span>}{formatMoney(calculateEstimate(row.document, row.markup_bps).priceCents / 100)}{row.client && ` · ${row.client.name}`}</span></Link>)}</div>
                 : <div className="home-section-empty"><FileText size={22} /><div><b>{t('home.noEstimates')}</b><p>{estimateState === 'signedOut' ? t('estimateEditor.signInDetail') : t('home.noEstimatesDetail')}</p></div></div>}
           <Button variant="ghost" onClick={createNewEstimate} disabled={estimateBusy}>{t('home.createEstimate')}</Button>
         </section>

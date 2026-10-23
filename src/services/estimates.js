@@ -1,10 +1,13 @@
+import { reconcileEstimateExpenses } from '../../shared/estimateReconciliation.js'
 import { supabase } from '../supabaseClient.js'
+import {localSalesEnabled,salesRequest} from './sales.js'
 import { duplicateDocument, emptyDocument, validateEstimate } from '../lib/estimateDocument.js'
 
 const fields = 'id,owner_id,client_id,project_id,title,status,markup_bps,document,version,finalized_at,finalized_version,finalization_request_id,created_at,updated_at,client:clients!estimates_client_id_fkey(id,name,address,email,phone),project:projects!estimates_project_id_fkey(id,name,address,client_id)'
 const unwrap = ({ data, error }) => { if (error) throw error; return data }
 
 export async function listEstimates({ limit, projectId } = {}) {
+  if(localSalesEnabled&&projectId)return salesRequest('documents',{projectId})
   let query = supabase.from('estimates').select(fields).order('updated_at', { ascending: false })
   if (projectId) query = query.eq('project_id', projectId)
   if (limit) query = query.limit(limit)
@@ -12,10 +15,12 @@ export async function listEstimates({ limit, projectId } = {}) {
 }
 
 export async function getEstimate(id) {
+  if(localSalesEnabled){const row=await salesRequest('document',{id});if(row.sales_snapshot)row.project={name:row.sales_snapshot.name,address:row.sales_snapshot.address};return row}
   return unwrap(await supabase.from('estimates').select(fields).eq('id', id).maybeSingle())
 }
 
 export async function createEstimate({ project = null, title = 'Untitled estimate', clientId = null } = {}) {
+  if(localSalesEnabled&&project)return salesRequest('create-document',{projectId:project.id,id:crypto.randomUUID(),title})
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError) throw authError
   if (!user) throw new Error('Sign in to create an estimate.')
@@ -24,6 +29,7 @@ export async function createEstimate({ project = null, title = 'Untitled estimat
 }
 
 export async function saveEstimate(record, patch) {
+  patch = { ...patch,document:reconcileEstimateExpenses(patch.document ?? record.document) }
   const markupBps = patch.markup_bps ?? record.markup_bps
   const document = patch.document ?? record.document
   const validation = validateEstimate(document, markupBps)

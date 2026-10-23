@@ -1,13 +1,14 @@
+import { reconcileEstimateExpenses } from './estimateReconciliation.js'
 import { ESTIMATING_MARKET } from './estimatingMarket.js'
 import { planSchema, outputSchema } from './aiSchemas.js'
 import { calculateEstimate, validateEstimate } from '../src/lib/estimateDocument.js'
 import { catalogPriceSnapshot, priceSourceLabel } from './catalogPricing.js'
+import { markReviewedPaintChange } from './paintReconciliation.js'
 export const localText = (value, language = 'en') => typeof value === 'string' ? value : value?.[language] || value?.en || ''
 export const fail = (code, status = 400) => Object.assign(new Error(code), { code, status })
 export function assertPlan(plan, approvable = false) {
   planSchema.parse(plan)
   if (new Set(plan.tasks.map(x => x.id)).size !== plan.tasks.length) throw fail('DUPLICATE_ID')
-  if (approvable && plan.pending.length) throw fail('PLAN_HAS_QUESTIONS')
   if (approvable && plan.tasks.some(t => !t.included.en.trim() || !t.included.es.trim() || t.components.some(c => !c.en.trim() || !c.es.trim()) || (!t.confirmed && !t.assumptions.en.trim()))) throw fail('PLAN_UNCONFIRMED')
   return plan
 }
@@ -18,7 +19,8 @@ function itemFromLine(line, catalog, language, jobZip = '') {
     (entry.validUntil && entry.validUntil < new Date().toISOString().slice(0, 10)))) throw fail('CATALOG_MISMATCH')
   const price = entry ? catalogPriceSnapshot(entry, jobZip) : { status: 'provisional', source: 'model-proposal', category: 'provisional-assumption', internalPriceApproval: 'not-recorded', reason: 'NO_BACKED_PRICE' }
   return { ...line, description: localText(line.description, language), translations: line.description,
-    unitCost: entry?.unitCost ?? line.unitCost,
+    quantity:line.quantity??1, unit:line.quantity===null?'lot':line.unit, quantityPending:line.quantity===null,
+    unitCost: entry?.unitCost ?? line.unitCost ?? 0, priceMissing:(!entry&&line.unitCost===null)||line.quantity===null,
     price,
     priceSource: entry ? priceSourceLabel(entry, price, language) : (language === 'es' ? 'Supuesto provisional — sin precio local verificado' : 'Provisional assumption — no verified local price'),
     priceDate: entry?.checkedAt || '', needsReview: price.status !== 'verified',
@@ -89,9 +91,9 @@ export function proposedChange(estimate, output, catalog, revision) {
       const proposedItem = itemFromLine(op.line, catalog, document.language, plan.zip)
       const previousItem = before.get(op.id)
       const samePrice = previousItem && Number(previousItem.unitCost) === proposedItem.unitCost && previousItem.unit === proposedItem.unit && (previousItem.catalogId ?? null) === op.line.catalogId
-      const item = { ...previousItem, ...proposedItem,
+      const item = markReviewedPaintChange(previousItem,{ ...previousItem, ...proposedItem,
         ...(previousItem?.origin === 'manual' ? { notes: previousItem.notes } : {}),
-        ...(samePrice ? { price: previousItem.price, priceSource: previousItem.priceSource, priceDate: previousItem.priceDate, needsReview: previousItem.needsReview } : {}) }
+        ...(samePrice ? { price: previousItem.price, priceSource: previousItem.priceSource, priceDate: previousItem.priceDate, needsReview: previousItem.needsReview } : {}) })
       const oldSection = estimate.document.sections.find(s => s.items.some(i => i.id === op.id))
       const index = oldSection?.id === section.id ? oldSection.items.findIndex(i => i.id === op.id) : section.items.length
       section.items.splice(index, 0, item)
@@ -106,11 +108,13 @@ export function proposedChange(estimate, output, catalog, revision) {
       item.price.status = 'provisional'; item.price.category = 'provisional-assumption'; item.price.reason = 'JOB_LOCATION_UNCONFIRMED'; item.needsReview = true
     }
   }
+  document.sections=reconcileEstimateExpenses(document).sections
   assertDocument(document, plan.markupBps)
   const next = { ...estimate, document, markup_bps: plan.markupBps }
   const prior = calculateEstimate(estimate.document, estimate.markup_bps), after = calculateEstimate(document, next.markup_bps)
   return { estimateVersion: estimate.version, document, markupBps: next.markup_bps, plan,
-    operations: output.changes.map(o => ({ action: o.action, id: o.id, before: before.get(o.id) || null, after: document.sections.flatMap(s => s.items).find(i => i.id === o.id) || null })),
+    operations: [...output.changes.map(o => ({ action: o.action, id: o.id, before: before.get(o.id) || null, after: document.sections.flatMap(s => s.items).find(i => i.id === o.id) || null })),
+      ...document.sections.flatMap(s=>s.items).filter(i=>['expenses:expenses','trade:expenses'].includes(i.ruleKey)&&!output.changes.some(o=>o.id===i.id)&&before.has(i.id)&&Number(before.get(i.id).unitCost)!==Number(i.unitCost)).map(i=>({action:'replace',id:i.id,before:before.get(i.id),after:i}))],
     costDelta: after.costCents - prior.costCents, saleDelta: after.priceCents - prior.priceCents }
 }
 export function proposalView(estimate, language = estimate.document.language || 'en') {

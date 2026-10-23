@@ -1,3 +1,4 @@
+import {hasMissingPrices} from '../../shared/estimatePricing.js'
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -54,7 +55,7 @@ export default function AdminReview() {
                 <div className="review-table-wrap"><table><thead><tr><th>{t('beta.description')}</th><th>{t('beta.quantity')}</th><th>{t('beta.unitCost')}</th></tr></thead>
                   <tbody>{section.items.map(item => <tr key={item.id}><td>{item.description}</td><td>{item.quantity} {item.unit}</td><td>{money(Math.round(Number(item.unitCost) * 100))}</td></tr>)}</tbody></table></div>
               </section>)}
-              <strong>{t('beta.saleTotal')}: {money(calculateEstimate(estimate.document, estimate.markup_bps).priceCents)}</strong>
+              <strong>{t(hasMissingPrices(estimate.document)?'commercial.knownSubtotal':'beta.saleTotal')}: {money(calculateEstimate(estimate.document, estimate.markup_bps).priceCents)}</strong>
               <h3>{a('revisions')}</h3>{data.revisions.map(revision => <p key={revision.id}>{a('revision')} {revision.version} · {revision.origin} · {date(revision.created_at)}</p>)}
             </section>}
           </>}

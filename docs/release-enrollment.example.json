@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "projectRef": "vtpciccluvpaclbeqxih",
+  "organization": {"id": "", "name": "One Stop"},
+  "accounts": [
+    {"id": "85774372-1860-4b0d-af62-a912982694cd", "role": "admin", "email": "", "name": ""},
+    {"id": "3c444217-9936-4f09-a85b-1f541b7359fc", "role": "operator", "email": "", "name": ""}
+  ],
+  "historicalProjects": []
+}

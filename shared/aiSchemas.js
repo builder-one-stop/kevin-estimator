@@ -15,8 +15,8 @@ export const planSchema = z.object({ title: bilingual, address: text, zip: z.str
   assumptions: bilingual, markupBps: z.number().int().min(0).max(100000),
 }).strict()
 export const lineSchema = z.object({ id: z.string().min(1).max(80), taskId: z.string().min(1).max(80),
-  description: bilingual, quantity: z.number().min(0).max(1000000), unit,
-  unitCost: z.number().min(0).max(1000000), costType: z.enum(['material','labor','equipment','other']),
+  description: bilingual, quantity: z.number().min(0).max(1000000).nullable(), unit,
+  unitCost: z.number().min(0).max(1000000).nullable(), costType: z.enum(['material','labor','equipment','other']),
   markupBps: z.number().int().min(0).max(100000).nullable(),
   basis: bilingual, catalogId: z.string().max(80).nullable(),
 }).strict()
@@ -43,14 +43,16 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
   sku: z.string().max(100), checkedAt: z.string().date(), status: z.enum(['manual','provisional','public_observed','quote_required','verified']), evidence: text,
   sourceId: z.string().max(80).optional(), sourceVersion: z.string().max(80).optional(), sourceUrl: z.string().url().max(1000).optional(),
   verifiedZip: z.string().regex(/^\d{5}$/).nullable().optional(), validUntil: z.string().date().nullable().optional(),
-  localPriceEvidence: text.optional(),
+  localPriceEvidence: text.optional(), model: z.string().max(100).optional(),
+  country: z.string().max(2).optional(), region: z.string().max(2).optional(), city: z.string().max(100).optional(),
   priceVersion: z.number().int().min(1).optional(),
   priceHistory: z.array(z.object({ version: z.number().int().min(1), product: z.string(), brand: z.string(), package: z.string(),
     unit, vendor: z.string(), location: z.string(), url: z.string(), sku: z.string(),
     unitCost: z.number().min(0).max(1000000).nullable(),
     status: z.string().max(40), checkedAt: z.string().date(), validUntil: z.string().date().nullable(),
-    verifiedZip: z.string().nullable(), evidence: text, localPriceEvidence: text }).strict()).max(100).optional(),
-}).strict().refine(x => x.status !== 'verified' || (x.unitCost !== null && x.verifiedZip && x.localPriceEvidence && x.vendor && x.location && x.url), 'Local verification requires exact ZIP, price and product/branch evidence')
+    verifiedZip: z.string().nullable(), evidence: text, localPriceEvidence: text,
+    country:z.string().optional(),region:z.string().optional(),city:z.string().optional(),model:z.string().optional() }).strict()).max(100).optional(),
+}).strict().refine(x => x.status !== 'verified' || (x.unitCost !== null && x.verifiedZip && x.localPriceEvidence && x.vendor && x.location && x.url), 'Local verification requires product, exact ZIP and product/branch evidence')
   .refine(x => x.status !== 'public_observed' || x.unitCost !== null, 'An observed price requires a value')
   .refine(x => x.status !== 'quote_required' || x.unitCost === null, 'A quote-required record has no observed price')
 export const paintTemplateSchema = z.object({

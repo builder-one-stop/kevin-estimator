@@ -47,7 +47,7 @@ describe('LA phase A catalog', () => {
     const [secondVersion] = versionManagedCatalog([firstVersion], [{...firstVersion,unitCost:55,checkedAt:'2026-10-18',priceHistory:[]}])
     expect(secondVersion).toMatchObject({priceVersion:2,unitCost:55,priceHistory:[{version:1,unitCost:46.98,checkedAt:'2026-10-17'}]})
     expect(versionManagedCatalog([secondVersion],[secondVersion])[0].priceVersion).toBe(2)
-    const verified = {...paint,status:'verified',verifiedZip:'90028',localPriceEvidence:'Receipt tied to product and branch'}
+    const verified = {...paint,status:'verified',country:'US',region:'CA',city:'Los Angeles',validUntil:'2026-11-01',verifiedZip:'90028',localPriceEvidence:'Receipt tied to product and branch'}
     expect(catalogPriceSnapshot(verified,'90028').status).toBe('verified')
     expect(catalogPriceSnapshot(verified,'90019').status).toBe('provisional')
     expect(() => catalogSchema.parse({...verified,localPriceEvidence:''})).toThrow()

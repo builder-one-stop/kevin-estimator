@@ -1,9 +1,10 @@
 import { exactCatalogMatch } from './researchCatalog.js'
+import { assessPrice } from './priceEvidence.js'
 
 export function priceSourceLabel(entry, price, language = 'en') {
   const es = language === 'es'
   const state = price.status === 'verified'
-    ? (es ? `precio confirmado para ZIP ${entry.verifiedZip}` : `price confirmed for ZIP ${entry.verifiedZip}`)
+    ? (es ? `precio documentado para Los Ángeles, CA, US, ZIP ${entry.verifiedZip}` : `documented price for Los Angeles, CA, US, ZIP ${entry.verifiedZip}`)
     : price.status === 'public_observed'
       ? (es ? 'precio público online; sucursal/ZIP no verificados' : 'public online price; branch/ZIP unverified')
       : (es ? 'precio provisional; revisar' : 'provisional price; review')
@@ -11,14 +12,14 @@ export function priceSourceLabel(entry, price, language = 'en') {
 }
 
 export function catalogPriceSnapshot(entry, jobZip = '') {
-  const expired = Boolean(entry.validUntil && entry.validUntil < new Date().toISOString().slice(0, 10))
-  const localVerified = entry.status === 'verified' && Boolean(jobZip) && entry.verifiedZip === jobZip && !expired
+  const verification = assessPrice(entry, jobZip)
+  const localVerified = verification.status === 'verified'
   return {
     ...structuredClone(entry),
-    status: localVerified ? 'verified' : entry.status === 'public_observed' ? 'public_observed' : entry.status === 'manual' ? 'manual' : 'provisional',
-    category: localVerified ? 'local-source' : entry.status === 'public_observed' ? 'public-online-reference' : 'provisional-assumption',
+    status: verification.status,
+    category: localVerified ? 'local-source' : verification.status === 'public_observed' ? 'public-online-reference' : 'provisional-assumption',
     source: entry.sourceId ? 'phase-a-research' : 'owner-catalog',
-    reason: expired ? 'PRICE_EXPIRED' : entry.status === 'verified' && !localVerified ? 'JOB_LOCATION_UNCONFIRMED' : entry.unitCost === null ? 'PRICE_MISSING' : null,
+    reason: verification.reason, verification,
     internalPriceApproval: 'not-recorded',
   }
 }
@@ -29,6 +30,7 @@ export function applyCatalogPrice(item, entry, jobZip = '', language = 'en') {
   if (entry.status === 'verified' && entry.verifiedZip !== jobZip) throw new Error('CATALOG_ZONE_MISMATCH')
   if (entry.validUntil && entry.validUntil < new Date().toISOString().slice(0, 10)) throw new Error('CATALOG_PRICE_EXPIRED')
   const price = catalogPriceSnapshot(entry, jobZip)
+  if (price.reason === 'MARKET_MISMATCH') throw new Error('CATALOG_MARKET_MISMATCH')
   const namedProduct = entry.product.toLowerCase().startsWith(entry.brand.toLowerCase()) ? entry.product : `${entry.brand} ${entry.product}`
   return {
     ...item, description: `${namedProduct} · ${entry.package}`,

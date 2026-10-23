@@ -119,7 +119,7 @@ export default function Contacts() {
   const { t, i18n } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedClientId = searchParams.get('client')
-  const { showSoon, showToast } = useOutletContext()
+  const { showToast } = useOutletContext()
   const [contacts, setContacts] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
@@ -159,7 +159,7 @@ export default function Contacts() {
 
   return (
     <div className="page">
-      <div className="page-head"><h1>{t('contacts.title')}</h1><div className="head-actions"><IconButton label={t('contacts.import')} onClick={showSoon}><Upload size={18} /></IconButton><Button onClick={() => setDialog({ mode: 'create' })}><Plus size={18} />{t('contacts.add')}</Button></div></div>
+      <div className="page-head"><h1>{t('contacts.title')}</h1><div className="head-actions"><IconButton label={t('contacts.import')} disabled title={t('commercial.importPending')}><Upload size={18} /></IconButton><Button onClick={() => setDialog({ mode: 'create' })}><Plus size={18} />{t('contacts.add')}</Button></div></div>
       <div className="filters contact-filters">
         <Chip type="button" onClick={clearSearch}>{t('contacts.all')}<span className="count">{contacts.length}</span></Chip>
         <label className="contact-search"><Search size={17} /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('contacts.search')} aria-label={t('contacts.search')} /></label>

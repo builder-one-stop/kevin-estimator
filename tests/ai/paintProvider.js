@@ -3,7 +3,7 @@ import { researchCatalog } from '../../shared/researchCatalog.js'
 
 const paint = researchCatalog.find(x => x.sourceId === 'HD01')
 const patch = researchCatalog.find(x => x.sourceId === 'HD03')
-export const paintPlan = { title: bi('Bedroom wall painting','Pintura de paredes de dormitorio'), address: '', zip: '', markupBps: 3600, pending: [],
+export const paintPlan = { title: bi('Bedroom wall painting','Pintura de paredes de dormitorio'), address: '', zip: '', markupBps: 3333, pending: [],
   assumptions: bi('Gross walls, no openings deducted. Template coverage, productivity, expenses and margin are editable assumptions; catalog prices are public online observations, not local quotes.',
     'Paredes brutas, sin descontar aberturas. Rendimiento, productividad, gastos y margen son supuestos editables; los precios del catálogo son observaciones públicas, no cotizaciones locales.'),
   tasks: [{ id: 'bedroom-walls', room: bi('Bedroom','Dormitorio'), work: bi('Interior wall painting','Pintura interior de paredes'),

@@ -415,3 +415,8 @@ button.list-item:hover { background: var(--card-hover); }
 .main.chat-main { overflow: hidden; }
 .sr-only { position: absolute!important; width: 1px!important; height: 1px!important; padding: 0!important; margin: -1px!important; overflow: hidden!important; clip: rect(0,0,0,0)!important; white-space: nowrap!important; border: 0!important; }
 .login-card input[type=password] { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+
+/* Clear keyboard focus and contrast for returning to the owning conversation. */
+.estimate-assistant a.estimate-chat-return{display:inline-flex;padding:10px 12px;background:#174a70;color:#fff;border-radius:8px;font-weight:650;text-decoration:none}
+.estimate-assistant a.estimate-chat-return:hover{background:#113750;color:#fff}
+.estimate-assistant a.estimate-chat-return:focus-visible{outline:3px solid #b87412;outline-offset:3px}

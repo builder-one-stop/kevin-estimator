@@ -31,3 +31,6 @@ evidence/workers/beta-ready.json
 
 # Local readiness handshake, not a deploy artifact
 evidence/worker-location/ready.json
+
+# Isolated persistent local review data (never production)
+.local-review/

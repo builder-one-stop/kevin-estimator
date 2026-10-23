@@ -1,4 +1,5 @@
 import { createServer } from 'node:http'
+import {sellerApiAllowed} from '../shared/salesPolicy.js'
 import { Readable } from 'node:stream'
 import { randomUUID } from 'node:crypto'
 import sharp from 'sharp'
@@ -9,6 +10,10 @@ import { createWorkersHandler } from './workers.js'
 import { normalizeSignature } from './signature.js'
 import { fail } from '../shared/aiDomain.js'
 import { versionManagedCatalog } from '../shared/researchCatalog.js'
+import { collectPriceReferences, assessPrice } from '../shared/priceEvidence.js'
+import {actualCostComparison} from './localActualCosts.js'
+import { queryLibrary,libraryCounts } from '../shared/localPriceLibrary.js'
+import {publicReferenceLibrary} from '../shared/publicReferenceLibrary.js'
 
 const jsonHeaders = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'application/json' }
 const maxBodyBytes = 7400000
@@ -25,8 +30,12 @@ export function createEstimatorHandler({ repo, provider, origin, logger, testMod
       const auth = request.headers.get('authorization')?.match(/^Bearer (.+)$/)?.[1]
       if (!auth) throw fail('UNAUTHORIZED', 401)
       const owner = await repo.authenticate(auth)
+      const accessRole=await repo.access(owner)
+      if(!accessRole)throw fail('ACCESS_DENIED',403)
+      if(accessRole==='worker')throw fail('ACCESS_DENIED',403)
       const pathname = new URL(request.url).pathname
       const parts = pathname.replace(/^\/(?:api\/ai|\.netlify\/functions\/ai)\/?/, '').split('/').filter(Boolean)
+      if(accessRole==='seller'&&!sellerApiAllowed(parts,request.method))throw fail('SELLER_ACCESS_DENIED',403)
       let body = {}
       if (request.method !== 'GET') {
         if (!request.headers.get('content-type')?.startsWith('application/json')) throw fail('JSON_REQUIRED', 415)
@@ -40,12 +49,24 @@ export function createEstimatorHandler({ repo, provider, origin, logger, testMod
         if (limits.size > 1000) for (const [key, value] of limits) if (now - value.start > 60000) limits.delete(key)
       }
       let data
-      if (parts[0] === 'admin') {
+      if(parts[0]==='calibration'&&parts.length===2&&(testMode||provider.durableActualCosts===true)&&provider.hybridWork&&provider.actualCosts){
+        const id=z.string().uuid().parse(parts[1]),record=await repo.estimate(owner,id)
+        if(request.method==='POST')await provider.actualCosts.add(owner,record,body)
+        else if(request.method!=='GET')throw fail('READ_ONLY',405)
+        const records=await provider.actualCosts.list(owner,id)
+        data={records,comparison:actualCostComparison(record,records),scope:testMode?'isolated-current-owner-only':'current-owner-only',automaticLearning:false}
+      } else if (parts[0] === 'admin') {
         if (request.method !== 'GET') throw fail('READ_ONLY',405)
         if (parts[1] !== 'conversations' || parts.length > 3) throw fail('NOT_FOUND',404)
         if (parts[2]) z.string().uuid().parse(parts[2])
         data = await repo.review(owner,parts[2] || null)
-      } else if (parts[0] === 'status' && request.method === 'GET') data = { mode: testMode ? 'controlled-test' : 'real', configured: !!provider.client || testMode }
+      } else if (parts[0] === 'pricing' && parts[1] === 'local-library' && parts.length === 2 && request.method === 'GET' && (testMode && provider.localTrades || provider.publicLibraryAvailable === true)) {
+        const parameters=new URL(request.url).searchParams
+        const library=publicReferenceLibrary(provider.library)
+        data={...queryLibrary(library,{query:parameters.get('q')||'',category:parameters.get('category')||'',offset:Number(parameters.get('offset')),limit:Number(parameters.get('limit'))||6}),counts:libraryCounts(library),scope:testMode?'isolated-public-library':'versioned-public-references',externallyQueried:false}
+      } else if (parts[0] === 'pricing' && parts[1] === 'references' && parts.length === 2 && request.method === 'GET') {
+        data = { references: collectPriceReferences(await repo.priceReferenceEstimates(owner), owner), scope: 'current-owner-only', externallyQueried: false, learning: false }
+      } else if (parts[0] === 'status' && request.method === 'GET') data = { mode: testMode ? (provider.isolatedRealTrades?'isolated-real-ai':'controlled-test') : 'real', configured: !!provider.client || testMode, localLibraryAvailable:Boolean(testMode&&provider.localTrades||provider.publicLibraryAvailable===true),actualCostsAvailable:Boolean((testMode||provider.durableActualCosts===true)&&provider.hybridWork&&provider.actualCosts) }
       else if (parts[0] === 'settings') {
         if (request.method === 'GET') data = { ...((await repo.settings(owner)) || { version: 0, data: defaultSettings() }), role: await repo.access(owner) }
         else if (request.method === 'POST') {
@@ -53,6 +74,10 @@ export function createEstimatorHandler({ repo, provider, origin, logger, testMod
           const current = (await repo.settings(owner))?.data || defaultSettings()
           if (JSON.stringify(x.data.catalog) !== JSON.stringify(current.catalog)) {
             if (await repo.access(owner) !== 'admin') throw fail('BETA_ADMIN_REQUIRED',403)
+            for (const entry of x.data.catalog) {
+              const previous = current.catalog.find(row => row.id === entry.id)
+              if (entry.status === 'verified' && JSON.stringify(entry) !== JSON.stringify(previous) && assessPrice(entry,entry.verifiedZip).status !== 'verified') throw fail('CATALOG_EVIDENCE_REQUIRED')
+            }
             x.data.catalog = versionManagedCatalog(current.catalog, x.data.catalog)
           }
           if(x.data.business.signatureImage)x.data.business.signatureImage=await normalizeSignature(x.data.business.signatureImage)

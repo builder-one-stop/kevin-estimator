@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { BookOpen, HelpCircle, LogOut, Megaphone, Settings, SlidersHorizontal } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../supabaseClient.js'
+import {useBetaAccess} from '../auth/BetaAccessContext.jsx'
 
 export default function UserMenu({ onClose, onNavigate, onSignIn, onSoon, triggerRef }) {
   const { t } = useTranslation()
+  const seller=useBetaAccess()?.role==='seller'
   const ref = useRef(null)
   const [user, setUser] = useState(null)
   const [signingOut, setSigningOut] = useState(false)
@@ -43,7 +45,7 @@ export default function UserMenu({ onClose, onNavigate, onSignIn, onSoon, trigge
   }, [onClose, triggerRef])
 
   const item = (Icon, key, action = onSoon) => (
-    <button type="button" role="menuitem" onClick={action} disabled={key === 'signout' && signingOut}><Icon />{t(key === 'signout' && signingOut ? 'menu.signingOut' : `menu.${key}`)}</button>
+    <button type="button" role="menuitem" onClick={action} disabled={(key === 'signout' && signingOut)||['presets','catalogs','whatsnew','help'].includes(key)} title={['presets','catalogs','whatsnew','help'].includes(key)?t('commercial.notAvailable'):undefined}><Icon />{t(key === 'signout' && signingOut ? 'menu.signingOut' : `menu.${key}`)}</button>
   )
 
   return (
@@ -52,9 +54,9 @@ export default function UserMenu({ onClose, onNavigate, onSignIn, onSoon, trigge
         <span className="avatar">{user?.email?.slice(0, 2).toUpperCase() || 'OS'}</span>
         <div><b>{user?.email || t('menu.signedOut')}</b>{user && <small>{t('menu.signedIn')}</small>}</div>
       </div>
-      {item(Settings, 'settings', onNavigate)}
-      {item(SlidersHorizontal, 'presets')}
-      {item(BookOpen, 'catalogs')}
+      {!seller&&item(Settings, 'settings', onNavigate)}
+      {!seller&&item(SlidersHorizontal, 'presets')}
+      {!seller&&item(BookOpen, 'catalogs')}
       <hr />
       {item(Megaphone, 'whatsnew')}
       {item(HelpCircle, 'help')}

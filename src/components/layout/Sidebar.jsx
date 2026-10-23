@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { PROFILE } from '../../mocks/data.js'
 import UserMenu from './UserMenu.jsx'
 import { useBetaAccess } from '../auth/BetaAccessContext.jsx'
+import {localSalesEnabled} from '../../services/sales.js'
 
 export function LogoMark({ size = 30 }) {
   return (
@@ -55,7 +56,7 @@ export default function Sidebar({ onNavigate, onSoon }) {
       <button className="ask-btn" type="button" onClick={() => { navigate('/estimates'); onNavigate() }}><Sparkles size={20} />{t('ask')}</button>
       <label className="search"><Search size={18} /><input ref={searchRef} placeholder={t('search')} aria-label={t('search')} /><span className="kbd">⌘K</span></label>
       <nav className="nav">
-        {navItems.map(([key, path, Icon]) => {
+        {(access?.role==='seller'?[...navItems,['quote','/chat',Sparkles]]:navItems).filter(([key])=>access?.role!=='seller'||['projects','estimates','quote'].includes(key)).map(([key, path, Icon]) => {
           const current = key === 'home' ? isHome : location.pathname === path || location.pathname.startsWith(`${path}/`)
           return (
             <Link key={key} to={path} onClick={onNavigate} aria-current={current ? 'page' : undefined} className={current ? 'active' : ''}>
@@ -64,9 +65,9 @@ export default function Sidebar({ onNavigate, onSoon }) {
           )
         })}
       </nav>
-      {access?.role === 'admin' && <Link className="admin-review-link" to="/admin/review" onClick={onNavigate}>{t('beta.review')}</Link>}
+      {access?.role === 'admin' && !localSalesEnabled&&<Link className="admin-review-link" to="/admin/review" onClick={onNavigate}>{t('beta.review')}</Link>}
       <div className="side-bottom">
-        <div className="onboard"><b>{t('onboardTitle')}</b><div className="bar"><i /></div><span className="muted onboard-copy">{t('onboardSteps')}</span></div>
+
         {menuOpen && <UserMenu triggerRef={companyRef} onClose={() => setMenuOpen(false)} onNavigate={() => go('/settings')} onSignIn={() => go('/estimates')} onSoon={onSoon} />}
         <button ref={companyRef} className="company" type="button" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen}>
           <span className="avatar">{PROFILE.companyInitials}</span><span className="name">{t('company')}</span><ChevronUp size={18} />

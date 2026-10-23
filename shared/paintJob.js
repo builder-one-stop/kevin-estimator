@@ -1,7 +1,10 @@
+import {laborBasis,burdenItem} from './laborBasis.js'
 import Decimal from 'decimal.js'
 import { measureRooms } from './estimatingMarket.js'
 import { paintPackages, packageGallons } from './materialTakeoff.js'
 import { applyCatalogPrice } from './catalogPricing.js'
+import { paintParameterEvidence } from './paintEvidence.js'
+import { reconcilePaintExpenses } from './paintReconciliation.js'
 
 export const PAINT_RULE_VERSION = 'interior-walls-1'
 export const defaultPaintTemplate = () => ({
@@ -60,7 +63,7 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
     wastePercent: positive(template.wastePercent, 'WASTE', true), packageGallons: pack }
   Object.assign(takeoff, paintPackages(takeoff))
   const patchCount = positive(template.patchCount, 'PATCH_COUNT', true)
-  const laborRate = positive(template.hourlyRate, 'HOURLY_RATE', true)
+  const laborRate = positive(template.hourlyRate, 'HOURLY_RATE', true),rateBasis=laborBasis(template)
   const item = (phase, kind, quantity, unit, unitCost, note) => ({
     id: crypto.randomUUID(), taskId, ruleKey: `${phase}:${kind}`, ruleVersion: PAINT_RULE_VERSION,
     description: labels[phase][language] + (kind === 'labor' ? (language === 'es' ? ' — mano de obra' : ' — labor') : ''),
@@ -82,6 +85,7 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
       let material = item(phase, 'material', takeoff.packages, paint?.unit || 'gal', paint?.unitCost ?? 0,
         { en: 'Whole purchasable packages; coverage and waste are editable assumptions.', es: 'Envases completos; rendimiento y desperdicio son supuestos editables.' })
       if (paint) material = applyCatalogPrice(material, paint, zip, language)
+      if(!paint){material.priceMissing=true;material.price.unitCost=null}
       material.origin = 'rule-engine'; material.ruleKey = `${phase}:material`; material.ruleVersion = PAINT_RULE_VERSION; material.takeoff = takeoff
       if (paint) material.translations = { en: material.description, es: material.description }
       entries.push(material)
@@ -89,6 +93,7 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
       let material = item(phase, 'material', patchCount, repair?.unit || 'ea', repair?.unitCost ?? 0,
         { en: 'Minor patch count is editable; preparation excludes this material.', es: 'La cantidad de reparaciones es editable; la preparación excluye este material.' })
       if (repair) material = applyCatalogPrice(material, repair, zip, language)
+      if(!repair&&patchCount>0){material.priceMissing=true;material.price.unitCost=null}
       material.origin = 'rule-engine'; material.ruleKey = `${phase}:material`; material.ruleVersion = PAINT_RULE_VERSION
       if (repair) material.translations = { en: material.description, es: material.description }
       entries.push(material)
@@ -96,22 +101,29 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
       entries.push(item(phase, 'material', areaSqFt, 'sf', positive(template.consumablesUsdPerSqFt[phase], 'CONSUMABLES', true),
         { en: 'Consumables allowance only; excludes separately counted paint and patch material.', es: 'Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte.' }))
     }
-    entries.push(item(phase, 'labor', hours(work, rate), 'hr', laborRate,
+    const laborItem=item(phase, 'labor', hours(work, rate), 'hr', laborRate,
       { en: `${round(work, 4)} ${phase === 'repair' ? 'patches' : phase === 'painting' ? 'coat-sf' : 'sf'} ÷ ${rate} per hour; rounded up to 0.01 hr.`,
-        es: `${round(work, 4)} ${phase === 'repair' ? 'reparaciones' : phase === 'painting' ? 'sf-mano' : 'sf'} ÷ ${rate} por hora; redondeado hacia arriba a 0.01 hr.` }))
+        es: `${round(work, 4)} ${phase === 'repair' ? 'reparaciones' : phase === 'painting' ? 'sf-mano' : 'sf'} ÷ ${rate} por hora; redondeado hacia arriba a 0.01 hr.` })
+    if(laborRate===0&&laborItem.quantity>0){laborItem.priceMissing=true;laborItem.price.unitCost=null}
+    laborItem.rateBasis=rateBasis;entries.push(laborItem);const burden=burdenItem(laborItem,rateBasis,language);if(burden)entries.push(burden)
   }
   const baseCents = entries.reduce((sum, row) => sum + new Decimal(row.quantity).times(row.unitCost).times(100).toDecimalPlaces(0, Decimal.ROUND_HALF_UP).toNumber(), 0)
   const expenses = round(new Decimal(baseCents).times(positive(template.expensesPercent, 'EXPENSES', true)).div(10000))
   entries.push(item('expenses', 'expenses', 1, 'lot', expenses,
     { en: `${template.expensesPercent}% of material and labor cost; excludes this expenses line. No tax or freight claim.`,
       es: `${template.expensesPercent}% del costo de materiales y mano de obra; excluye esta partida. No incluye impuestos ni flete confirmados.` }))
-  return { items: entries, areaSqFt, takeoff }
+  return { items: entries, areaSqFt, takeoff, parameterEvidence: paintParameterEvidence(template, catalog) }
 }
 
 export function paintMarkupBps(marginPercent) {
   const margin = positive(marginPercent, 'MARGIN', true)
   if (margin >= 100) throw Error('INVALID_MARGIN')
   return new Decimal(margin).div(new Decimal(100).minus(margin)).times(10000).toDecimalPlaces(0, Decimal.ROUND_HALF_UP).toNumber()
+}
+
+export function paintMarginPercent(markupBps) {
+  const markup = positive(markupBps, 'MARKUP', true)
+  return new Decimal(markup).times(100).div(new Decimal(10000).plus(markup)).toNumber()
 }
 
 export function recalculatePaintDocument(document, taskId, templateChanges = {}, inputChanges = {}, catalog = []) {
@@ -144,12 +156,7 @@ export function recalculatePaintDocument(document, taskId, templateChanges = {},
       ...(overrides.markupBps ? { markupBps: previous.markupBps } : {}),
     }
   })
-  const expense = items.find(x => x.ruleKey === 'expenses:expenses')
-  if (expense && !expense.ruleOverrides?.price) {
-    const baseCents = items.filter(x => x !== expense).reduce((sum, row) => sum + new Decimal(row.quantity).times(row.unitCost).times(100).toDecimalPlaces(0, Decimal.ROUND_HALF_UP).toNumber(), 0)
-    expense.unitCost = round(new Decimal(baseCents).times(template.expensesPercent).div(10000))
-  }
   const unrelated = section.items.filter(x => !x.ruleKey)
-  return { ...document, sections: document.sections.map(x => x.id === taskId ? { ...x, items: [...items, ...unrelated] } : x),
-    rules: { ...document.rules, paint: { ...document.rules.paint, [taskId]: { ...rule, version: PAINT_RULE_VERSION, inputs, template, catalogSnapshots: snapshots, areaSqFt: fresh.areaSqFt } } } }
+  return reconcilePaintExpenses({ ...document, sections: document.sections.map(x => x.id === taskId ? { ...x, items: [...items, ...unrelated] } : x),
+    rules: { ...document.rules, paint: { ...document.rules.paint, [taskId]: { ...rule, version: PAINT_RULE_VERSION, inputs, template, catalogSnapshots: snapshots, areaSqFt: fresh.areaSqFt, parameterEvidence: fresh.parameterEvidence } } } })
 }

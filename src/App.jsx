@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes, useParams, Outlet } from 'react-router-dom'
+import { Navigate, Route, Routes, useParams, useLocation, Outlet } from 'react-router-dom'
+import {sellerPathAllowed} from '../shared/salesPolicy.js'
 import AppShell from './components/layout/AppShell.jsx'
 import Workers from './pages/Workers.jsx'
 import WorkerPortal from './pages/WorkerPortal.jsx'
@@ -20,7 +21,6 @@ import TimeTracking from './pages/TimeTracking.jsx'
 import Settings from './pages/Settings.jsx'
 import Chats from './pages/Chats.jsx'
 import AiChat from './pages/AiChat.jsx'
-import AiSettings from './pages/AiSettings.jsx'
 import AdminReview from './pages/AdminReview.jsx'
 
 function EstimateWorkspaceRoute() {
@@ -37,6 +37,8 @@ function AuthenticatedRoutes() {
 
 function RoleRoutes() {
   const access = useBetaAccess()
+  const location=useLocation()
+  if(access?.role==='seller'&&!sellerPathAllowed(location.pathname))return <Navigate to="/projects" replace />
   return access?.role === 'worker' ? <WorkerPortal /> : <Outlet />
 }
 
@@ -47,7 +49,7 @@ export default function App() {
         <Route element={<AppShell />}>
           <Route path="/" element={<Home />} />
           <Route path="/chat" element={<Chats />} />
-          <Route path="/chat/settings" element={<AiSettings />} />
+          <Route path="/chat/settings" element={<Navigate to="/settings" replace />} />
           <Route path="/chat/:id" element={<AiChatRoute />} />
           <Route path="/workers" element={<Workers />} />
           <Route path="/projects" element={<Projects />} />

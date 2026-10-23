@@ -11,6 +11,7 @@ export const newItem = (language = 'en') => reviseManualPrice({ id: crypto.rando
 export function reviseManualPrice(item, changes, language = 'en') {
   const priceOnly = Object.keys(changes).every(key => key === 'unitCost')
   return { ...item, ...changes, catalogId: null, origin: 'manual', needsReview: true,
+    ...(item.priceMissing!==undefined && Object.hasOwn(changes,'unitCost') ? {priceMissing:false} : {}),
     ruleOverrides: item.ruleKey ? { ...item.ruleOverrides, ...(priceOnly ? { price: true } : { price: true, description: true }) } : item.ruleOverrides,
     previousCatalogId: priceOnly ? item.catalogId || item.previousCatalogId || null : null,
     takeoff: priceOnly ? item.takeoff : undefined,
@@ -27,6 +28,7 @@ export function moneyCents(value) {
 }
 
 export function itemCostCents(item) {
+  if(item.priceMissing||item.quantityPending)return 0 // Excluded from known subtotal; presentation remains pending.
   const quantity = Number(item.quantity)
   return Number.isFinite(quantity) && quantity >= 0 ? new Decimal(quantity).times(moneyCents(item.unitCost)).toDecimalPlaces(0, Decimal.ROUND_HALF_UP).toNumber() : 0
 }

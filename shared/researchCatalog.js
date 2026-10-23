@@ -77,7 +77,7 @@ export function exactCatalogMatch(entry, query) {
     (entry.verifiedZip || null) === (query.verifiedZip || null)
 }
 
-const revisionFields = ['product','brand','package','unit','unitCost','vendor','location','url','sku','checkedAt','status','evidence','verifiedZip','validUntil','localPriceEvidence']
+const revisionFields = ['product','brand','package','unit','unitCost','vendor','location','url','sku','model','checkedAt','status','evidence','verifiedZip','validUntil','localPriceEvidence','country','region','city']
 export function versionManagedCatalog(previous = [], next = []) {
   const oldById = new Map(previous.map(entry => [entry.id, entry]))
   return next.map(entry => {
@@ -90,7 +90,7 @@ export function versionManagedCatalog(previous = [], next = []) {
       unit: old.unit, vendor: old.vendor, location: old.location, url: old.url, sku: old.sku,
       unitCost: old.unitCost, status: old.status, checkedAt: old.checkedAt,
       validUntil: old.validUntil || null, verifiedZip: old.verifiedZip || null, evidence: old.evidence || '',
-      localPriceEvidence: old.localPriceEvidence || '' }
+      localPriceEvidence: old.localPriceEvidence || '',country:old.country,region:old.region,city:old.city,model:old.model }
     return { ...entry, priceVersion: prior.version + 1, priceHistory: [...history, prior].slice(-100) }
   })
 }

@@ -100,11 +100,10 @@ describe('real HTTP + migrated PostgreSQL, controlled model',()=>{
   }finally{await db.exec('reset role')}
   expect((await db.query("select public from storage.buckets where id='estimate-evidence'")).rows).toEqual([{public:false}]);expect(b.owner_id).toBe(B)
  })
- it('requires exact approval and resolves pending questions before creating any estimate',async()=>{
+ it('requires exact scope approval while unanswered commercial questions remain advisory',async()=>{
   let row=await create();expect((await cmd(row,'generate')).status).toBe(409)
   row=(await cmd(row,'message',{content:'Paint reference rooms'})).data;row=await settled(row.id)
   expect(row.estimate_id).toBeNull();expect(row.state.plan.pending.length).toBe(1)
-  expect((await cmd(row,'approve',{revision:row.state.planRevision})).data.error).toBe('PLAN_HAS_QUESTIONS')
   expect((await cmd(row,'approve',{revision:row.state.planRevision-1})).status).toBe(409)
   row=(await cmd(row,'savePlan',{plan:{...row.state.plan,pending:[]}})).data
   row=(await cmd(row,'approve',{revision:row.state.planRevision})).data

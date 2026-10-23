@@ -1,9 +1,12 @@
+import { buildLocalTradeDocument } from '../shared/localTradePlan.js'
+import {summarizeConversationUsage} from '../shared/apiUsage.js'
+import {attachHybridBudget} from '../shared/workRegistry.js'
 import { estimatePublicMessage } from './publicText.js'
 import { directEstimateChange } from '../shared/estimateCommands.js'
 import { isPdfRequest } from '../shared/estimatePresentation.js'
 import { ESTIMATING_MARKET, pricingAvailability } from '../shared/estimatingMarket.js'
 import { effectiveCatalog } from '../shared/researchCatalog.js'
-import { isInteriorWallPaint, paintDimensions, makePaintItems, paintMarkupBps, defaultPaintTemplate, PAINT_RULE_VERSION } from '../shared/paintJob.js'
+import { isInteriorWallPaint, paintDimensions, makePaintItems, paintMarkupBps, paintMarginPercent, defaultPaintTemplate, PAINT_RULE_VERSION } from '../shared/paintJob.js'
 import { randomUUID } from 'node:crypto'
 import { compactTitle } from '../shared/chatPresentation.js'
 import { z } from 'zod'
@@ -11,7 +14,7 @@ import { assertPlan, assertDocument, documentFromLines, proposedChange, fail, lo
 import { defaultSettings, parseModelResult, planSchema } from '../shared/aiSchemas.js'
 const bodySchema=z.object({requestId:z.string().uuid(),version:z.number().int().min(1),action:z.enum(['message','retry','generate','savePlan','approve','apply','cancel','language','links','restore']),
   content:z.string().max(8000).optional(),plan:planSchema.optional(),revision:z.number().int().optional(),language:z.enum(['en','es']).optional(),
-  clientId:z.string().uuid().nullable().optional(),projectId:z.string().uuid().nullable().optional(),estimateVersion:z.number().int().optional(),restoreVersion:z.number().int().optional()}).strict()
+  clientId:z.string().uuid().nullable().optional(),projectId:z.string().uuid().nullable().optional(),estimateVersion:z.number().int().optional(),restoreVersion:z.number().int().optional(),runId:z.string().uuid().optional()}).strict()
 export class EstimatorEngine {
  constructor(repo,provider,{logger=console.info,runMode='inline'}={}) { this.repo=repo;this.provider=provider;this.active=new Map();this.logger=logger;this.runMode=runMode }
  async create(owner,body) {
@@ -31,6 +34,7 @@ export class EstimatorEngine {
   const body=bodySchema.parse(input); await this.repo.expire(owner)
   let row=await this.repo.get(owner,id)
   if(row.state.receipts.includes(body.requestId))return row
+  if(body.action==='cancel'&&body.runId)return this.cancelRun(owner,row,body)
   if(row.version!==body.version)throw fail('CONFLICT',409)
   const s=row.state, working=s.run?.status==='working'
   if(working && body.action!=='cancel')throw fail('RUN_BUSY',409)
@@ -101,6 +105,7 @@ export class EstimatorEngine {
    s.pending=null
   }
   s.receipts=[...s.receipts,body.requestId].slice(-200)
+  if(estimate)estimate.document.aiUsage={conversationId:row.id,...summarizeConversationUsage(s)}
   row=await this.repo.commit(owner,row,row.version,estimate,estimateVersion,origin)
   if(['message','retry','generate'].includes(body.action)) {
    if(this.runMode==='deferred') {
@@ -119,6 +124,19 @@ export class EstimatorEngine {
    }
   }
   return row
+ }
+ async cancelRun(owner,initial,body){
+  let row=initial
+  for(let attempt=0;attempt<3;attempt++){
+   if(row.state.run?.id!==body.runId)throw fail('RUN_CHANGED',409)
+   if(row.state.run.status!=='working')return row
+   const candidate=structuredClone(row)
+   candidate.state.run={...candidate.state.run,status:'cancelled',preview:''}
+   candidate.state.receipts=[...candidate.state.receipts,body.requestId].slice(-200)
+   try{const committed=await this.repo.commit(owner,candidate,row.version);this.active.get(body.runId)?.abort();return committed}
+   catch(error){if(error.code!=='CONFLICT')throw error;row=await this.repo.get(owner,row.id)}
+  }
+  throw fail('CONFLICT',409)
  }
  async performQueued(owner,id,runId) {
   if(this.runMode!=='deferred')throw fail('DISPATCH_UNAVAILABLE',503)
@@ -159,6 +177,13 @@ export class EstimatorEngine {
     if(result.plan){assertPlan(result.plan);row.title=compactTitle(localText(result.plan.title,s.documentLanguage));s.plan=result.plan;s.planRevision++;s.approvedRevision=null}
    } else if(s.run.mode==='generate') {
     if(result.plan||result.changes.length)throw fail('MODEL_CHANGED_APPROVED_PLAN')
+    if(this.provider.localTrades===true && s.plan.tasks.length===1 && s.plan.tasks[0].id.startsWith('local-trade-')) {
+     await stage('calculating')
+     row.state=s
+     const document=buildLocalTradeDocument(s.plan,s.documentLanguage,settings.business,s.planRevision,this.provider.library)
+     document.conversationId=row.id;assertDocument(document,s.plan.markupBps)
+     estimate={id:randomUUID(),title:localText(s.plan.title,s.documentLanguage),markup_bps:s.plan.markupBps,document};estimateVersion=0
+    } else {
     const eligible=s.plan.tasks.map(task=>({task,inputs:isInteriorWallPaint(task)?paintDimensions(task):null})).filter(x=>x.inputs)
     const paintTasks=s.plan.tasks.length===1 && eligible.length===1 ? eligible : []
     const planned=new Set(paintTasks.map(x=>x.task.id))
@@ -167,7 +192,8 @@ export class EstimatorEngine {
     let markupBps=s.plan.markupBps
     if(paintTasks.length){
       const template=structuredClone(settings.paintTemplate||defaultPaintTemplate())
-      markupBps=paintMarkupBps(template.marginPercent)
+      // Generation must preserve the approved markup, rather than silently replacing it with a template margin.
+      if(paintMarkupBps(template.marginPercent)!==markupBps)template.marginPercent=paintMarginPercent(markupBps)
       const paint={}
       for(const {task,inputs} of paintTasks){
         const approved=[task.product.en,task.product.es,...task.components.flatMap(x=>[x.en,x.es])].join(' ').toLowerCase()
@@ -178,13 +204,14 @@ export class EstimatorEngine {
           repairCatalogId:selectedRepair && approved.includes(selectedRepair.brand.toLowerCase()) && approved.includes(selectedRepair.product.toLowerCase()) ? template.repairCatalogId : null}
         const calculated=makePaintItems(task.id,inputs,forTask,settings.catalog,s.documentLanguage,s.plan.zip)
         document.sections.find(section=>section.id===task.id).items=calculated.items
-        paint[task.id]={version:PAINT_RULE_VERSION,inputs,template:structuredClone(forTask),catalogSnapshots:settings.catalog.filter(x=>[forTask.paintCatalogId,forTask.repairCatalogId].includes(x.id)).map(x=>structuredClone(x)),areaSqFt:calculated.areaSqFt}
+        paint[task.id]={version:PAINT_RULE_VERSION,inputs,template:structuredClone(forTask),parameterEvidence:calculated.parameterEvidence,catalogSnapshots:settings.catalog.filter(x=>[forTask.paintCatalogId,forTask.repairCatalogId].includes(x.id)).map(x=>structuredClone(x)),areaSqFt:calculated.areaSqFt}
       }
       document.rules={paint}
       document.scope.plan.markupBps=markupBps
       assertDocument(document,markupBps)
     }
     estimate={id:randomUUID(),title:localText(s.plan.title,s.documentLanguage),markup_bps:markupBps,document};estimateVersion=0
+    }
    } else {
     if(result.lines.length)throw fail('MODEL_INVALID_OUTPUT')
     if(result.changes.length || result.plan) {
@@ -194,8 +221,10 @@ export class EstimatorEngine {
      } else s.pending={...proposedChange(context.estimate,result,settings.catalog,s.planRevision+1),revision:s.planRevision+1}
     }
    }
+   if(estimate&&this.provider.hybridWork){estimate.document=attachHybridBudget(estimate.document,s.plan,this.provider.library);assertDocument(estimate.document,estimate.markup_bps)}
    s.messages.push({id:randomUUID(),role:'assistant',content:estimatePublicMessage(result.message,s.documentLanguage),createdAt:new Date().toISOString()})
    s.run={...s.run,status:'ready',stage:'ready',preview:'',metrics:{...metrics,previewUpdates,firstTextMs}};s.runs=[...s.runs,s.run].slice(-30)
+   if(estimate)estimate.document.aiUsage={conversationId:row.id,...summarizeConversationUsage(s)}
    row=await this.repo.commit(owner,row,row.version,estimate,estimateVersion,'ai-approved-plan')
    this.logger(JSON.stringify({event:'estimator_run',runId,...metrics,status:'ready'}))
   } catch(error) {

@@ -1,0 +1,33 @@
+# Recuperación del release One Stop — estado vigente 23 octubre 2026
+
+La migración 20261023180600_one_stop_sales_commercial_hybrid_costs YA se aplicó en vtpciccluvpaclbeqxih con inscripción de las dos cuentas existentes, pre/postverificación de conservación y pruebas de acceso. NO repetir el instalador ni volver a crear la organización. Las instrucciones históricas siguientes documentan la preparación anterior y no son pasos pendientes.
+
+Antes del despliegue manual conservar ID/URL de la publicación vigente de onestop-beta y hash del nuevo artefacto. Mantener Stopped builds. No restaurar automáticamente funciones históricas de supervisión global ni desactivar RLS o membresía: una versión antigua puede ser incompatible con vendedores. Ante fallo del release, detener escrituras del módulo afectado y preparar recuperación hacia adelante que falle cerrado; solo reutilizar un artefacto anterior después de revisar compatibilidad con el esquema actual. Conservar tablas, notas, facturas y costos nuevos. Ninguna eliminación de datos, revocación masiva, cambio de propietarios, credenciales o plan queda autorizada por este procedimiento.
+
+El SQL resuelto de inscripción está excluido de Git; la migración versionada conserva solo esquema sin identidades resueltas. Entorno local privado y secretos siguen excluidos. Publicar solo código y funciones revisados, nunca bases aisladas, seeds ni estado .local-review.
+
+## Registro histórico de preparación — NO ejecutar como procedimiento actual
+
+# Aplicación y recuperación: One Stop
+
+Este procedimiento sigue pendiente de inspección remota e identidades confirmadas. No aplicar el borrador aislado en producción: los usuarios existentes requieren su inscripción en la misma transacción, para evitar una ventana sin acceso.
+
+1. Obtener acceso legítimo al proyecto `vtpciccluvpaclbeqxih`. El conector SQL fue denegado dos veces, la segunda tras nueva confirmación del usuario; no reintentar ni usar otra ruta para eludir esa denegación. Recuperar permisos del conector con el flujo oficial.
+2. Leer esquema, funciones, constraints, grants, policies e historial. Comparar con las migraciones locales; abortar ante diferencias no revisadas. Leer únicamente identidad/correo de las dos cuentas conocidas para confirmar el mapa. No inferir identidad por rol ni usar los correos históricos del repositorio como prueba actual.
+3. Revisar el diff SQL completo y su hash. El borrador `production-release-schema.sql` crea estructuras y funciones sin borrar registros ni cambiar propietarios; todavía no incluye inscripción real. El instalador final debe envolver esquema e inscripción confirmada en **una única transacción**. Bloquear incorporación automática por dominio/correo, semillas y nuevos usuarios. Vincular leads históricos únicamente por mapa explícito de propietarios a la organización, inicialmente sin vendedor.
+4. Comprobar en base aislada: propietarios y registros previos intactos; mismos conteos antes/después salvo tablas nuevas; sesiones, RLS, revisión por organización, reasignación, notas, seguimiento, facturas, finalización preliminar y costos reales. Ensayar error antes de commit y confirmar rollback completo. Verificar de nuevo después de migrar, sin registros sintéticos reales.
+5. Mantener flags de producción nuevos apagados hasta el commit de esquema e inscripción y la comprobación de funciones. Activarlos de forma coordinada: servidor `ONE_STOP_HYBRID_ENABLED`, `ONE_STOP_SALES_ENABLED`, `ONE_STOP_ACTUAL_COSTS_ENABLED`; frontend `VITE_SALES_ENABLED`. No usar flags de fixture ni trasladar bases o JSON locales. Son capacidades no secretas; las claves existentes siguen sólo en servidor.
+6. Si falla el instalador antes de commit: rollback transaccional, sin aplicar fragmentos manualmente. Si falla la aplicación después de commit: conservar tablas/datos nuevos, detener escrituras del módulo afectado y publicar el artefacto compatible anterior revisado. No restaurar automáticamente la función histórica de supervisión global ni desactivar RLS. No desactivar en bloque el flag de membresía del servidor mientras vendedores mantengan sesiones: puede eliminar comprobaciones de acceso. Preparar y probar un hotfix que falle cerrado para las rutas afectadas.
+7. Un rollback destructivo de tablas, eliminación de notas/facturas/costos, cambio de propietarios o revocación masiva de sesiones no está autorizado por este procedimiento. Requiere evaluar datos creados y una decisión explícita. Conservar evidencia de la versión y esquema aplicado para recuperación hacia adelante.
+
+Publicación manual sólo en `onestop-beta`, manteniendo Stopped builds. El padre confirmó acceso de navegador Kevin, plan con 1000 créditos de plan disponibles y publicación manual CLI/API admitida: no atribuir el bloqueo actual a saldo ni pedir reconectar Chrome. El acceso SQL y la verificación de identidades siguen siendo bloqueos distintos.
+
+## Incorporación histórica preparada offline
+
+El padre comprobó que el conector actual sólo lista App Constructores y no One Stop. No consultar ese proyecto ni repetir SQL denegado hasta evidencia de conexión corregida. Netlify no requiere reconexión.
+
+La plantilla `docs/release-enrollment.example.json` tiene deliberadamente vacíos el correo, nombre e ID de organización. No es ejecutable ni prueba identidades reales. Al recuperar acceso, verificar los dos IDs/roles/correos y consultar únicamente IDs/propietarios de sus proyectos. Completar el inventario explícito de **todos** esos proyectos; no inferir pertenencia por dominio, estado comercial o vendedor supuesto.
+
+Guardar el manifiesto comprobado únicamente en `.local-review/release/enrollment.json`, excluido de Git. Ejecutar `node scripts/prepare-production-migration.mjs`: prepara `.local-review/release/production-candidate.sql`, informa hash/conteos y **no conecta ni ejecuta SQL**. Si falta un dato, hay claves extra, identidades distintas, proyectos repetidos/ajenos o ya existe el archivo de salida, falla sin sobrescribirlo. No pasar datos personales o claves como argumentos de shell. No versionar el manifiesto resuelto ni el SQL con información de inscripción.
+
+El candidato incorpora esquema e inscripción en una sola transacción. Antes de alterar esquema vuelve a comprobar IDs/roles/correos y el inventario actual, bloqueando cambios concurrentes de proyectos; aborta si cambió. Mantiene owners, crea sólo la organización/membresías aprobadas y deja leads sin vendedor. Una falla posterior revierte también la inscripción. La preparación local no sustituye registro formal de migración, comparación con esquema remoto, asesores ni aprobación de un diff material distinto.

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/check-release-config.mjs && vite build",
     "test": "vitest run",
     "lint": "oxlint",
     "preview": "vite preview",
@@ -22,7 +22,10 @@
     "admin:password": "node --env-file=.env.server.local scripts/beta-admin-password.mjs",
     "test:bridge:browser": "node scripts/chat-estimate-bridge-browser.mjs",
     "test:worker-location:browser": "node scripts/worker-location-browser.mjs",
-    "test:worker-location:beta": "node --env-file=.env.server.local scripts/worker-location-remote.mjs"
+    "test:worker-location:beta": "node --env-file=.env.server.local scripts/worker-location-remote.mjs",
+    "dev:review": "node scripts/local-review.mjs",
+    "dev:real": "node scripts/real-local-frontend.mjs",
+    "check:local": "node scripts/check-local-readiness.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

@@ -26,7 +26,7 @@ export function buildApprovedPdf(estimate,{format='proposal',includeCosts=false}
    ensure(30)
    const count=Math.max(1,Math.floor((bottom-y-14)/12)),chunk=remaining.splice(0,count),h=Math.max(30,chunk.length*12+14)
    style(9);pdf.text(chunk,xs[0]+7,y+5)
-   if(first){[item.quantity,item.unit,item.unitPriceDisplay,money(item.amount)].forEach((value,n)=>pdf.text(clean(value),xs[n+1]+widths[n+1]-7,y+5,{align:'right'}));first=false}
+   if(first){[item.quantityPending?'-':item.quantity,item.unit,item.unitPriceDisplay,item.priceMissing||item.quantityPending?t('pricePending'):money(item.amount)].forEach((value,n)=>pdf.text(clean(value),xs[n+1]+widths[n+1]-7,y+5,{align:'right'}));first=false}
    else {style(8,false,100);pdf.text(t('continued'),right-7,y+5,{align:'right'})}
    y+=h;pdf.setDrawColor(225);pdf.line(left,y-8,right,y-8)
    if(remaining.length)nextPage()
@@ -38,12 +38,14 @@ export function buildApprovedPdf(estimate,{format='proposal',includeCosts=false}
  const businessLines=lines(v.business.name||'One Stop Building & Remodeling',right-left-41,18,true);pdf.text(businessLines,left+41,58);y=Math.max(88,58+businessLines.length*22)
  block([v.business.address,v.business.phone,v.business.license].filter(Boolean).join(' | '),9)
  block(strings[v.lang][format==='detailed'?'detailed':'proposal'],11,true)
+ if(v.incomplete){block(t('preliminary'),14,true);block(t('incompletePricing'),10,true)}
  block(v.title,17,true)
  block(`#${v.number} | ${t('date')}: ${v.date} | ${t('revision')} ${v.revision} | ${v.finalized?t('finalized'):t('draft')}`,9)
  if(v.status)block(`${t('status')}: ${v.status}`,9)
  block(`${t('client')}: ${v.client||t('unprovided')}\n${t('project')}: ${v.project||t('unprovided')}${v.address?'\n'+v.address:''}`)
  if(v.clientContact)block(v.clientContact,9)
  if(v.provisional)block(t('provisional'),10,true)
+ if(v.hybrid)block(t('currentMarkup')+': '+v.markupBps/100+'%',10,true)
  if(v.proposal.intro){heading(t('intro'));block(v.proposal.intro)}
  heading(t('scope'));block(v.proposal.scope)
  for(const task of v.scope){const height=lines(task.title,right-left,12,true).length*16+4+task.blocks.reduce((n,b)=>n+lines(`${strings[v.lang][b.key]||t(b.key)}: ${b.value}`).length*14+8,0);if(height<bottom-70)ensure(height);heading(task.title);for(const b of task.blocks)block(`${strings[v.lang][b.key]||t(b.key)}: ${b.value}`)}
@@ -54,8 +56,8 @@ export function buildApprovedPdf(estimate,{format='proposal',includeCosts=false}
   for(const item of section.items)tableRow(item)
  }
  tableActive=false;y+=8;ensure(includeCosts?94:70)
- style(10);pdf.text(t('subtotal'),left+285,y);pdf.text(money(v.sums.priceCents),right-7,y,{align:'right'});y+=23
- pdf.setDrawColor(240,122,34);pdf.setLineWidth(2);pdf.line(left+265,y-8,right,y-8);style(14,true);pdf.text(t('total'),left+265,y+12);pdf.text(money(v.sums.priceCents),right-7,y+34,{align:'right'});y+=55
+ style(10);pdf.text(t(v.incomplete?'knownSubtotal':'subtotal'),left+285,y);pdf.text(money(v.sums.priceCents),right-7,y,{align:'right'});y+=23
+ pdf.setDrawColor(240,122,34);pdf.setLineWidth(2);pdf.line(left+265,y-8,right,y-8);style(14,true);pdf.text(t(v.incomplete?'preliminary':'total'),left+265,y+12);pdf.text(v.incomplete?t('pricePending'):money(v.sums.priceCents),right-7,y+34,{align:'right'});y+=55
  if(includeCosts)block(`${strings[v.lang].cost}: ${money(v.sums.costCents)}`,10)
  if(v.assumptions){heading(t('assumptions'));block(v.assumptions)}
  for(const [key,label] of [['notes','notes'],['exclusions','excluded'],['terms','conditions']])if(v.proposal[key]){heading(t(label));block(v.proposal[key])}

@@ -23,7 +23,7 @@ describe('money and approved scope',()=>{
   }
  })
  it('blocks missing material answers, duplicate IDs and unpriced or extra tasks',()=>{
-  expect(()=>assertPlan({...fixturePlan,pending:[{en:'Height?',es:'¿Altura?'}]},true)).toThrow('PLAN_HAS_QUESTIONS')
+  expect(()=>assertPlan({...fixturePlan,pending:[{en:'Height?',es:'¿Altura?'}]},true)).not.toThrow()
   expect(()=>documentFromLines(fixturePlan,[...fixtureLines,fixtureLines[0]],'en')).toThrow('INVALID_LINES')
   expect(()=>documentFromLines(fixturePlan,fixtureLines.slice(4),'en')).toThrow('UNPRICED_SCOPE')
   const d=doc();d.sections[0].items[0].taskId='unapproved';expect(()=>assertDocument(d,3600)).toThrow('OUTSIDE_APPROVED_SCOPE')
@@ -48,7 +48,9 @@ describe('money and approved scope',()=>{
   const lines=structuredClone(fixtureLines);lines[0].catalogId='catalog-item'
   const entry={id:'catalog-item',product:'Walls',brand:'Brand',package:'1 GAL',unit:'gal',unitCost:65,status:'verified',location:'90505'}
   expect(()=>documentFromLines(plan,lines,'en',[entry])).toThrow('CATALOG_MISMATCH')
-  const document=documentFromLines(plan,lines,'en',[{...entry,verifiedZip:'90001'}]);expect(document.sections[0].items[0].price.status).toBe('verified')
+  const legacy=documentFromLines(plan,lines,'en',[{...entry,verifiedZip:'90001'}]);expect(legacy.sections[0].items[0].price.status).toBe('provisional')
+  const documented={...entry,verifiedZip:'90001',country:'US',region:'CA',city:'Los Angeles',vendor:'Source supplier',url:'https://supplier.example/product',checkedAt:new Date().toISOString().slice(0,10),validUntil:'2099-01-01',evidence:'Exact product source',localPriceEvidence:'Dated branch quote'}
+  const document=documentFromLines(plan,lines,'en',[documented]);expect(document.sections[0].items[0].price.status).toBe('verified')
   expect(()=>documentFromLines(plan,lines,'en',[{...entry,verifiedZip:'90001',brand:'Unapproved brand'}])).toThrow('UNAPPROVED_PRODUCT')
  })
  it('validates readonly tool names/arguments and rejects fake catalog verification',()=>{
