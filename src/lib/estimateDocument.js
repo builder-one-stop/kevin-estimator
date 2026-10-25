@@ -17,6 +17,7 @@ export function reviseManualPrice(item, changes, language = 'en') {
     takeoff: priceOnly ? item.takeoff : undefined,
     priceSource: language === 'es' ? 'Entrada manual — provisional' : 'Manual entry — provisional', priceDate: '',
     price: { status: 'manual', source: 'manual-entry', category: 'provisional-assumption', internalPriceApproval: 'not-recorded',
+      previousSnapshot: structuredClone(item.price?.previousSnapshot || item.price || null),
       previousSource: item.price?.previousSource || item.price?.source || null,
       previousEvidence: item.price?.previousEvidence || { source: item.priceSource || '', date: item.priceDate || '' } } }
 }

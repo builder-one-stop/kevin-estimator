@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import {offerContextSchema} from './priceOffers.js'
 import { conversionsSchema, roomsSchema } from './estimatingMarket.js'
 import { defaultPaintTemplate } from './paintJob.js'
 export const text = z.string().max(2000)
@@ -44,6 +45,7 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
   sourceId: z.string().max(80).optional(), sourceVersion: z.string().max(80).optional(), sourceUrl: z.string().url().max(1000).optional(),
   verifiedZip: z.string().regex(/^\d{5}$/).nullable().optional(), validUntil: z.string().date().nullable().optional(),
   localPriceEvidence: text.optional(), model: z.string().max(100).optional(),
+  variant:z.string().max(200).optional(),offer:offerContextSchema.optional(),
   country: z.string().max(2).optional(), region: z.string().max(2).optional(), city: z.string().max(100).optional(),
   priceVersion: z.number().int().min(1).optional(),
   priceHistory: z.array(z.object({ version: z.number().int().min(1), product: z.string(), brand: z.string(), package: z.string(),
@@ -51,7 +53,8 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
     unitCost: z.number().min(0).max(1000000).nullable(),
     status: z.string().max(40), checkedAt: z.string().date(), validUntil: z.string().date().nullable(),
     verifiedZip: z.string().nullable(), evidence: text, localPriceEvidence: text,
-    country:z.string().optional(),region:z.string().optional(),city:z.string().optional(),model:z.string().optional() }).strict()).max(100).optional(),
+    country:z.string().optional(),region:z.string().optional(),city:z.string().optional(),model:z.string().optional(),
+    variant:z.string().max(200).optional(),offer:offerContextSchema.optional() }).strict()).max(100).optional(),
 }).strict().refine(x => x.status !== 'verified' || (x.unitCost !== null && x.verifiedZip && x.localPriceEvidence && x.vendor && x.location && x.url), 'Local verification requires product, exact ZIP and product/branch evidence')
   .refine(x => x.status !== 'public_observed' || x.unitCost !== null, 'An observed price requires a value')
   .refine(x => x.status !== 'quote_required' || x.unitCost === null, 'A quote-required record has no observed price')

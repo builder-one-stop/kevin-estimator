@@ -1,4 +1,5 @@
 import research from './research/la-pricing-phase-a.json' with { type: 'json' }
+import {sameOffer} from './priceOffers.js'
 
 export const RESEARCH_SOURCE = 'https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228'
 export const RESEARCH_CATALOG_VERSION = research.schema_version
@@ -71,26 +72,25 @@ export function effectiveCatalog(managed = []) {
 }
 
 export function exactCatalogMatch(entry, query) {
-  if (!entry || !query) return false
-  return entry.product === query.product && entry.brand === query.brand &&
-    entry.package === query.package && entry.unit === query.unit &&
-    (entry.verifiedZip || null) === (query.verifiedZip || null)
+  if (!entry || !query || ['product','brand','package','unit','vendor'].some(key=>!entry[key]||!query[key])) return false
+  return sameOffer(entry,query)
 }
 
-const revisionFields = ['product','brand','package','unit','unitCost','vendor','location','url','sku','model','checkedAt','status','evidence','verifiedZip','validUntil','localPriceEvidence','country','region','city']
+const revisionFields = ['product','brand','package','unit','unitCost','vendor','location','url','sku','model','variant','offer','checkedAt','status','evidence','verifiedZip','validUntil','localPriceEvidence','country','region','city']
 export function versionManagedCatalog(previous = [], next = []) {
   const oldById = new Map(previous.map(entry => [entry.id, entry]))
   return next.map(entry => {
     const old = oldById.get(entry.id)
     if (!old) return { ...entry, priceVersion: 1, priceHistory: [] }
-    const changed = revisionFields.some(key => (entry[key] ?? null) !== (old[key] ?? null))
+    const changed = revisionFields.some(key => JSON.stringify(entry[key] ?? null) !== JSON.stringify(old[key] ?? null))
     const history = old.priceHistory || []
     if (!changed) return { ...entry, priceVersion: old.priceVersion || 1, priceHistory: history }
     const prior = { version: old.priceVersion || 1, product: old.product, brand: old.brand, package: old.package,
       unit: old.unit, vendor: old.vendor, location: old.location, url: old.url, sku: old.sku,
       unitCost: old.unitCost, status: old.status, checkedAt: old.checkedAt,
       validUntil: old.validUntil || null, verifiedZip: old.verifiedZip || null, evidence: old.evidence || '',
-      localPriceEvidence: old.localPriceEvidence || '',country:old.country,region:old.region,city:old.city,model:old.model }
+      localPriceEvidence: old.localPriceEvidence || '',country:old.country,region:old.region,city:old.city,model:old.model,
+      variant:old.variant,offer:old.offer?structuredClone(old.offer):undefined }
     return { ...entry, priceVersion: prior.version + 1, priceHistory: [...history, prior].slice(-100) }
   })
 }

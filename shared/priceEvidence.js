@@ -1,4 +1,5 @@
 // Evidence criteria are independent of scope approval, commercial status, and account identity.
+import {sameOffer,priceFreshness,priceJobZip} from './priceOffers.js'
 export const PRICE_POLICY_VERSION = 'source-evidence-1'
 export const PRICE_REVIEW_DAYS = 30
 const day = value => /^\d{4}-\d{2}-\d{2}$/.test(value || '') && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10) === value
@@ -41,7 +42,7 @@ export function collectPriceReferences(records, owner, today) {
       if (!Number.isFinite(item.unitCost) || item.unitCost < 0 || !item.unit) continue
       const price = structuredClone(item.price || { status: 'manual', unitCost: item.unitCost })
       price.unitCost = item.unitCost
-      const assessment = assessPrice(price, record.document?.scope?.plan?.zip || '', today)
+      const assessment = assessPrice(price, priceJobZip(record.document||{}), today)
       references.push({ id: `${record.id}:${item.id}`, description: item.description, unit: item.unit,
         costType: item.costType, unitCost: item.unitCost, catalogId: item.catalogId || null,
         price: { ...price, status: assessment.status, verification: assessment },
@@ -55,8 +56,7 @@ export function collectPriceReferences(records, owner, today) {
 export function referenceMatches(item, reference) {
   if (item.unit !== reference.unit || item.costType !== reference.costType) return false
   if (item.price?.product || reference.price?.product) {
-    return ['product', 'brand', 'package'].every(key => item.price?.[key] && item.price[key] === reference.price?.[key]) &&
-      ['sku','model'].every(key => !item.price?.[key] || item.price[key] === reference.price?.[key])
+    return Boolean(item.price?.product && reference.price?.product) && sameOffer(item.price,reference.price)
   }
   return item.description.trim().toLowerCase() === reference.description.trim().toLowerCase()
 }
@@ -64,10 +64,9 @@ export function referenceMatches(item, reference) {
 export function applyPriceReference(item, reference, jobZip = '', today) {
   if (!referenceMatches(item, reference)) throw Error('REFERENCE_PRODUCT_MISMATCH')
   const verification = assessPrice(reference.price, jobZip, today)
-  if (verification.reason === 'PRICE_EXPIRED') throw Error('REFERENCE_EXPIRED')
   if (verification.reason === 'MARKET_MISMATCH') throw Error('REFERENCE_MARKET_MISMATCH')
   return { ...item, unitCost: reference.unitCost, origin: 'reference-reuse', needsReview: verification.status !== 'verified',
-    price: { ...structuredClone(reference.price), status: verification.status, verification,
+    price: { ...structuredClone(reference.price), status: verification.status, verification,freshness:priceFreshness(verification),
       reusedFrom: structuredClone(reference.source), internalPriceApproval: 'not-required' },
     priceDate: reference.price.checkedAt || '',
     priceSource: `${reference.price.vendor || 'Saved reference'} | ${verification.status} | ${reference.source.estimateId.slice(0, 8)} v${reference.source.estimateVersion}`,

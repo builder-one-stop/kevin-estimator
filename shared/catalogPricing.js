@@ -1,9 +1,12 @@
 import { exactCatalogMatch } from './researchCatalog.js'
 import { assessPrice } from './priceEvidence.js'
+import {priceFreshness} from './priceOffers.js'
 
 export function priceSourceLabel(entry, price, language = 'en') {
   const es = language === 'es'
-  const state = price.status === 'verified'
+  const state = price.freshness === 'stale'
+    ? (es ? `precio anterior vencido; revisar (${entry.checkedAt})` : `stale previous price; review (${entry.checkedAt})`)
+    : price.status === 'verified'
     ? (es ? `precio documentado para Los Ángeles, CA, US, ZIP ${entry.verifiedZip}` : `documented price for Los Angeles, CA, US, ZIP ${entry.verifiedZip}`)
     : price.status === 'public_observed'
       ? (es ? 'precio público online; sucursal/ZIP no verificados' : 'public online price; branch/ZIP unverified')
@@ -20,6 +23,7 @@ export function catalogPriceSnapshot(entry, jobZip = '') {
     category: localVerified ? 'local-source' : verification.status === 'public_observed' ? 'public-online-reference' : 'provisional-assumption',
     source: entry.sourceId ? 'phase-a-research' : 'owner-catalog',
     reason: verification.reason, verification,
+    freshness:priceFreshness(verification),observationFreshness:entry.freshness||null,
     internalPriceApproval: 'not-recorded',
   }
 }
@@ -27,8 +31,6 @@ export function catalogPriceSnapshot(entry, jobZip = '') {
 export function applyCatalogPrice(item, entry, jobZip = '', language = 'en') {
   if (item.costType !== 'material') throw new Error('CATALOG_MATERIAL_ONLY')
   if (!entry.package || entry.unitCost === null) throw new Error('CATALOG_PRICE_MISSING')
-  if (entry.status === 'verified' && entry.verifiedZip !== jobZip) throw new Error('CATALOG_ZONE_MISMATCH')
-  if (entry.validUntil && entry.validUntil < new Date().toISOString().slice(0, 10)) throw new Error('CATALOG_PRICE_EXPIRED')
   const price = catalogPriceSnapshot(entry, jobZip)
   if (price.reason === 'MARKET_MISMATCH') throw new Error('CATALOG_MARKET_MISMATCH')
   const namedProduct = entry.product.toLowerCase().startsWith(entry.brand.toLowerCase()) ? entry.product : `${entry.brand} ${entry.product}`
@@ -43,6 +45,7 @@ export function applyCatalogPrice(item, entry, jobZip = '', language = 'en') {
 }
 
 export function exactPrice(catalog, query) {
-  return catalog.find(entry => exactCatalogMatch(entry, query) && entry.unitCost !== null &&
-    (!entry.validUntil || entry.validUntil >= new Date().toISOString().slice(0, 10))) || null
+  const matches=catalog.filter(entry => exactCatalogMatch(entry, query) && entry.unitCost !== null &&
+    (!entry.validUntil || entry.validUntil >= new Date().toISOString().slice(0, 10)))
+  return matches.length===1?matches[0]:null
 }

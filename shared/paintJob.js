@@ -53,8 +53,8 @@ const provisional = (reason, language) => ({ price: { status: 'provisional', sou
 
 export function makePaintItems(taskId, inputs, template, catalog, language = 'en', zip = '') {
   const areaSqFt = paintArea(inputs)
-  const available = x => x && x.unitCost !== null && (x.status !== 'verified' || x.verifiedZip === zip) &&
-    (!x.validUntil || x.validUntil >= new Date().toISOString().slice(0, 10))
+  // Quantity depends on the saved package, not the economic validity of its price.
+  const available = x => x && x.unitCost !== null
   const paint = catalog.find(x => x.id === template.paintCatalogId && available(x) && packageGallons(x) > 0)
   const repair = catalog.find(x => x.id === template.repairCatalogId && available(x) && x.unit === 'ea' &&
     (x.category === 'patch' || (!x.category && /spackl|patch|filler/i.test(x.product))))
@@ -137,7 +137,7 @@ export function recalculatePaintDocument(document, taskId, templateChanges = {},
     const original = rule.catalogSnapshots?.find(x => x.id === id)
     return original || catalog.find(x => x.id === id)
   }).filter(Boolean).map(x => structuredClone(x))
-  const fresh = makePaintItems(taskId, inputs, template, snapshots, document.language, document.scope?.plan?.zip || '')
+  const fresh = makePaintItems(taskId, inputs, template, snapshots, document.language, document.pricingContext?.jobZip ?? document.scope?.plan?.zip ?? '')
   const section = document.sections.find(x => x.id === taskId)
   const old = new Map(section.items.filter(x => x.ruleKey).map(x => [x.ruleKey, x]))
   const items = fresh.items.map(next => {
@@ -149,7 +149,7 @@ export function recalculatePaintDocument(document, taskId, templateChanges = {},
     return { ...next, id: previous.id, ruleOverrides: overrides, ...(Object.keys(overrides).length ? { origin: switched ? 'manual' : previous.origin } : {}),
       ...(overrides.quantity ? { quantity: previous.quantity, takeoff: previous.takeoff } : {}),
       ...(overrides.price && !switched ? { unitCost: previous.unitCost, unit: previous.unit, catalogId: previous.catalogId, costType: previous.costType,
-        price: previous.price, priceSource: previous.priceSource, priceDate: previous.priceDate, needsReview: previous.needsReview,
+        price: previous.price, priceSource: previous.priceSource, priceDate: previous.priceDate, needsReview: previous.needsReview, priceMissing:previous.priceMissing??false,
         description: previous.description, translations: previous.translations } : {}),
       ...(overrides.description ? { description: previous.description } : {}),
       ...(overrides.notes ? { notes: previous.notes, ruleNotes: undefined } : {}),

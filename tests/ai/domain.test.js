@@ -63,7 +63,7 @@ describe('provider boundary',()=>{
  it('retains provisional values on provider failure or a different package/location',async()=>{
   const {resolvePrice}=await import('../../server/pricing.js')
   const prior={unitCost:65,product:'Walls',unit:'gal'}
-  expect(await resolvePrice({lookup:async()=>{throw Error('offline')}},{},prior)).toMatchObject({unitCost:65,status:'provisional',reason:'PROVIDER_UNAVAILABLE'})
+  expect(await resolvePrice({lookup:async()=>{throw Error('offline')}},{product:'Walls',unit:'gal'},prior)).toMatchObject({unitCost:65,status:'provisional',reason:'PROVIDER_UNAVAILABLE'})
   expect(await resolvePrice({lookup:async()=>({prices:[{product:'Walls',unit:'qt'}]})},{product:'Walls',unit:'gal'},prior)).toMatchObject({unitCost:65,status:'provisional',reason:'NO_EQUIVALENT_PRODUCT',substitution:false})
  })
 })

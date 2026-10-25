@@ -1,12 +1,13 @@
 import {assessPrice} from './priceEvidence.js'
+import {priceFreshness} from './priceOffers.js'
 export function lineCostEvidence(item,document={},markupBps=0,today){
  const p=item.price||{},task=item.taskId,trade=document.rules?.trades?.[task]||document.rules?.finishing?.[task],paint=document.rules?.paint?.[task],rule=trade||paint
- const assessment=assessPrice({...p,unitCost:item.priceMissing?null:item.unitCost,checkedAt:p.checkedAt||item.priceDate},document.scope?.plan?.zip||'',today)
+ const assessment=assessPrice({...p,unitCost:item.priceMissing?null:item.unitCost,checkedAt:p.checkedAt||item.priceDate},document.pricingContext?.jobZip??document.scope?.plan?.zip??'',today)
  const amountPending=Boolean(item.priceMissing||item.quantityPending),product=Boolean(p.product&&p.package&&p.url)
  const confidence=amountPending?'pending':assessment.status==='verified'?'documented_local':product&&p.purchaseBasis!=='pack_pending'&&assessment.status==='public_observed'?'public_not_local':item.origin==='manual'||p.source==='manual-entry'?'manual_assumption':'editable_assumption'
  return {id:item.id,description:item.description,costType:item.costType,quantity:item.quantityPending?null:item.quantity,unit:item.unit,unitCost:item.priceMissing?null:item.unitCost,confidence,
   product:p.product||null,package:p.package||null,purchaseUnit:p.unit||item.unit,sourceUrl:p.priceSourceUrl||p.url||null,sourceDate:p.checkedAt||item.priceDate||null,sourceLabel:item.priceSource||null,
-  market:{country:'US',region:'CA',city:'Los Angeles',currency:'USD'},localVerified:confidence==='documented_local',assessment,
+  market:{country:'US',region:'CA',city:'Los Angeles',currency:'USD'},localVerified:confidence==='documented_local',assessment,freshness:p.freshness==='stale'?'stale':priceFreshness(assessment),offer:p.offer||null,
   coverage:item.tradeCalculation||item.takeoff||null,wastePercent:item.tradeCalculation?.wastePercent??item.takeoff?.wastePercent??rule?.parameters?.wastePercent??rule?.template?.wastePercent??null,
   laborBasis:item.costType==='labor'?(item.rateBasis||{mode:rule?.parameters?.laborRateMode||rule?.template?.laborRateMode||'contractor_cost',source:'editable-cost-assumption',statisticalWage:false}):null,
   productivity:item.costType==='labor'?(trade?.parameters?.productivityPerHour??trade?.parameters?.finishingSqFtPerHour??paint?.template?.productivity?.[item.ruleKey?.split(':')[0]]??null):null,productivityUnit:trade?.trade==='baseboard'?'lf':paint&&item.ruleKey?.startsWith('repair:')?'ea':paint&&item.ruleKey?.startsWith('painting:')?'coat-sf':'sf',markupBps:item.markupBps??markupBps,expensesPercent:trade?.parameters?.expensesPercent??paint?.template?.expensesPercent??null,

@@ -19,7 +19,7 @@ describe('LA phase A catalog', () => {
   })
   it('requires exact identity, package, unit and price zone; rejects missing and expired values', () => {
     const paint = researchCatalog.find(row => row.sourceId === 'HD01')
-    const query = { product: paint.product, brand: paint.brand, package: paint.package, unit: paint.unit, verifiedZip: null }
+    const query = { ...paint }
     expect(exactPrice(researchCatalog, query)?.sourceId).toBe('HD01')
     for (const change of [{brand:'Other'}, {package:'1 US_gallon · flat'}, {unit:'qt'}, {verifiedZip:'90028'}])
       expect(exactPrice(researchCatalog, {...query,...change})).toBeNull()
@@ -80,7 +80,7 @@ describe('LA phase A catalog', () => {
     const entry = catalogSchema.parse({id:seed.id,product:seed.product,brand:seed.brand,package:seed.package,unit:seed.unit,
       unitCost:46.98,currency:'USD',vendor:seed.vendor,location:seed.location,url:seed.url,sku:seed.sku,
       checkedAt:'2026-10-17',status:'public_observed',evidence:seed.evidence,verifiedZip:null})
-    const query = {product:entry.product,brand:entry.brand,package:entry.package,unit:entry.unit,location:''}
+    const query = {...entry}
     const prior = {unitCost:99}
     expect(await resolvePrice(new InternalCatalogProvider([entry]),query,prior)).toMatchObject({unitCost:46.98,status:'public_observed'})
     expect(await resolvePrice(new InternalCatalogProvider([entry]),{...query,package:'1 US qt'},prior)).toMatchObject({unitCost:99,reason:'NO_EQUIVALENT_PRODUCT'})

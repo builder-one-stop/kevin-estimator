@@ -27,7 +27,7 @@ export default function PriceReferences({ item, jobZip, language, onApply }) {
       const evidence = assessPrice(row.price, jobZip)
       return <article key={row.id}><p>{row.description} · USD {row.unitCost}/{row.unit} · {state(evidence.status)} · {row.price.checkedAt || (es ? 'sin fecha' : 'undated')}{evidence.reason ? ` · ${reason(evidence.reason)}` : ''}</p>
         <Link to={`/estimates/${row.source.estimateId}`}>{es ? 'Ver estimado de origen' : 'Open source estimate'} · v{row.source.estimateVersion}</Link>{' '}
-        <button type="button" disabled={evidence.reason === 'PRICE_EXPIRED'} onClick={() => onApply(row)}>{es ? 'Usar este precio unitario' : 'Use this unit price'}</button>
+        <button type="button" disabled={evidence.reason === 'MARKET_MISMATCH'} onClick={() => onApply(row)}>{es ? 'Usar este precio unitario' : 'Use this unit price'}</button>
       </article>
     })}
   </details>

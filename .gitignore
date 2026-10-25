@@ -34,3 +34,4 @@ evidence/worker-location/ready.json
 
 # Isolated persistent local review data (never production)
 .local-review/
+.test-tmp/

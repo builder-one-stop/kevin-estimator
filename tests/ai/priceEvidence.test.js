@@ -33,7 +33,7 @@ describe('price evidence and owner reference reuse', () => {
     expect(reused).toMatchObject({ quantity: 8, unitCost: paint.unitCost, price: { status: 'public_observed', reusedFrom: { estimateVersion: 4 } } })
     expect(item.quantity).toBe(3)
     expect(() => applyPriceReference({ ...item, unit: 'qt' }, refs[0], '', today)).toThrow('REFERENCE_PRODUCT_MISMATCH')
-    expect(() => applyPriceReference(item, { ...refs[0], price: { ...paint, validUntil:'2020-01-01' } }, '', today)).toThrow('REFERENCE_EXPIRED')
+    expect(applyPriceReference(item, { ...refs[0], price: { ...paint, validUntil:'2020-01-01' } }, '', today).price).toMatchObject({freshness:'stale',unitCost:paint.unitCost})
   })
   it('does not attach a different BEHR product technical sheet or present wage/coverage assumptions as measurements', () => {
     const template = defaultPaintTemplate()

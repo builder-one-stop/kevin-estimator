@@ -17,11 +17,11 @@ it('uses the same finalized revision rule for list and editor without equating c
  expect(isFinalizedRevision({...record,finalized_at:null,status:'Accepted'})).toBe(false)
  expect(isFinalizedRevision(null)).toBe(false)
 })
-it('shows 58 public references without duplicating engine imports, owner data or LA verification',()=>{
+it('shows 59 public references without duplicating engine imports, owner data or LA verification',()=>{
  const library=publicReferenceLibrary(constructionLibrary)
- expect(libraryCounts(library)).toEqual({records:58,withPrice:49,withoutPrice:9,localVerified:0})
- expect(constructionLibrary.records).toHaveLength(33)
- expect(new Set(library.records.map(x=>x.id)).size).toBe(58)
+ expect(libraryCounts(library)).toEqual({records:59,withPrice:50,withoutPrice:9,localVerified:0})
+ expect(constructionLibrary.records).toHaveLength(34)
+ expect(new Set(library.records.map(x=>x.id)).size).toBe(59)
  const paint=queryLibrary(library,{category:'paint',query:'BEHR',limit:100})
  expect(paint.rows.length).toBeGreaterThan(0);expect(paint.rows.every(x=>x.localVerified===false)).toBe(true)
  expect(library.records.every(x=>!x.ownerId&&!x.owner_id)).toBe(true)

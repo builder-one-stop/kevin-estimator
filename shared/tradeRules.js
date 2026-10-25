@@ -14,7 +14,7 @@ export function tradeQuantity(trade,inputs){
  if(trade==='baseboard')return finite(inputs.lengthFt,'LENGTH').toNumber()
  return finite(inputs.lengthFt,'LENGTH').times(finite(inputs.widthFt,'WIDTH')).toNumber()
 }
-export function calculateTrade(trade,inputs,parameters,product,language='en'){
+export function calculateTrade(trade,inputs,parameters,product,language='en',jobZip=''){
  const measureUnit=trade==='baseboard'?'lf':'sf',quantity=tradeQuantity(trade,inputs)
  if(product?.autoEligible!==true)throw Error('PRODUCT_REQUIRES_SPEC_REVIEW')
  const waste=finite(parameters.wastePercent,'WASTE',true);if(waste.gt(100))throw Error('INVALID_WASTE')
@@ -26,7 +26,7 @@ export function calculateTrade(trade,inputs,parameters,product,language='en'){
  const es=language==='es',label=tradeLabels[trade]
  let material={id:crypto.randomUUID(),ruleKey:'trade:material',quantity:packages,unit:product.unit,unitCost:product.unitCost??0,costType:'material',markupBps:null,description:product.product,translations:{en:product.product,es:product.product},origin:'rule-engine',needsReview:true,
    price:{status:'provisional',source:'rule-assumption',reason:'PRICE_MISSING'},priceSource:es?'Falta precio: total parcial':'Missing price: partial total',priceDate:'',notes:'',ruleVersion:TRADE_RULE_VERSION}
- if(product.unitCost!==null)material=applyCatalogPrice(material,libraryCatalog({records:[product]})[0],'',language)
+ if(product.unitCost!==null)material=applyCatalogPrice(material,libraryCatalog({records:[product]})[0],jobZip,language)
  material={...material,origin:'rule-engine',ruleKey:'trade:material',ruleVersion:TRADE_RULE_VERSION,tradeCalculation:{measuredQuantity:quantity,measureUnit,wastePercent:parameters.wastePercent,packageCoverage:coverage.toNumber(),requiredQuantity:required.toNumber(),packages,coverageSource:product.coverage.sourceUrl,coverageBasis:product.coverage.basis}}
  const labor={id:crypto.randomUUID(),ruleKey:'trade:labor',quantity:laborHours,unit:'hr',unitCost:parameters.hourlyRate,costType:'labor',markupBps:null,description:label[language]+(es?' — mano de obra':' — labor'),translations:{en:label.en+' — labor',es:label.es+' — mano de obra'},origin:'rule-engine',needsReview:true,ruleVersion:TRADE_RULE_VERSION,
    price:{status:'provisional',source:'rule-assumption',reason:'UNVERIFIED_CONTRACTOR_RATE'},priceSource:es?'Tarifa y productividad provisionales':'Provisional contractor rate and productivity',priceDate:'',notes:es?`${quantity} ${measureUnit} ÷ ${parameters.productivityPerHour}/hr; rendimiento supuesto editable.`:`${quantity} ${measureUnit} ÷ ${parameters.productivityPerHour}/hr; editable productivity assumption.`}
@@ -49,11 +49,11 @@ export function reconcileTradeExpenses(document){
 }
 export function recalculateTradeDocument(document,sectionId,inputs,parameters){
  const rule=document.rules?.trades?.[sectionId];if(!rule)throw Error('TRADE_RULE_MISSING')
- const nextInputs={...rule.inputs,...inputs},nextParameters={...rule.parameters,...parameters},fresh=calculateTrade(rule.trade,nextInputs,nextParameters,rule.product,document.language)
+ const nextInputs={...rule.inputs,...inputs},nextParameters={...rule.parameters,...parameters},fresh=calculateTrade(rule.trade,nextInputs,nextParameters,rule.product,document.language,document.pricingContext?.jobZip??document.scope?.plan?.zip??'')
  const section=document.sections.find(row=>row.id===sectionId),old=new Map(section.items.map(item=>[item.ruleKey,item]))
  const items=fresh.items.map(item=>{const previous=old.get(item.ruleKey);if(!previous)return{...item,taskId:sectionId}
   const flags=previous.ruleOverrides||{}
-  return{...item,id:previous.id,taskId:sectionId,ruleOverrides:flags,...(flags.quantity?{quantity:previous.quantity}:{}),...(flags.price?{unitCost:previous.unitCost,unit:previous.unit,costType:previous.costType,price:previous.price,priceSource:previous.priceSource,priceMissing:previous.priceMissing??false}:{}),...(flags.notes?{notes:previous.notes}:{}),...(flags.description?{description:previous.description,translations:previous.translations}:{}),...(flags.markupBps?{markupBps:previous.markupBps}:{})}
+  return{...item,id:previous.id,taskId:sectionId,ruleOverrides:flags,...(flags.quantity?{quantity:previous.quantity}:{}),...(flags.price?{unitCost:previous.unitCost,unit:previous.unit,costType:previous.costType,price:previous.price,priceSource:previous.priceSource,priceDate:previous.priceDate,needsReview:previous.needsReview,priceMissing:previous.priceMissing??false}:{}),...(flags.notes?{notes:previous.notes}:{}),...(flags.description?{description:previous.description,translations:previous.translations}:{}),...(flags.markupBps?{markupBps:previous.markupBps}:{})}
  })
  return reconcileTradeExpenses({...document,sections:document.sections.map(row=>row.id===sectionId?{...row,items:[...items,...row.items.filter(item=>!item.ruleKey)]}:row),rules:{...document.rules,trades:{...document.rules.trades,[sectionId]:{...rule,inputs:nextInputs,parameters:nextParameters,incompletePrice:items.some(item=>item.priceMissing)}}}})
 }

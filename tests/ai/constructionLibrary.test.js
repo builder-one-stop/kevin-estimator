@@ -1,18 +1,18 @@
 import {describe,it,expect} from 'vitest'
-import {constructionLibrary,constructionObservations,tradeDefaultProducts} from '../../shared/constructionLibrary.js'
+import {constructionLibrary,constructionObservations,tradeDefaultProducts,initialConstructionLibrary} from '../../shared/constructionLibrary.js'
 import {importLibrary,libraryCounts,queryLibrary,libraryAssessment} from '../../shared/localPriceLibrary.js'
 import {calculateTrade,tradeDefaults,recalculateTradeDocument,reconcileTradeExpenses} from '../../shared/tradeRules.js'
 
 describe('versioned local public construction library',()=>{
- it('imports33 distinct observations with29 public prices,4 missing and no local verification',()=>{
-  expect(libraryCounts(constructionLibrary)).toEqual({records:33,withPrice:29,withoutPrice:4,localVerified:0})
-  expect(new Set(constructionLibrary.records.map(row=>row.id)).size).toBe(33)
+ it('imports34 distinct observations with30 public prices,4 missing and no local verification',()=>{
+  expect(libraryCounts(constructionLibrary)).toEqual({records:34,withPrice:30,withoutPrice:4,localVerified:0})
+  expect(new Set(constructionLibrary.records.map(row=>row.id)).size).toBe(34)
   expect(constructionLibrary.records.every(row=>row.currency==='USD'&&row.country==='US'&&row.region==='CA'&&row.city==='Los Angeles')).toBe(true)
   expect(constructionLibrary.records.every(row=>libraryAssessment(row).status!=='verified')).toBe(true)
   expect(constructionLibrary.records.find(row=>row.id==='hd-325477212')).toMatchObject({autoEligible:false,unitCost:66.12})
  })
  it('deduplicates idempotently, versions updated evidence and rejects stale updates or invalid batches atomically',()=>{
-  const again=importLibrary(constructionLibrary,constructionObservations,{batchId:'repeat'})
+  const again=importLibrary(initialConstructionLibrary,constructionObservations,{batchId:'repeat'})
   expect(again.report).toMatchObject({inserted:0,updated:0,unchanged:29})
   const original=constructionObservations.find(row=>row.id==='hd-311573425')
   const legacy={...original,sku:original.retailerProductId,retailerProductId:undefined,version:1}

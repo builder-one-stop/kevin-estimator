@@ -16,7 +16,7 @@ import {assertDocument} from '../../shared/aiDomain.js'
 const p=trade=>constructionLibrary.records.find(r=>r.id===tradeDefaultProducts[trade])
 const base=()=>{const plan=localTradePlan({trade:'drywall',inputs:{lengthFt:40,widthFt:8}});return buildLocalTradeDocument(plan,'en')}
 it('imports four primary public references, retains panel price missing and excludes out-of-market defaults/benchmarks',()=>{
- expect(drywallObservations).toHaveLength(4);expect(p('drywall').unitCost).toBeNull();expect(constructionLibrary.records).toHaveLength(33)
+ expect(drywallObservations).toHaveLength(4);expect(p('drywall').unitCost).toBeNull();expect(constructionLibrary.records).toHaveLength(34)
  expect(drywallObservations.every(r=>r.localVerified===false&&r.autoEligible===false)).toBe(true)
  expect(constructionLibrary.records.some(r=>r.model==='114CDWS1')).toBe(false);expect(excludedResearch[0].reason).toContain('TN');expect(laborBenchmarks.autoDefault).toBe(false)
 })
