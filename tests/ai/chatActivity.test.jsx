@@ -21,4 +21,13 @@ describe('accessible actual chat activity',()=>{
   view.rerender(createElement(ChatActivity,{run:{status:'cancelled'},language:'es'}))
   expect(screen.queryByRole('status')).toBeNull()
  })
+ it('does not claim generation is progressing when the connection is lost, and offers recovery',()=>{
+  const onReconnect=vi.fn(),view=render(createElement(ChatActivity,{run:{status:'working',stage:'planning'},connectionLost:true,language:'en',onReconnect}))
+  expect(screen.getByRole('status').textContent).toContain('cannot confirm the current status')
+  expect(screen.queryByText('Preparing response')).toBeNull()
+  expect(screen.queryByRole('button',{name:'Cancel'})).toBeNull()
+  fireEvent.click(screen.getByRole('button',{name:'Reconnect'}));expect(onReconnect).toHaveBeenCalledOnce()
+  view.rerender(createElement(ChatActivity,{run:{status:'ready'},language:'es'}))
+  expect(screen.getByRole('status').textContent).toContain('Respuesta guardada')
+ })
 })

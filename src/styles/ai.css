@@ -96,3 +96,18 @@
 .plan-materials{min-width:0;max-width:100%}.plan-materials article{overflow-wrap:anywhere;padding:.65rem 0;border-bottom:1px solid var(--border,#ddd)}.plan-materials input,.plan-materials select{min-width:0;max-width:100%;width:100%;box-sizing:border-box}.plan-materials strong{overflow-wrap:anywhere}
 .paint-material-functions{grid-column:1/-1;min-width:0;max-width:100%;box-sizing:border-box;border:1px solid var(--border,#ddd);border-radius:8px;padding:12px}.paint-material-functions>div{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:10px;padding:12px 0;border-bottom:1px solid var(--border,#ddd)}.paint-material-functions input,.paint-material-functions select{width:100%;min-width:0;max-width:100%;box-sizing:border-box}.paint-material-functions button,.plan-materials button{max-width:100%;white-space:normal;overflow-wrap:anywhere}
 .technical-coverage-control{grid-column:1/-1;min-width:0;max-width:100%;padding:10px 0;overflow-wrap:anywhere}.technical-coverage-control a{overflow-wrap:anywhere}
+/* The ring indicates activity only; server events supply every status label. */
+.ai-status-orbit{width:24px;height:24px;border:2px solid #ffae6638;border-top-color:#ffae66;border-radius:50%;animation:chat-orbit 1s linear infinite}
+@keyframes chat-orbit{to{transform:rotate(360deg)}}
+.ai-result-status{color:var(--muted);font-size:13px;margin:16px 0}
+@media(max-width:700px){.ai-page button.ai-send{width:44px;height:44px}.ai-page button.history-trigger,.ai-page .ai-run-status button,.ai-page .ai-photo-button{min-height:44px}.ai-thread{scrollbar-gutter:stable}.ai-run-status{flex-wrap:wrap}.ai-chat .ai-ui-language select{min-height:44px}.ai-chat-toolbar{flex-wrap:wrap}.ai-chat-title{flex:1;min-width:120px}.ai-composer textarea{overflow-y:auto}.history-drawer{padding-bottom:max(22px,env(safe-area-inset-bottom))}}
+@media(prefers-reduced-motion:reduce){.ai-status-orbit{animation:none}}
+/* Keep chat controls legible in the workspace's current theme. */
+.app .ai-chat .ai-composer{background:var(--card);border-color:var(--line);color:var(--text)}
+.app .ai-chat .ai-composer textarea{color:var(--text);-webkit-text-fill-color:var(--text);caret-color:var(--text)}
+.app .ai-chat .ai-composer textarea::placeholder{color:var(--muted);-webkit-text-fill-color:var(--muted)}
+.app .ai-chat .ai-run-status{background:var(--card);border-color:var(--line);color:var(--text)}
+.app .ai-chat .ai-run-status>div>span{color:var(--muted)}
+.app .ai-chat .ai-message.user{background:var(--orange-soft);border-color:var(--line);color:var(--text);box-shadow:none}
+.app .ai-chat .ai-message.user .ai-message-label,.app .ai-chat .ai-composer-actions small{color:var(--muted)}
+.app .ai-chat .ai-status-orbit{border-color:var(--line);border-top-color:var(--orange)}

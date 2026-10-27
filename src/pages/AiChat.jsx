@@ -30,10 +30,20 @@ export default function AiChat(){
  const [estimate,setEstimate]=useState(null),[assets,setAssets]=useState([]),[mode,setMode]=useState('real'),[clients,setClients]=useState([]),[projects,setProjects]=useState([])
  const [clientId,setClientId]=useState(''),[projectId,setProjectId]=useState(''),[revisions,setRevisions]=useState([])
  const requestRef=useRef(null),draftKey=useRef(null),mounted=useRef(true),lock=useRef(false),rowRef=useRef(null)
- const [outbox,setOutbox]=useState(null),[newContent,setNewContent]=useState(false)
+ const [outbox,setOutbox]=useState(null),[newContent,setNewContent]=useState(false),[connectionLost,setConnectionLost]=useState(false)
+ const sending=useRef(false)
  const [localLibraryAvailable,setLocalLibraryAvailable]=useState(false)
  const [actualCostsAvailable,setActualCostsAvailable]=useState(false)
  const scroll=useRef(null),content=useRef(null),atEnd=useRef(true),input=useRef(null)
+ const hasRow=!!row
+ useEffect(()=>{
+  const viewport=window.visualViewport,app=scroll.current?.closest('.app')
+  if(!viewport||!app)return
+  const previous=app.style.height
+  const resize=()=>{app.style.height=`${viewport.height}px`}
+  resize();viewport.addEventListener('resize',resize)
+  return()=>{viewport.removeEventListener('resize',resize);app.style.height=previous}
+ },[hasRow])
  const accept=useCallback(next=>{if(mounted.current){
   if(!draftKey.current){
    draftKey.current=`onestop-chat-draft:${next.owner_id}:${id}`
@@ -42,7 +52,7 @@ export default function AiChat(){
   }
   setOutbox(old=>old&&next.state.receipts.includes(old.id)?null:old);setRow(old=>!old||next.version>=old.version?next:old);if(!rowRef.current||next.version>=rowRef.current.version)rowRef.current=next
  }},[id])
- const refresh=useCallback(async()=>{const next=await aiRequest(`conversations/${id}`);accept(next);return next},[id,accept])
+ const refresh=useCallback(async()=>{try{const next=await aiRequest(`conversations/${id}`);accept(next);if(mounted.current)setConnectionLost(false);return next}catch(e){if(mounted.current)setConnectionLost(true);throw e}},[id,accept])
  useEffect(()=>{
   mounted.current=true
   refresh().catch(e=>{if(mounted.current)setError(e.code)})
@@ -51,14 +61,13 @@ export default function AiChat(){
    setMode(status.mode);setActualCostsAvailable(Boolean(status.actualCostsAvailable));setLocalLibraryAvailable(Boolean(status.localLibraryAvailable));setClients(c);setProjects(p)
   }).catch(e=>{if(mounted.current)setError(e.code)})
   let timer
-  const poll=async()=>{try{await refresh()}catch(e){if(mounted.current)setError(e.code)}if(mounted.current)timer=setTimeout(poll,rowRef.current?.state.run?.status==='working'?850:3000)}
+  const poll=async()=>{try{await refresh()}catch{/* Connection state is separate from command errors; polling recovers automatically. */}if(mounted.current)timer=setTimeout(poll,rowRef.current?.state.run?.status==='working'?850:3000)}
   timer=setTimeout(poll,850)
   return()=>{mounted.current=false;clearTimeout(timer)}
  },[id,refresh,accept])
  useEffect(()=>{if(draftKey.current)try{sessionStorage.setItem(draftKey.current,JSON.stringify({text,planDraft,outbox}))}catch{queueMicrotask(()=>setError('DRAFT_STORAGE_FAILED'))}},[text,planDraft,outbox])
- const changeKey=JSON.stringify([row?.state.messages.length,row?.state.run?.preview,row?.state.planRevision,estimate?.version,outbox?.id])
+ const changeKey=JSON.stringify([row?.state.messages.length,row?.state.run?.preview,row?.state.run?.status,row?.state.planRevision,estimate?.version,outbox?.id])
  useLayoutEffect(()=>{if(!scroll.current)return;if(atEnd.current)scroll.current.scrollTop=scroll.current.scrollHeight;else setNewContent(true)},[changeKey])
- const hasRow=!!row
  useEffect(()=>{if(!content.current)return;const observer=new ResizeObserver(()=>{if(atEnd.current&&scroll.current)scroll.current.scrollTop=scroll.current.scrollHeight});observer.observe(content.current);return()=>observer.disconnect()},[hasRow])
  function latest(){atEnd.current=true;setNewContent(false);scroll.current?.scrollTo({top:scroll.current.scrollHeight,behavior:'instant'})}
  const rowVersion=row?row.estimate_id+':'+(row.state.run?.status==='working'?'working':row.version):null
@@ -82,7 +91,9 @@ export default function AiChat(){
  }
 
  async function sendMessage(pending=outbox){
-  if(lock.current||rowRef.current?.state.run?.status==='working')return
+  if(sending.current||lock.current||rowRef.current?.state.run?.status==='working')return
+  sending.current=true
+  try{
   if(!pending&&isPdfRequest(text)){setDocumentNotice('');if(!estimateEditor.current){setDocumentNotice(b('noEstimate'));return}lock.current=true;setBusy(true);try{if(await estimateEditor.current.download()){setText('');setDocumentNotice(b('downloaded'))}}finally{lock.current=false;setBusy(false)}return}
   let message=pending||{id:crypto.randomUUID(),version:row.version,content:text.trim()}
   if(pending){try{const latest=await refresh();if(latest.state.receipts.includes(pending.id)){setOutbox(null);return}message={...pending,version:latest.version}}catch{setOutbox({...pending,status:'failed'});setError('API_UNAVAILABLE');return}}
@@ -90,6 +101,7 @@ export default function AiChat(){
   setOutbox({...message,status:'sending'});if(!pending)setText('');latest()
   if(await act('message',{content:message.content},message.version,message.id))setOutbox(null)
   else setOutbox(rowRef.current?.state.receipts.includes(message.id)?null:{...message,status:'failed'})
+  }finally{sending.current=false}
  }
  async function editUnsent(){
   if(lock.current)return
@@ -116,7 +128,7 @@ export default function AiChat(){
  <div className="ai-messages" role="log" aria-label={a('messages')} aria-live="off">{s.messages.filter(m=>m.content).map(m=><article className={`ai-message ${m.role}`} key={m.id} data-message-id={m.id}><div className="ai-message-label">{m.role==='user'?a('you'):'One Stop'} <time dateTime={m.createdAt}>{new Date(m.createdAt).toLocaleTimeString(language,{hour:'2-digit',minute:'2-digit'})}</time></div><p>{m.content}</p></article>)}{outbox&&!s.receipts.includes(outbox.id)&&<article className="ai-message user pending" data-message-id={outbox.id} aria-label={a(outbox.status==='failed'?'notSent':'sending')}><div className="ai-message-label">{a('you')} · {a(outbox.status==='failed'?'notSent':'sending')}</div><p>{outbox.content}</p>{outbox.status==='failed'&&<div className="ai-actions"><button disabled={busy||working} onClick={()=>sendMessage()}>{a('retrySend')}</button><button disabled={busy} onClick={editUnsent}>{a('editMessage')}</button></div>}</article>}{!s.messages.length&&!outbox&&<div className="ai-chat-empty"><h2>{a('startTitle')}</h2><p>{a('empty')}</p></div>}
  {working&&s.run.preview&&<article className="ai-message assistant ai-preview" data-testid="stream-preview"><div className="ai-message-label">One Stop · {a('receiving')}</div><p>{s.run.preview}</p></article>}
  </div>
- <ChatActivity run={s.run} sending={outbox?.status==='sending'} language={language} onCancel={()=>act('cancel',{runId:s.run.id})} cancelDisabled={busy}/>
+ <ChatActivity run={s.run} sending={outbox?.status==='sending'} connectionLost={connectionLost} language={language} onReconnect={()=>refresh().catch(()=>{})} onCancel={()=>act('cancel',{runId:s.run.id})} cancelDisabled={busy}/>
  {s.run?.status==='cancelled'&&<p role="status" className="ai-cancelled">{language==='es'?'Ejecución cancelada. El trabajo guardado se conserva.':'Run cancelled. Saved work is preserved.'}</p>}
  {s.run?.status==='error'&&<p className="estimate-error" role="alert">{errorText(s.run.error,a)} <button disabled={disabled} onClick={()=>act('retry')}>{a('retry')}</button></p>}
  <div className="ai-photos">{assets.map(x=><figure key={x.id}><img src={x.url} alt={a('photos')}/><button disabled={disabled} onClick={async()=>{try{await aiRequest(`assets/${x.id}`,{},'DELETE');setAssetTick(x=>x+1);await refresh()}catch(e){setError(e.code)}}}>{a('remove')}</button></figure>)}</div>

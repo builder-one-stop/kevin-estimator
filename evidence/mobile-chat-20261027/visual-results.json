@@ -1,0 +1,19 @@
+{
+  "environment": "Isolated migrated database, controlled provider; no customer data or real OpenAI requests",
+  "checks": [
+    "chrome desktop: light inputs, dark typed/password/placeholder text; Chrome forced autofill pseudo-state checked where applicable",
+    "Unsent message survives failure and reload; explicit retry commits once with original request ID",
+    "chrome desktop: cancellation/reload, provider error/retry, interrupted polling EN/ES/reconnect, reduced motion, available keyboard space",
+    "chrome desktop: history drawer/resume/Escape, correct admin greeting, immediate message, real controlled-server preview, single submit, no scroll jump, new-content notice, visible composer and pending EN/ES text",
+    "chrome mobile: light inputs, dark typed/password/placeholder text; Chrome forced autofill pseudo-state checked where applicable",
+    "Unsent message survives failure and reload; explicit retry commits once with original request ID",
+    "chrome mobile: cancellation/reload, provider error/retry, interrupted polling EN/ES/reconnect, reduced motion, available keyboard space",
+    "chrome mobile: history drawer/resume/Escape, correct admin greeting, immediate message, real controlled-server preview, single submit, no scroll jump, new-content notice, visible composer and pending EN/ES text"
+  ],
+  "errors": [],
+  "limitations": [
+    "Viewport resize simulates available keyboard space; physical iOS/Android keyboard not exercised",
+    "Provider is controlled; actual production latency/model behavior and remote deployment not tested",
+    "WebKit executable is not installed; Safari/WebKit QA was skipped"
+  ]
+}
