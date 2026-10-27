@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useParams, useLocation, Outlet } from 'react-r
 import {sellerPathAllowed} from '../shared/salesPolicy.js'
 import AppShell from './components/layout/AppShell.jsx'
 import Workers from './pages/Workers.jsx'
+import Team from './pages/Team.jsx'
 import WorkerPortal from './pages/WorkerPortal.jsx'
 import ProjectWorkers from './components/projects/ProjectWorkers.jsx'
 import { useBetaAccess } from './components/auth/BetaAccessContext.jsx'
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="/chat/settings" element={<Navigate to="/settings" replace />} />
           <Route path="/chat/:id" element={<AiChatRoute />} />
           <Route path="/workers" element={<Workers />} />
+          <Route path="/team" element={<Team />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectWorkspace />}>
             <Route index element={<ProjectOverview />} />

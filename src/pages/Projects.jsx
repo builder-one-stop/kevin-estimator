@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BriefcaseBusiness, LayoutList, MapPin, Pencil, Plus, Search, SortDesc, Trash2, UserRound } from 'lucide-react'
-import { Link, useOutletContext } from 'react-router-dom'
+import { Link, useOutletContext , useLocation} from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getClients } from '../services/clients.js'
 import { getProjects, updateProject } from '../services/projects.js'
@@ -23,7 +23,8 @@ function ProjectActions({ project, onEdit, onDelete, t }) {
 }
 
 export default function Projects() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const location=useLocation()
   const { showToast } = useOutletContext()
   const [projects, setProjects] = useState([])
   const [clients, setClients] = useState([])
@@ -31,7 +32,7 @@ export default function Projects() {
   const [loadError, setLoadError] = useState(false)
   const [retry, setRetry] = useState(0)
   const [view, setView] = useState('board')
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(location.state?.query||'')
   const [stageFilter, setStageFilter] = useState('')
   const [clientFilter, setClientFilter] = useState('')
   const [oldestFirst, setOldestFirst] = useState(false)
@@ -85,7 +86,7 @@ export default function Projects() {
 
   return (
     <div className="page">
-      <div className="page-head"><h1>{t('projects.title')}</h1>{!localSalesEnabled&&<Button onClick={() => setDialog({ mode: 'create' })}><Plus size={18} />{t('projects.create')}</Button>}</div>
+      <div className="page-head"><div><span className="section-eyebrow">{i18n.language.startsWith('es')?'Ventas · seguimiento':'Sales · follow-up'}</span><h1>{t('projects.title')}</h1><p className="muted">{i18n.language.startsWith('es')?'Una vista clara de cada oportunidad y su vendedor.':'A clear view of every opportunity and its seller.'}</p></div>{!localSalesEnabled&&<Button onClick={() => setDialog({ mode: 'create' })}><Plus size={18} />{t('projects.create')}</Button>}</div>
       <div className="filters project-filters">
         <select className="project-filter-select" value={stageFilter} onChange={(event) => setStageFilter(event.target.value)} aria-label={t('projects.filterStage')}>
           <option value="">{t('projects.allStages')}</option>

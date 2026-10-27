@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { hash } from 'bcryptjs'
 import sharp from 'sharp'
 import { z } from 'zod'
+import {createTeamHandler} from './team.js'
 
 const uuid = z.string().uuid()
 const kinds = z.enum(['in', 'break_start', 'break_end', 'out'])
@@ -109,7 +110,9 @@ export async function validateEvidence(bytes, mime, expected) {
 }
 
 export function createWorkersHandler({ db, env = process.env }) {
+  const team=createTeamHandler({db,env})
   async function handle(request) {
+    if(/^\/(?:api\/workers|\.netlify\/functions\/workers)\/team(?:\/|$)/.test(new URL(request.url).pathname))return team(request)
     try {
       const url = new URL(request.url)
       if (request.headers.get('origin') && request.headers.get('origin') !== (env.APP_ORIGIN || url.origin))

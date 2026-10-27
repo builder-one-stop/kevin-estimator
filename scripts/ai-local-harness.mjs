@@ -1,3 +1,4 @@
+import {localTeamRequest} from './team-local-adapter.mjs'
 import {salesDatabase,SalesRepository,salesRpc,asSalesUser,SALES} from '../tests/ai/salesFixture.js'
 // Isolated browser acceptance harness. No remote credentials/data or real-model fallback.
 import { localQaFault } from './local-qa-fault.mjs'
@@ -19,6 +20,7 @@ export async function startHarness({ salesMode=false, provider = new ControlledP
    const token=req.headers.authorization?.replace('Bearer ','');const owner=await repo.authenticate(token)
    const url=new URL(req.url,'http://localhost')
    const restQuery=(sql,args=[])=>salesMode?asSalesUser(db,owner,async tx=>(await tx.query(sql,args)).rows):repo.query(sql,args)
+   if(salesMode&&url.pathname.startsWith('/api/workers/team/')){const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>4096)throw Object.assign(Error('Too large'),{status:413});chunks.push(chunk)}const body=req.method==='POST'?Buffer.concat(chunks).toString():undefined;const response=await localTeamRequest(db,owner,url.href,req.headers,body);res.statusCode=response.status;response.headers.forEach((value,key)=>res.setHeader(key,value));res.end(await response.text());return}
    if(salesMode&&url.pathname==='/api/workers/'){
     if(req.method!=='GET')throw Object.assign(Error('Fixture workers read only'),{status:403})
     const row=await repo.query('select public.workers_command($1,$1,$2,$3) as value',[owner,'dashboard','{}']);res.end(JSON.stringify(row[0].value));return

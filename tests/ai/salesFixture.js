@@ -39,4 +39,4 @@ export class SalesRepository extends LocalRepository{
  async authenticate(token){const user=SALES[token?.replace('sales-','')];if(!user||!['kevin','otherManager','a','b','other','worker'].some(key=>token===`sales-${key}`))throw fail('UNAUTHORIZED',401);if(!await this.access(user))throw fail('UNAUTHORIZED',401);return user}
 }
 
-async function withCommercial(db){await db.exec(readFileSync('docs/local-commercial-schema.sql','utf8'));return db}
+async function withCommercial(db){await db.exec(readFileSync('docs/local-commercial-schema.sql','utf8'));if(!(await db.query("select to_regclass('public.team_seats') t")).rows[0].t)await db.exec(readFileSync('docs/team-provisioning-draft.sql','utf8'));await db.exec("update auth.users set email='synthetic-'||id::text||'@example.invalid' where email is null");return db}

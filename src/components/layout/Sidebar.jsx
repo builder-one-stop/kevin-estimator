@@ -25,7 +25,7 @@ const navItems = [
 ]
 
 export default function Sidebar({ onNavigate, onSoon }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const access = useBetaAccess()
   const navigate = useNavigate()
   const location = useLocation()
@@ -53,8 +53,8 @@ export default function Sidebar({ onNavigate, onSoon }) {
         <LogoMark />
         <div><div className="brand-name">One Stop</div><div className="brand-sub">{t('brandSub')}</div></div>
       </div>
-      <button className="ask-btn" type="button" onClick={() => { navigate('/estimates'); onNavigate() }}><Sparkles size={20} />{t('ask')}</button>
-      <label className="search"><Search size={18} /><input ref={searchRef} placeholder={t('search')} aria-label={t('search')} /><span className="kbd">⌘K</span></label>
+      <button className="ask-btn" type="button" onClick={() => { navigate('/chat'); onNavigate() }}><Sparkles size={20} />{t('ask')}</button>
+      <label className="search"><Search size={18}/><input ref={searchRef} placeholder={t('search')} aria-label={t('search')} onKeyDown={event=>{if(event.key==='Enter'&&event.currentTarget.value.trim()){navigate('/projects',{state:{query:event.currentTarget.value.trim()}});onNavigate()}}}/><span className="kbd">↵</span></label>
       <nav className="nav">
         {(access?.role==='seller'?[...navItems,['quote','/chat',Sparkles]]:navItems).filter(([key])=>access?.role!=='seller'||['projects','estimates','quote'].includes(key)).map(([key, path, Icon]) => {
           const current = key === 'home' ? isHome : location.pathname === path || location.pathname.startsWith(`${path}/`)
@@ -65,6 +65,7 @@ export default function Sidebar({ onNavigate, onSoon }) {
           )
         })}
       </nav>
+      {access?.role==='admin'&&<Link className={`team-nav-link ${location.pathname==='/team'?'active':''}`} to="/team" onClick={onNavigate} aria-current={location.pathname==='/team'?'page':undefined}><Users size={20}/><span>{i18n.language.startsWith('es')?'Equipo y vendedores':'Team & sellers'}</span><span className="team-nav-new">{i18n.language.startsWith('es')?'Gestionar':'Manage'}</span></Link>}
       {access?.role === 'admin' && !localSalesEnabled&&<Link className="admin-review-link" to="/admin/review" onClick={onNavigate}>{t('beta.review')}</Link>}
       <div className="side-bottom">
 

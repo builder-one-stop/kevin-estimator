@@ -1,7 +1,7 @@
 import {hasMissingPrices} from '../../shared/estimatePricing.js'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useOutletContext } from 'react-router-dom'
-import { ArrowRight, BriefcaseBusiness, FileText, Sparkles } from 'lucide-react'
+import { ArrowRight, BriefcaseBusiness, FileText, Sparkles, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Composer from '../components/chat/Composer.jsx'
 import { LogoMark } from '../components/layout/Sidebar.jsx'
@@ -97,14 +97,14 @@ export default function Home() {
 
   return (
     <div className="home home-dashboard">
-      <div className="home-top"><HistoryDrawer /></div>
+      <div className="home-top dashboard-heading"><div><span className="section-eyebrow">One Stop · Los Angeles, CA</span><h2>{language==='es'?'Tu espacio de trabajo':'Your workspace'}</h2></div><HistoryDrawer /></div>
       <section className="home-hero" aria-label={t('home.askTitle')}>
         <LogoMark size={42} />
         <h1 className="greet">{access?.role === 'operator' ? t('home.greeting', { greeting, name: 'Kevin' }) : greeting}</h1>
         <p>{t('home.askTitle')}</p>
         <Composer simple busy={estimateBusy} inputRef={composerRef} value={draft} onChange={setDraft} onSend={send} onSoon={showSoon} />
       </section>
-      <div className="home-recent">
+      <nav className="dashboard-shortcuts" aria-label={language==='es'?'Accesos rápidos':'Quick actions'}><Link to="/chat"><Sparkles size={22}/><b>{language==='es'?'Cotizar con IA':'Quote with AI'}</b><span>{language==='es'?'De la idea al presupuesto':'From scope to estimate'}</span><ArrowRight size={18}/></Link><Link to="/projects"><BriefcaseBusiness size={22}/><b>{language==='es'?'Pipeline comercial':'Sales pipeline'}</b><span>{language==='es'?'Asignaciones y seguimiento':'Assignments & follow-up'}</span><ArrowRight size={18}/></Link>{access?.role==='admin'&&<Link to="/team"><Users size={22}/><b>{language==='es'?'Equipo y vendedores':'Team & sellers'}</b><span>{language==='es'?'Personas, roles y accesos':'People, roles & access'}</span><ArrowRight size={18}/></Link>}</nav><div className="home-recent">
         <section className="home-section">
           <div className="home-section-head"><div><span className="home-eyebrow">{t('home.work')}</span><h2>{t('home.recentEstimates')}</h2></div><Link to="/estimates">{t('home.viewAll')}<ArrowRight size={16} /></Link></div>
           {estimateState === 'loading' ? <p role="status" className="muted">{t('estimateEditor.loading')}</p>
