@@ -5,6 +5,7 @@ import { paintPackages, packageGallons } from './materialTakeoff.js'
 import { applyCatalogPrice,catalogPriceSnapshot } from './catalogPricing.js'
 import { paintParameterEvidence } from './paintEvidence.js'
 import { reconcilePaintExpenses } from './paintReconciliation.js'
+import { matchesMaterialRole } from './materialSelection.js'
 import { itemCostCents } from '../src/lib/estimateDocument.js'
 
 export const PAINT_RULE_VERSION = 'interior-walls-1'
@@ -30,15 +31,15 @@ export const isInteriorWallPaint = task => has(task, 'paint') && has(task, 'wall
 export function paintDimensions(task) {
   const description = task.measurements?.en || ''
   // Reject signed values and decimal commas instead of matching a positive suffix.
-  if (/[−–+-]\s*\d|\d,\d/.test(description) || /\d\s*(?:ft|feet|')\s*\d+\s*(?:in|inches|")/i.test(description)) return null
-  const measured=description.match(/(?<![\w.,])(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)\b/i)
+  if (/(?<![\w])[−–+-]\s*\d|\d,\d/.test(description) || /\d\s*(?:ft|feet|')\s*\d+\s*(?:in|inches|")/i.test(description)) return null
+  const measured=description.match(/(?<![\w.,+\-−–])(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)\b/i)
   if(measured){
    if(measured[2] && !measured[4] && measured[2].toLowerCase()!==measured[6].toLowerCase()) return null
    const unit=u=>/^(in|pulg)/i.test(u)?'in':/^(m|metro)/i.test(u)?'m':'ft'
    const value=(n,u)=>convertMeasurement(Number(n),unit(u),'ft')
    return {lengthFt:value(measured[1],measured[2]||measured[6]),widthFt:value(measured[3],measured[4]||measured[6]),heightFt:value(measured[5],measured[6]),openingsSqFt:0,useGrossWalls:true}
   }
-  const match = description.match(/(?<![\w.,])(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*[×xX]\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*(?:[×xX]|[,;]?\s*(?:height|h|high)\s*)\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')/i)
+  const match = description.match(/(?<![\w.,+\-−–])(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*[×xX]\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*(?:[×xX]|[,;]?\s*(?:height|h|high)\s*)\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')/i)
   if (!match) return null
   return { lengthFt: Number(match[1]), widthFt: Number(match[2]), heightFt: Number(match[3]), openingsSqFt: 0, useGrossWalls: true }
 }
@@ -65,9 +66,9 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
   const areaSqFt = paintArea(inputs)
   // Quantity depends on the saved package, not the economic validity of its price.
   const available = x => Boolean(x)
-  const paint = catalog.find(x => x.id === template.paintCatalogId && available(x) && packageGallons(x) > 0)
+  const paint = catalog.find(x => x.id === template.paintCatalogId && available(x) && matchesMaterialRole(x,'paint') && packageGallons(x) > 0)
   const repair = catalog.find(x => x.id === template.repairCatalogId && available(x) && x.unit === 'ea' &&
-    (x.category === 'patch' || (!x.category && /spackl|patch|filler/i.test(x.product))))
+    matchesMaterialRole(x,'repair'))
   const pack = packageGallons(paint) || 1
   if(paint && (!['ea','gal','qt'].includes(paint.unit) || paint.unit==='gal' && pack!==1 || paint.unit==='qt' && pack!==0.25)) throw Error('PRODUCT_COVERAGE_MISMATCH')
   const takeoff = { areaSqFt, coats: positive(template.coats, 'COATS'), coverageSqFtPerGallon: positive(template.coverageSqFtPerGallon, 'COVERAGE'),

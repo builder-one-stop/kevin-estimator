@@ -2,19 +2,18 @@ import {z} from 'zod'
 import {effectiveCatalog} from '../shared/researchCatalog.js'
 import {catalogPriceSnapshot} from '../shared/catalogPricing.js'
 import {defaultPaintTemplate,isInteriorWallPaint} from '../shared/paintJob.js'
-import {packageGallons} from '../shared/materialTakeoff.js'
+import {matchesMaterialRole,materialTextSuggestion} from '../shared/materialSelection.js'
 import {catalogSchema} from '../shared/aiSchemas.js'
 import {InternalCatalogProvider,resolvePrice} from './pricing.js'
 const normalize=x=>String(x??'').trim().toLowerCase()
 export const materialQuerySchema=z.object({id:z.string().max(80).optional(),sku:z.string().max(100).optional(),model:z.string().max(100).optional(),variant:z.string().max(200).optional(),package:z.string().max(200).optional(),vendor:z.string().max(200).optional(),storeId:z.string().max(100).optional(),storeZip:z.string().regex(/^\d{5}$/).optional(),role:z.enum(['paint','repair']).optional(),q:z.string().max(200).optional()}).strict()
-const eligible=(row,role)=>!role||(role==='paint'?['interior_paint','paint'].includes(row.category)||(!row.category&&packageGallons(row)>0):row.category==='patch'||(!row.category&&/spackl|patch|filler/i.test(row.product)))
 export class MaterialCatalogService{
  constructor(settings={}){this.rows=settings.catalogIsEffective?settings.catalog:effectiveCatalog(settings.catalog||[])}
  search(raw={}){
   const query=materialQuerySchema.parse(raw)
-  const rows=this.rows.filter(row=>eligible(row,query.role)&&['id','sku','model','variant','package','vendor'].every(key=>!query[key]||normalize(row[key])===normalize(query[key]))&&
+  const rows=this.rows.filter(row=>matchesMaterialRole(row,query.role)&&['id','sku','model','variant','package','vendor'].every(key=>!query[key]||normalize(row[key])===normalize(query[key]))&&
    (!query.storeId||row.offer?.storeId===query.storeId)&&(!query.storeZip||row.offer?.storeZip===query.storeZip)&&
-   (!query.q||normalize([row.product,row.brand,row.sku,row.model,row.package,row.vendor].join(' ')).includes(normalize(query.q))))
+   (!query.q||materialTextSuggestion(row,query.q)))
   return {rows:rows.slice(0,40),total:rows.length,matchType:query.q?'suggestions':Object.keys(query).some(k=>k!=='role')?'exact':'catalog',externallyQueried:false}
  }
  async resolve(entry,jobZip=''){

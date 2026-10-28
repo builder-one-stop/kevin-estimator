@@ -1,0 +1,78 @@
+{
+  "environment": "Isolated headless Chrome, ephemeral PGlite and controlled model; synthetic five-gallon fixture is not a supplier price.",
+  "checks": [
+    {
+      "language": "en",
+      "chatApproved": true,
+      "oneGallonQuantity": 3,
+      "manualQuantity": 4,
+      "packageChangedPending": true,
+      "reloadPending": true,
+      "repairLaborCount": 8,
+      "repairPackages": 1,
+      "confirmedFiveGallonQuantity": 1,
+      "recalculatedArea": 368,
+      "unknownFeesPreserved": true,
+      "pdfPendingAndResolved": true,
+      "viewport": 390,
+      "totals": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "costCents": 79699
+          }
+        ],
+        "costsByType": {
+          "material": 17404,
+          "labor": 58500,
+          "equipment": 0,
+          "other": 3795
+        },
+        "laborHours": 7.8,
+        "costCents": 79699,
+        "markupCents": 26564,
+        "profitCents": 26564,
+        "priceCents": 106263,
+        "marginPercent": 24.998353142674308
+      }
+    },
+    {
+      "language": "es",
+      "chatApproved": true,
+      "oneGallonQuantity": 3,
+      "manualQuantity": 4,
+      "packageChangedPending": true,
+      "reloadPending": true,
+      "repairLaborCount": 8,
+      "repairPackages": 1,
+      "confirmedFiveGallonQuantity": 1,
+      "recalculatedArea": 368,
+      "unknownFeesPreserved": true,
+      "pdfPendingAndResolved": true,
+      "viewport": 390,
+      "totals": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "costCents": 79699
+          }
+        ],
+        "costsByType": {
+          "material": 17404,
+          "labor": 58500,
+          "equipment": 0,
+          "other": 3795
+        },
+        "laborHours": 7.8,
+        "costCents": 79699,
+        "markupCents": 26564,
+        "profitCents": 26564,
+        "priceCents": 106263,
+        "marginPercent": 24.998353142674308
+      }
+    }
+  ],
+  "errors": [],
+  "roleSelectorsExcludePatchPrimer": true,
+  "reproduction": "scripts/paint-precision-browser.mjs; latest repeat used distinct loopback ports5310/8900 and a temporary evidence directory."
+}

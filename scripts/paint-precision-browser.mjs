@@ -29,7 +29,7 @@ try{
   const rule=page.locator('.paint-rule-editor');await rule.locator('summary').click()
   await rule.getByLabel(es?'Reparaciones menores':'Minor patches',{exact:true}).fill('8')
   await rule.getByLabel(es?'Envases de reparación (supuesto)':'Repair purchase packages (allowance)',{exact:true}).fill('1')
-  await rule.getByLabel(es?'Pintura':'Paint',{exact:true}).selectOption(five.id)
+  const choices=rule.getByLabel(es?'Pintura':'Paint',{exact:true});await expect(choices).not.toContainText('DryDex');await expect(choices).not.toContainText('KILZ');await expect(choices).toContainText('Synthetic interior paint');await choices.selectOption(five.id)
   await rule.getByRole('button',{name:es?'Recalcular pintura':'Recalculate painting',exact:true}).click()
   await expect.poll(async()=>(await paint()).quantityPending).toBe(true)
   let pending=await record();expect(pending.document.sections[0].items.find(r=>r.ruleKey==='repair:material').quantity).toBe(1);expect(pending.document.sections[0].items.find(r=>r.ruleKey==='repair:labor').quantity).toBe(1)

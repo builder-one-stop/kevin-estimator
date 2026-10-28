@@ -18,6 +18,7 @@ describe('painting precision audit matrix',()=>{
  it('converts inches and exact metric lengths without rounding dimensions before area',()=>{
   const task=text=>({measurements:{en:text}})
   expect(paintDimensions(task('144 x120 x96 in'))).toEqual(input)
+  expect(paintDimensions(task('12 x10 x8 ft; SKU MODEL-123'))).toEqual(input)
   expect(paintDimensions(task('3.6576 x3.048 x2.4384 m'))).toEqual(input)
   expect(paintDimensions(task('1 x1 x1 m')).lengthFt).toBeCloseTo(1/.3048,12)
   expect(paintDimensions(task('12 ft x120 in x2.4384 m'))).toEqual(input)
