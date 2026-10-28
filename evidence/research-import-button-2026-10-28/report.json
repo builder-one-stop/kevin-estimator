@@ -1,0 +1,38 @@
+{
+  "environment": "Isolated PGlite and headless Chrome390px; synthetic existing admin-B/operator-A; loopback only; real AiSettings button and server settings/versioning; no supplier/AI/remote data",
+  "checks": [
+    {
+      "language": "en",
+      "emptyBefore": true,
+      "actualButton": true,
+      "previewBeforePersistence": true,
+      "records": 25,
+      "hd01Model": "275001",
+      "identityIssues": 0,
+      "classificationPending": 0,
+      "modelAndVariantPreserved": true,
+      "originalPricesDatesPreserved": true,
+      "saveReload": true,
+      "repeatImportNoDuplicatesOrNewPriceVersion": true,
+      "otherAccountUntouched": true,
+      "viewport": 390
+    },
+    {
+      "language": "es",
+      "emptyBefore": true,
+      "actualButton": true,
+      "previewBeforePersistence": true,
+      "records": 25,
+      "hd01Model": "275001",
+      "identityIssues": 0,
+      "classificationPending": 0,
+      "modelAndVariantPreserved": true,
+      "originalPricesDatesPreserved": true,
+      "saveReload": true,
+      "repeatImportNoDuplicatesOrNewPriceVersion": true,
+      "otherAccountUntouched": true,
+      "viewport": 390
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,30 @@
+{
+  "results": [
+    {
+      "name": "ai-run",
+      "bundledImport": true,
+      "status": 401,
+      "cleanupInvoked": false
+    },
+    {
+      "name": "ai",
+      "bundledImport": true,
+      "status": 503,
+      "cleanupInvoked": false
+    },
+    {
+      "name": "workers",
+      "bundledImport": true,
+      "status": 503,
+      "cleanupInvoked": false
+    },
+    {
+      "name": "worker-cleanup",
+      "bundledImport": true,
+      "status": null,
+      "cleanupInvoked": false
+    }
+  ],
+  "networkCalls": 0,
+  "LinuxExecution": false
+}

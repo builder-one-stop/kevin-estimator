@@ -23,7 +23,7 @@ export default function AiSettings({embedded=false}){
  function importResearch(){const existing=new Set(data.catalog.map(entry=>entry.sourceId));const entries=researchCatalog.filter(entry=>!existing.has(entry.sourceId)).map(entry=>catalogSchema.parse({
   id:entry.id,sourceId:entry.sourceId,sourceVersion:entry.sourceVersion,sourceUrl:entry.sourceUrl,
   product:entry.product,brand:entry.brand,package:entry.package,unit:entry.unit,unitCost:entry.unitCost,currency:'USD',
-  vendor:entry.vendor,location:entry.location,url:entry.url,sku:entry.sku,checkedAt:entry.checkedAt,status:entry.status,evidence:entry.evidence,
+  vendor:entry.vendor,location:entry.location,url:entry.url,sku:entry.sku,model:entry.model,variant:entry.variant,checkedAt:entry.checkedAt,status:entry.status,evidence:entry.evidence,
   verifiedZip:null,validUntil:null,localPriceEvidence:'',
  }));setImportDraft(entries)}
  const paint=data?.paintTemplate||defaultPaintTemplate()

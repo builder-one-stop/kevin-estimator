@@ -1,0 +1,74 @@
+{
+  "tests": 417,
+  "files": 78,
+  "lint": "passed",
+  "guardedProductionBuild": "passed existing Kevin public config",
+  "unchangedIdentityGuard": true,
+  "actualButtonBrowser": "EN/ES390px empty→25 records→save/reload→repeat no duplicates",
+  "artifacts": "all4 official Netlify ZIPs pass audit",
+  "sourceCheckoutsPreserved": true,
+  "qaClosed": true,
+  "remoteActions": false,
+  "frontend": [
+    {
+      "file": "dist/assets/approvedProposalPdf-B98HGBzc.js",
+      "bytes": 404371,
+      "sha256": "6a34020506126c4c470e82d2b9e9a25c627d47dd329dd339f1894adfcd09c84b"
+    },
+    {
+      "file": "dist/assets/html2canvas-BM5yyqGY.js",
+      "bytes": 199494,
+      "sha256": "79279fe776314a00d638253baf06015d42f3551fbaa8d0797eb764880c6fd35c"
+    },
+    {
+      "file": "dist/assets/index-ClpwTUQJ.js",
+      "bytes": 1108905,
+      "sha256": "69df472aafe4de9a54d3f06db2315849085b307bf018f9fefd50af8097e9103d"
+    },
+    {
+      "file": "dist/assets/index-DAYeq0Yj.css",
+      "bytes": 77091,
+      "sha256": "9250b5b1ea57f9d0ec2af0031eeefca2e4e35b3298b20a118b3157524479cc37"
+    },
+    {
+      "file": "dist/assets/index.es-84JgKEND.js",
+      "bytes": 151426,
+      "sha256": "8f5f08b93613a7cd119992548a1bd7ec0438dc0975ec68ea391ea50c648f9b22"
+    },
+    {
+      "file": "dist/assets/LocalLibraryPanel-BTWKYdMQ.js",
+      "bytes": 4008,
+      "sha256": "0092072e36d5341e58cd1b30f6cc0c4e980a0924b598eefde8f6a57ea94ca8b8"
+    },
+    {
+      "file": "dist/assets/proposalPdf-BWYLQoSe.js",
+      "bytes": 119,
+      "sha256": "b06a8958716b97afd912f89a2b874447ad4ce983b2492c0792d7a261b246a010"
+    },
+    {
+      "file": "dist/assets/purify.es-Bvo9QlJ8.js",
+      "bytes": 28086,
+      "sha256": "aa9ba8b5e16bc0f8a0fdfc2f31e221edb21a1f469d02474a76557cf16bbc7f30"
+    },
+    {
+      "file": "dist/assets/rolldown-runtime-CbXtAM7H.js",
+      "bytes": 589,
+      "sha256": "bbf7c5086ae414dc3f33777e3eebf16ea8631325b8bb4690d25091c03567f31a"
+    },
+    {
+      "file": "dist/favicon.svg",
+      "bytes": 9522,
+      "sha256": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66"
+    },
+    {
+      "file": "dist/icons.svg",
+      "bytes": 5031,
+      "sha256": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a"
+    },
+    {
+      "file": "dist/index.html",
+      "bytes": 774,
+      "sha256": "ff6356fd026b33064bee3e70b6a90d9829ba5015f332a09edc7859983a1ca059"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+import {chromium,expect} from '@playwright/test'
+import {mkdir,writeFile} from 'node:fs/promises'
+import {startHarness} from './ai-local-harness.mjs'
+import {A,B} from '../tests/ai/localRepository.js'
+import {researchCatalog,researchBindingIssue,effectiveCatalog} from '../shared/researchCatalog.js'
+const out='evidence/research-import-button-2026-10-28';await mkdir(out,{recursive:true})
+const browser=await chromium.launch({channel:'chrome',headless:true}),report={environment:'Isolated PGlite and headless Chrome390px; synthetic existing admin-B/operator-A; loopback only; real AiSettings button and server settings/versioning; no supplier/AI/remote data',checks:[],errors:[]}
+let h,page
+try{
+ for(const language of ['en','es']){
+  const es=language==='es';h=await startHarness({port:5312,apiPort:8902});const context=await browser.newContext({viewport:{width:390,height:844}})
+  await context.addInitScript(({id,language})=>{localStorage.setItem('os-lang',language);localStorage.setItem('sb-127-auth-token',JSON.stringify({access_token:'fixture-b',refresh_token:'fixture-refresh',token_type:'bearer',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,user:{id,email:'synthetic-admin@example.invalid',aud:'authenticated',role:'authenticated'}}))},{id:B,language})
+  await context.route('**/*',r=>r.request().url().startsWith(h.url)||r.request().url().startsWith('http://127.0.0.1:8902')?r.continue():r.abort());page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message))
+  const importer=()=>page.getByRole('button',{name:es?'Importar investigación para revisión':'Import research for review',exact:true}),apply=()=>page.getByRole('button',{name:es?'Usar importación revisada':'Use reviewed import',exact:true}),save=()=>page.getByRole('button',{name:es?'Guardar':'Save',exact:true})
+  expect(await h.repo.settings(B)).toBeNull();await page.goto(h.url+'/settings');await importer().click();await expect(apply()).toBeEnabled();await expect(page.getByRole('alert')).toHaveCount(0);expect(await h.repo.settings(B)).toBeNull();await page.screenshot({path:out+'/preview-'+language+'-390.png',fullPage:true});await apply().click();await save().click();await expect(page.getByRole('status').filter({hasText:es?'Guardado':'Saved'})).toBeVisible({timeout:15000})
+  let stored=await h.repo.settings(B);expect(stored.data.catalog).toHaveLength(25);expect(stored.data.catalog.every(x=>researchBindingIssue(x)===null)).toBe(true);expect(effectiveCatalog(stored.data.catalog).some(x=>x.classificationPending)).toBe(false)
+  for(const source of researchCatalog){const row=stored.data.catalog.find(x=>x.sourceId===source.sourceId);expect(row.model).toBe(source.model);expect(row.variant).toBe(source.variant);expect(row.checkedAt).toBe(source.checkedAt);expect(row.unitCost).toBe(source.unitCost)}
+  expect(stored.data.catalog.find(x=>x.sourceId==='HD01').model).toBe('275001');await page.reload();await expect(importer()).toBeVisible();await importer().click();await expect(apply()).toBeEnabled();await expect(page.getByRole('alert')).toHaveCount(0);await apply().click();await save().click();await expect(page.getByRole('status').filter({hasText:es?'Guardado':'Saved'})).toBeVisible({timeout:15000});stored=await h.repo.settings(B);expect(stored.data.catalog).toHaveLength(25);expect(stored.data.catalog.every(x=>x.priceVersion===1)).toBe(true);expect(await h.repo.settings(A)).toBeNull();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);await page.screenshot({path:out+'/saved-'+language+'-390.png',fullPage:true});await writeFile(out+'/saved-'+language+'.json',JSON.stringify(stored,null,2));report.checks.push({language,emptyBefore:true,actualButton:true,previewBeforePersistence:true,records:25,hd01Model:'275001',identityIssues:0,classificationPending:0,modelAndVariantPreserved:true,originalPricesDatesPreserved:true,saveReload:true,repeatImportNoDuplicatesOrNewPriceVersion:true,otherAccountUntouched:true,viewport:390});await context.close();await h.close();h=null
+ }
+ expect(report.errors).toEqual([])
+}catch(e){report.failure=e.message;process.exitCode=1;console.error(e.message);if(page){await page.screenshot({path:out+'/failure.png',fullPage:true});await writeFile(out+'/failure-dom.txt',await page.locator('body').innerText())}}
+finally{await writeFile(out+'/report.json',JSON.stringify(report,null,2));await browser.close();if(h)await h.close()}
