@@ -1,0 +1,10 @@
+{
+  "environment": "Isolated PGlite, existing synthetic admin-B/operator-A roles, no external service.",
+  "checks": [
+    "Invalid units/duplicates block apply; preview never persists",
+    "Merge preserves pending entries; Save/reload versions only this owner catalog",
+    "Second import updates existingID with history; replace removals explicit; cancel preserves list",
+    "Operator-A data remains empty; admin permissions unchanged;390px fit"
+  ],
+  "errors": []
+}
