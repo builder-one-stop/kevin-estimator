@@ -5,10 +5,11 @@ import { paintPackages, packageGallons } from './materialTakeoff.js'
 import { applyCatalogPrice,catalogPriceSnapshot } from './catalogPricing.js'
 import { paintParameterEvidence } from './paintEvidence.js'
 import { reconcilePaintExpenses } from './paintReconciliation.js'
+import { itemCostCents } from '../src/lib/estimateDocument.js'
 
 export const PAINT_RULE_VERSION = 'interior-walls-1'
 export const defaultPaintTemplate = () => ({
-  coats: 2, coverageSqFtPerGallon: 350, wastePercent: 10, patchCount: 1,
+  coats: 2, coverageSqFtPerGallon: 350, wastePercent: 10, patchCount: 1, repairPackages: 1,
   paintCatalogId: '00000000-0000-4000-8000-000000000001',
   repairCatalogId: '00000000-0000-4000-8000-000000000003',
   hourlyRate: 75, expensesPercent: 5, marginPercent: 25,
@@ -17,7 +18,7 @@ export const defaultPaintTemplate = () => ({
 })
 
 const positive = (value, label, allowZero = false) => {
-  if (!Number.isFinite(Number(value)) || (allowZero ? Number(value) < 0 : Number(value) <= 0)) throw Error(`INVALID_${label}`)
+  if (value === null || value === '' || typeof value === 'boolean' || !Number.isFinite(Number(value)) || (allowZero ? Number(value) < 0 : Number(value) <= 0)) throw Error(`INVALID_${label}`)
   return Number(value)
 }
 const round = (value, places = 2) => new Decimal(value).toDecimalPlaces(places, Decimal.ROUND_HALF_UP).toNumber()
@@ -28,13 +29,16 @@ export const isInteriorWallPaint = task => has(task, 'paint') && has(task, 'wall
 // Dimensions come from the approved plan, not a model-proposed quantity. No height means no rule result.
 export function paintDimensions(task) {
   const description = task.measurements?.en || ''
-  const measured=description.match(/(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)\b/i)
+  // Reject signed values and decimal commas instead of matching a positive suffix.
+  if (/[−–+-]\s*\d|\d,\d/.test(description) || /\d\s*(?:ft|feet|')\s*\d+\s*(?:in|inches|")/i.test(description)) return null
+  const measured=description.match(/(?<![\w.,])(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)\b/i)
   if(measured){
+   if(measured[2] && !measured[4] && measured[2].toLowerCase()!==measured[6].toLowerCase()) return null
    const unit=u=>/^(in|pulg)/i.test(u)?'in':/^(m|metro)/i.test(u)?'m':'ft'
-   const value=(n,u)=>Number(convertMeasurement(Number(n),unit(u),'ft').toFixed(6))
+   const value=(n,u)=>convertMeasurement(Number(n),unit(u),'ft')
    return {lengthFt:value(measured[1],measured[2]||measured[6]),widthFt:value(measured[3],measured[4]||measured[6]),heightFt:value(measured[5],measured[6]),openingsSqFt:0,useGrossWalls:true}
   }
-  const match = description.match(/(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*[×xX]\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*(?:[×xX]|[,;]?\s*(?:height|h|high)\s*)\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')/i)
+  const match = description.match(/(?<![\w.,])(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*[×xX]\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*(?:[×xX]|[,;]?\s*(?:height|h|high)\s*)\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')/i)
   if (!match) return null
   return { lengthFt: Number(match[1]), widthFt: Number(match[2]), heightFt: Number(match[3]), openingsSqFt: 0, useGrossWalls: true }
 }
@@ -65,11 +69,14 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
   const repair = catalog.find(x => x.id === template.repairCatalogId && available(x) && x.unit === 'ea' &&
     (x.category === 'patch' || (!x.category && /spackl|patch|filler/i.test(x.product))))
   const pack = packageGallons(paint) || 1
+  if(paint && (!['ea','gal','qt'].includes(paint.unit) || paint.unit==='gal' && pack!==1 || paint.unit==='qt' && pack!==0.25)) throw Error('PRODUCT_COVERAGE_MISMATCH')
   const takeoff = { areaSqFt, coats: positive(template.coats, 'COATS'), coverageSqFtPerGallon: positive(template.coverageSqFtPerGallon, 'COVERAGE'),
     wastePercent: positive(template.wastePercent, 'WASTE', true), packageGallons: pack }
   Object.assign(takeoff, paintPackages(takeoff))
   if(!paint){takeoff.packageGallons=null;takeoff.packages=null}
   const patchCount = positive(template.patchCount, 'PATCH_COUNT', true)
+  const repairPackages = patchCount===0 ? 0 : positive(template.repairPackages ?? patchCount, 'REPAIR_PACKAGES', true)
+  if(!Number.isSafeInteger(patchCount) || !Number.isSafeInteger(repairPackages)) throw Error('INVALID_REPAIR_PACKAGES')
   const laborRate = positive(template.hourlyRate, 'HOURLY_RATE', true),rateBasis=laborBasis(template)
   const item = (phase, kind, quantity, unit, unitCost, note) => ({
     id: crypto.randomUUID(), taskId, ruleKey: `${phase}:${kind}`, ruleVersion: PAINT_RULE_VERSION,
@@ -98,10 +105,10 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
       if (paint) material.translations = { en: material.description, es: material.description }
       entries.push(material)
     } else if (phase === 'repair') {
-      let material = item(phase, 'material', patchCount, repair?.unit || 'ea', repair?.unitCost ?? 0,
-        { en: 'Minor patch count is editable; preparation excludes this material.', es: 'La cantidad de reparaciones es editable; la preparación excluye este material.' })
+      let material = item(phase, 'material', repairPackages, repair?.unit || 'ea', repair?.unitCost ?? 0,
+        { en: `${repairPackages} whole repair package(s): editable purchase allowance, not yield per hole. ${template.repairPackages===undefined?'Legacy allowance retained; review separately from patch labor.':''} Preparation excludes this material.`, es: `${repairPackages} envases completos para reparación: supuesto de compra editable, no rendimiento por agujero. ${template.repairPackages===undefined?'Supuesto anterior conservado; revisar separado de la mano de obra.':''} La preparación excluye este material.` })
       if (repair?.unitCost!==null&&repair) material = applyCatalogPrice(material, repair, zip, language)
-      if((!repair||repair.unitCost===null)&&patchCount>0){material.priceMissing=true;material.price=repair?catalogPriceSnapshot(repair,zip):material.price;material.price.unitCost=null;if(repair){material.description=repair.product+' - '+repair.package;material.priceDate=repair.checkedAt}}
+      if((!repair||repair.unitCost===null)&&repairPackages>0){material.priceMissing=true;material.price=repair?catalogPriceSnapshot(repair,zip):material.price;material.price.unitCost=null;if(repair){material.description=repair.product+' - '+repair.package;material.priceDate=repair.checkedAt}}
       material.origin = 'rule-engine'; material.ruleKey = `${phase}:material`; material.ruleVersion = PAINT_RULE_VERSION
       if (repair) material.translations = { en: material.description, es: material.description }
       entries.push(material)
@@ -115,7 +122,9 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
     if(laborRate===0&&laborItem.quantity>0){laborItem.priceMissing=true;laborItem.price.unitCost=null}
     laborItem.rateBasis=rateBasis;entries.push(laborItem);const burden=burdenItem(laborItem,rateBasis,language);if(burden)entries.push(burden)
   }
-  const baseCents = entries.reduce((sum, row) => sum + new Decimal(row.quantity).times(row.unitCost).times(100).toDecimalPlaces(0, Decimal.ROUND_HALF_UP).toNumber(), 0)
+  const baseCents = entries.reduce((sum, row) => sum + itemCostCents(row), 0)
+  if(!Number.isSafeInteger(baseCents)) throw Error('AMOUNT_LIMIT')
+  if(Number(template.expensesPercent)>100) throw Error('INVALID_EXPENSES')
   const expenses = round(new Decimal(baseCents).times(positive(template.expensesPercent, 'EXPENSES', true)).div(10000))
   entries.push(item('expenses', 'expenses', 1, 'lot', expenses,
     { en: `${template.expensesPercent}% of material and labor cost; excludes this expenses line. No tax or freight claim.`,
@@ -155,7 +164,7 @@ export function recalculatePaintDocument(document, taskId, templateChanges = {},
       next.ruleKey === 'repair:material' && template.repairCatalogId !== rule.template.repairCatalogId
     const overrides = switched ? { ...previous.ruleOverrides, price: true } : previous.ruleOverrides || {}
     return { ...next, id: previous.id, ruleOverrides: overrides, ...(Object.keys(overrides).length ? { origin: switched ? 'manual' : previous.origin } : {}),
-      ...(overrides.quantity ? { quantity: previous.quantity, takeoff: previous.takeoff } : {}),
+      ...(overrides.quantity ? { quantity: previous.quantity, takeoff: previous.takeoff, quantityPending: switched || previous.quantityPending===true, ...(switched ? { quantityPendingReason:'PACKAGE_CHANGED', previousPurchaseQuantity:{quantity:previous.quantity,unit:previous.unit,catalogId:previous.catalogId??null} } : {quantityPendingReason:previous.quantityPendingReason,previousPurchaseQuantity:previous.previousPurchaseQuantity}) } : {}),
       ...(overrides.price && !switched ? { unitCost: previous.unitCost, unit: previous.unit, catalogId: previous.catalogId, costType: previous.costType,
         price: previous.price, priceSource: previous.priceSource, priceDate: previous.priceDate, needsReview: previous.needsReview, priceMissing:previous.priceMissing??false,
         description: previous.description, translations: previous.translations } : {}),

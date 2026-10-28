@@ -34,7 +34,7 @@ export function resetPaintExpense(item) {
 
 export function markReviewedPaintChange(previous, next) {
   if (!previous?.ruleKey) return next
-  const quantity = Number(previous.quantity) !== Number(next.quantity)
+  const quantity = Number(previous.quantity) !== Number(next.quantity) || Boolean(previous.quantityPending)!==Boolean(next.quantityPending)
   const price = Number(previous.unitCost) !== Number(next.unitCost) || previous.unit !== next.unit || previous.costType !== next.costType
   return { ...next, ruleOverrides:{...previous.ruleOverrides,...next.ruleOverrides,...(quantity?{quantity:true}:{}),...(price?{price:true}:{})},
     ...(quantity?{takeoff:undefined}:{}) }
@@ -51,6 +51,7 @@ export function paintLineNotes(item, rule, language = 'en') {
         : `${rule.template.expensesPercent}% of this room’s material and labor cost; recalculated after edits. Excludes this line, equipment and other expenses. Tax and freight unconfirmed.`
     return [custom,explanation].filter(Boolean).join('\n')
   }
+  if(item.quantityPending && item.quantityPendingReason==='PACKAGE_CHANGED')return [custom,es?'Cambió el producto o envase: confirma una nueva cantidad de compra; la cantidad manual anterior se conserva como antecedente.':'Product or package changed: confirm a new purchase quantity; the earlier manual quantity is retained as history.'].filter(Boolean).join('\n')
   if(item.quantityPending)return [custom,es?'Producto o envase sin resolver; cantidad de compra pendiente. Las medidas originales se conservan en el plan.':'Product or purchase package unresolved; purchase quantity pending. Original measurements remain in the plan.'].filter(Boolean).join('\n')
   const quantityChanged = item.ruleOverrides?.quantity || (item.takeoff && Number(item.quantity) !== Number(item.takeoff.packages))
   if (item.ruleKey && quantityChanged) {

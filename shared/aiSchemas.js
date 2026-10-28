@@ -66,7 +66,7 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
   .refine(x => x.status !== 'public_observed' || x.unitCost !== null, 'An observed price requires a value')
   .refine(x => x.status !== 'quote_required' || x.unitCost === null, 'A quote-required record has no observed price')
 export const paintTemplateSchema = z.object({
-  coats: z.number().positive().max(10), coverageSqFtPerGallon: z.number().positive().max(10000), wastePercent: z.number().min(0).max(100), patchCount: z.number().int().min(0).max(1000),
+  coats: z.number().positive().max(10), coverageSqFtPerGallon: z.number().positive().max(10000), wastePercent: z.number().min(0).max(100), patchCount: z.number().int().min(0).max(1000), repairPackages: z.number().int().min(0).max(1000).optional(),
   paintCatalogId: z.string().uuid().nullable(), repairCatalogId: z.string().uuid().nullable(),
   hourlyRate: z.number().min(0).max(10000), expensesPercent: z.number().min(0).max(100), marginPercent: z.number().min(0).max(90),
   productivity: z.object({ protection: z.number().positive(), preparation: z.number().positive(), repair: z.number().positive(), painting: z.number().positive(), cleanup: z.number().positive() }).strict(),

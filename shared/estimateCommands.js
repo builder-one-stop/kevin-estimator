@@ -21,7 +21,7 @@ export function directEstimateChange(record,request,revision,language='en') {
   const tokens=selector.split(/\s+/)
   candidates=all.filter(({section,item})=>{const task=document.scope?.plan.tasks.find(t=>t.id===section.id);const label=normalized([section.title,item.description,item.translations?.en,item.translations?.es,task?.room?.en,task?.room?.es,task?.work?.en,task?.work?.es].filter(Boolean).join(' '));return item.unit===unit&&tokens.every(t=>label.includes(t))})
   if(candidates.length!==1)return {message:es?'Especifica la partida y el ambiente que quieres cambiar; no se aplicó ningún cambio.':'Specify the item and room to change; no changes were applied.'}
-  patch=i=>({...i,quantity:amount})
+  patch=i=>({...i,quantity:amount,quantityPending:false,quantityPendingReason:undefined})
  }
  if(!candidates.length)return {message:es?'No encontré una partida de mano de obra. Indica cuál quieres modificar.':'No labor item was found. Specify which item to change.'}
  for(const {section,item} of candidates){const next=markReviewedPaintChange(item,patch(item));section.items[section.items.indexOf(item)]=next;ops.push({action:'replace',id:item.id,before:item,after:next})}

@@ -5,8 +5,9 @@ export function paintPackages({ areaSqFt, coats, coverageSqFtPerGallon, wastePer
   if (values.some(value => !Number.isFinite(Number(value)) || Number(value) <= 0) ||
     !Number.isFinite(Number(wastePercent)) || Number(wastePercent) < 0 || Number(wastePercent) > 100) throw new Error('INVALID_PAINT_TAKEOFF')
   const requiredGallons = new Decimal(areaSqFt).times(coats).times(new Decimal(1).plus(new Decimal(wastePercent).div(100))).div(coverageSqFtPerGallon)
-  return { requiredGallons: requiredGallons.toDecimalPlaces(4, Decimal.ROUND_UP).toNumber(),
-    packages: requiredGallons.div(packageGallons).ceil().toNumber() }
+  const packages = requiredGallons.div(packageGallons).ceil().toNumber()
+  if(!Number.isSafeInteger(packages) || !requiredGallons.isFinite() || requiredGallons.gt(Number.MAX_SAFE_INTEGER)) throw Error('INVALID_PAINT_TAKEOFF')
+  return { requiredGallons: requiredGallons.toDecimalPlaces(4, Decimal.ROUND_UP).toNumber(), packages }
 }
 
 export function packageGallons(entry) {

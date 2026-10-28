@@ -1,0 +1,38 @@
+{
+  "pending-en": {
+    "pages": 3,
+    "supplier_fixture_disclosed": true,
+    "five_gallon_package": true,
+    "all_pages_numbered": true,
+    "preliminary": true,
+    "package_change_note": true,
+    "text_bounds": true
+  },
+  "resolved-en": {
+    "pages": 3,
+    "supplier_fixture_disclosed": true,
+    "five_gallon_package": true,
+    "all_pages_numbered": true,
+    "saved_total_present": true,
+    "manual_quantity_note": true,
+    "text_bounds": true
+  },
+  "pending-es": {
+    "pages": 3,
+    "supplier_fixture_disclosed": true,
+    "five_gallon_package": true,
+    "all_pages_numbered": true,
+    "preliminary": true,
+    "package_change_note": true,
+    "text_bounds": true
+  },
+  "resolved-es": {
+    "pages": 3,
+    "supplier_fixture_disclosed": true,
+    "five_gallon_package": true,
+    "all_pages_numbered": true,
+    "saved_total_present": true,
+    "manual_quantity_note": true,
+    "text_bounds": true
+  }
+}
