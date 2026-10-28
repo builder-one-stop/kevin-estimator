@@ -66,7 +66,7 @@ export function effectiveCatalog(managed = []) {
   const overrides = new Map(managed.filter(entry => entry.sourceId).map(entry => [entry.sourceId, entry]))
   return [...researchCatalog.map(entry => {
     const override = overrides.get(entry.sourceId)
-    return override ? { ...entry, ...override, packageData: override.package === entry.package ? entry.packageData : null,
+    return override ? { ...entry, ...override, provenanceClass:'current-owner', packageData: override.package === entry.package ? entry.packageData : null,
       conversion: override.package === entry.package ? entry.conversion : null } : entry
   }), ...managed.filter(entry => !entry.sourceId)]
 }
@@ -76,7 +76,7 @@ export function exactCatalogMatch(entry, query) {
   return sameOffer(entry,query)
 }
 
-const revisionFields = ['product','brand','package','unit','unitCost','vendor','location','url','sku','model','variant','offer','checkedAt','status','evidence','verifiedZip','validUntil','localPriceEvidence','country','region','city']
+const revisionFields = ['product','brand','package','unit','unitCost','vendor','location','url','sku','model','variant','offer','evidenceKind','procurement','checkedAt','status','evidence','verifiedZip','validUntil','localPriceEvidence','country','region','city']
 export function versionManagedCatalog(previous = [], next = []) {
   const oldById = new Map(previous.map(entry => [entry.id, entry]))
   return next.map(entry => {
@@ -90,7 +90,7 @@ export function versionManagedCatalog(previous = [], next = []) {
       unitCost: old.unitCost, status: old.status, checkedAt: old.checkedAt,
       validUntil: old.validUntil || null, verifiedZip: old.verifiedZip || null, evidence: old.evidence || '',
       localPriceEvidence: old.localPriceEvidence || '',country:old.country,region:old.region,city:old.city,model:old.model,
-      variant:old.variant,offer:old.offer?structuredClone(old.offer):undefined }
+      variant:old.variant,offer:old.offer?structuredClone(old.offer):undefined,evidenceKind:old.evidenceKind,procurement:old.procurement }
     return { ...entry, priceVersion: prior.version + 1, priceHistory: [...history, prior].slice(-100) }
   })
 }

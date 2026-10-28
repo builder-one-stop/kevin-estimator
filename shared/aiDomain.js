@@ -14,9 +14,7 @@ export function assertPlan(plan, approvable = false) {
 }
 function itemFromLine(line, catalog, language, jobZip = '') {
   const entry = catalog.find(x => x.id === line.catalogId)
-  if (line.catalogId && (!entry || entry.unit !== line.unit || !entry.package || entry.unitCost === null ||
-    (entry.status === 'verified' && entry.verifiedZip !== jobZip) ||
-    (entry.validUntil && entry.validUntil < new Date().toISOString().slice(0, 10)))) throw fail('CATALOG_MISMATCH')
+  if (line.catalogId && (!entry || entry.unit !== line.unit || !entry.package || entry.unitCost === null || (entry.status==='verified'&&entry.verifiedZip!==jobZip))) throw fail('CATALOG_MISMATCH')
   const price = entry ? catalogPriceSnapshot(entry, jobZip) : { status: 'provisional', source: 'model-proposal', category: 'provisional-assumption', internalPriceApproval: 'not-recorded', reason: 'NO_BACKED_PRICE' }
   return { ...line, description: localText(line.description, language), translations: line.description,
     quantity:line.quantity??1, unit:line.quantity===null?'lot':line.unit, quantityPending:line.quantity===null,

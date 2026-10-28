@@ -4,14 +4,15 @@ import {priceFreshness} from './priceOffers.js'
 
 export function priceSourceLabel(entry, price, language = 'en') {
   const es = language === 'es'
-  const state = price.freshness === 'stale'
+  const state = entry.evidenceKind==='authorized-quote'&&price.freshness!=='stale'?(es?'cotización importada autorizada; sin verificación local':'authorized imported quote; not locally verified'):price.freshness === 'stale'
     ? (es ? `precio anterior vencido; revisar (${entry.checkedAt})` : `stale previous price; review (${entry.checkedAt})`)
     : price.status === 'verified'
     ? (es ? `precio documentado para Los Ángeles, CA, US, ZIP ${entry.verifiedZip}` : `documented price for Los Angeles, CA, US, ZIP ${entry.verifiedZip}`)
     : price.status === 'public_observed'
       ? (es ? 'precio público online; sucursal/ZIP no verificados' : 'public online price; branch/ZIP unverified')
       : (es ? 'precio provisional; revisar' : 'provisional price; review')
-  return `${entry.vendor} · ${entry.product} · ${entry.package} · ${state}`
+  const identity=[entry.sku&&`SKU ${entry.sku}`,entry.model&&`model ${entry.model}`,entry.variant,entry.offer?.storeId&&`store ${entry.offer.storeId}`,entry.offer?.storeZip&&`store ZIP ${entry.offer.storeZip}`,entry.offer?.jobZip&&`job ZIP ${entry.offer.jobZip}`,entry.unit,entry.url].filter(Boolean).join(' | ')
+  return `${identity} | ${entry.vendor} · ${entry.product} · ${entry.package} · ${state}`
 }
 
 export function catalogPriceSnapshot(entry, jobZip = '') {
@@ -21,7 +22,7 @@ export function catalogPriceSnapshot(entry, jobZip = '') {
     ...structuredClone(entry),
     status: verification.status,
     category: localVerified ? 'local-source' : verification.status === 'public_observed' ? 'public-online-reference' : 'provisional-assumption',
-    source: entry.sourceId ? 'phase-a-research' : 'owner-catalog',
+    source: entry.provenanceClass==='current-owner'||entry.source==='owner-catalog'?'owner-catalog':entry.sourceId ? 'phase-a-research' : 'owner-catalog',
     reason: verification.reason, verification,
     freshness:priceFreshness(verification),observationFreshness:entry.freshness||null,
     internalPriceApproval: 'not-recorded',

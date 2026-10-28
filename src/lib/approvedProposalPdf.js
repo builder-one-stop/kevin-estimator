@@ -44,6 +44,7 @@ export function buildApprovedPdf(estimate,{format='proposal',includeCosts=false}
  if(v.status)block(`${t('status')}: ${v.status}`,9)
  block(`${t('client')}: ${v.client||t('unprovided')}\n${t('project')}: ${v.project||t('unprovided')}${v.address?'\n'+v.address:''}`)
  if(v.clientContact)block(v.clientContact,9)
+ if(v.procurementNote)block(v.procurementNote,9)
  if(v.provisional)block(t('provisional'),10,true)
  if(v.hybrid)block(t('currentMarkup')+': '+v.markupBps/100+'%',10,true)
  if(v.proposal.intro){heading(t('intro'));block(v.proposal.intro)}

@@ -1,0 +1,20 @@
+{
+  "en": {
+    "pages": 3,
+    "saved_total_present": true,
+    "no_live_lookup_disclosure": true,
+    "unknown_costs_disclosed": true,
+    "all_pages_numbered": true,
+    "manual_or_missing_provenance": true,
+    "text_within_page_bounds": true
+  },
+  "es": {
+    "pages": 3,
+    "saved_total_present": true,
+    "no_live_lookup_disclosure": true,
+    "unknown_costs_disclosed": true,
+    "all_pages_numbered": true,
+    "manual_or_missing_provenance": true,
+    "text_within_page_bounds": true
+  }
+}

@@ -11,7 +11,10 @@ export const taskSchema = z.object({
   preparation: bilingual, product: bilingual, finish: bilingual,
   assumptions: bilingual, provenance: bilingual, confirmed: z.boolean(),
 }).strict()
+export const materialRequestSchema=z.object({taskId:z.string().max(80),role:z.enum(['paint','repair']),id:z.string().max(80).optional(),sku:z.string().max(100).optional(),model:z.string().max(100).optional(),variant:z.string().max(200).optional(),package:z.string().max(200).optional(),vendor:z.string().max(200).optional(),storeId:z.string().max(100).optional(),storeZip:z.string().regex(/^\d{5}$/).optional()}).strict()
+export const materialEvidenceSchema=z.object({taskId:z.string().max(80),role:z.enum(['paint','repair']),id:z.string().nullable(),label:z.string().max(1000),unitCost:z.number().nonnegative().nullable(),unit:z.string(),checkedAt:z.string(),url:z.string(),status:z.string(),freshness:z.string(),reason:z.string().nullable()}).strict()
 export const planSchema = z.object({ title: bilingual, address: text, zip: z.string().max(20),
+  pricingContext:offerContextSchema.optional(),materialRequests:z.array(materialRequestSchema).max(80).optional(),materialEvidence:z.array(materialEvidenceSchema).max(80).optional(),
   tasks: z.array(taskSchema).min(1).max(40), pending: z.array(bilingual).max(20),
   assumptions: bilingual, markupBps: z.number().int().min(0).max(100000),
 }).strict()
@@ -27,10 +30,13 @@ export const outputSchema = z.object({ message: text, plan: planSchema.nullable(
   }).strict()).max(200),
 }).strict()
 // Limit model questions without invalidating older or manually edited plans.
-export const modelPlanSchema = planSchema.extend({ pending: z.array(bilingual).max(2) })
+export const modelPlanSchema = planSchema.omit({pricingContext:true,materialRequests:true,materialEvidence:true}).extend({ pending: z.array(bilingual).max(2) })
 export const modelOutputSchema = outputSchema.extend({ plan: modelPlanSchema.nullable() })
 export function parseModelResult(value) {
-  const result = modelOutputSchema.parse(value)
+  // Model output may echo a context plan; derived catalog evidence is server-owned.
+  const input=structuredClone(value)
+  if(input.plan)for(const key of ['pricingContext','materialRequests','materialEvidence'])delete input.plan[key]
+  const result = modelOutputSchema.parse(input)
   const count = s => (s.match(/\?/g) || []).length
   if (count(result.message) > 2 || ['en','es'].some(lang => (result.plan?.pending || []).reduce((n,q) => n + count(q[lang]), 0) > 2)) {
     throw Object.assign(new Error('MODEL_TOO_MANY_QUESTIONS'), { code: 'MODEL_TOO_MANY_QUESTIONS' })
@@ -38,6 +44,7 @@ export function parseModelResult(value) {
   return result
 }
 export const preferenceSchema = z.object({ id: z.string().uuid(), label: z.string().min(1).max(100), value: text, source: z.literal('explicit-user'), updatedAt: z.string().datetime() }).strict()
+export const procurementSchema=z.object({taxUsd:z.number().finite().nonnegative().nullable(),freightUsd:z.number().finite().nonnegative().nullable(),stockQuantity:z.number().finite().nonnegative().nullable()}).strict()
 export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string().min(1).max(200), brand: z.string().max(100),
   package: z.string().max(100), unit, unitCost: z.number().min(0).max(1000000).nullable(), currency: z.literal('USD'),
   vendor: z.string().max(200), location: z.string().max(200), url: z.union([z.literal(''),z.string().url().max(1000)]),
@@ -45,7 +52,7 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
   sourceId: z.string().max(80).optional(), sourceVersion: z.string().max(80).optional(), sourceUrl: z.string().url().max(1000).optional(),
   verifiedZip: z.string().regex(/^\d{5}$/).nullable().optional(), validUntil: z.string().date().nullable().optional(),
   localPriceEvidence: text.optional(), model: z.string().max(100).optional(),
-  variant:z.string().max(200).optional(),offer:offerContextSchema.optional(),
+  variant:z.string().max(200).optional(),offer:offerContextSchema.optional(),evidenceKind:z.enum(['authorized-quote','public-web','manual']).optional(),procurement:procurementSchema.optional(),
   country: z.string().max(2).optional(), region: z.string().max(2).optional(), city: z.string().max(100).optional(),
   priceVersion: z.number().int().min(1).optional(),
   priceHistory: z.array(z.object({ version: z.number().int().min(1), product: z.string(), brand: z.string(), package: z.string(),
@@ -54,7 +61,7 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
     status: z.string().max(40), checkedAt: z.string().date(), validUntil: z.string().date().nullable(),
     verifiedZip: z.string().nullable(), evidence: text, localPriceEvidence: text,
     country:z.string().optional(),region:z.string().optional(),city:z.string().optional(),model:z.string().optional(),
-    variant:z.string().max(200).optional(),offer:offerContextSchema.optional() }).strict()).max(100).optional(),
+    variant:z.string().max(200).optional(),offer:offerContextSchema.optional(),evidenceKind:z.string().optional(),procurement:procurementSchema.optional() }).strict()).max(100).optional(),
 }).strict().refine(x => x.status !== 'verified' || (x.unitCost !== null && x.verifiedZip && x.localPriceEvidence && x.vendor && x.location && x.url), 'Local verification requires product, exact ZIP and product/branch evidence')
   .refine(x => x.status !== 'public_observed' || x.unitCost !== null, 'An observed price requires a value')
   .refine(x => x.status !== 'quote_required' || x.unitCost === null, 'A quote-required record has no observed price')

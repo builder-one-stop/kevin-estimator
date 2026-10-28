@@ -51,6 +51,7 @@ export function paintLineNotes(item, rule, language = 'en') {
         : `${rule.template.expensesPercent}% of this room’s material and labor cost; recalculated after edits. Excludes this line, equipment and other expenses. Tax and freight unconfirmed.`
     return [custom,explanation].filter(Boolean).join('\n')
   }
+  if(item.quantityPending)return [custom,es?'Producto o envase sin resolver; cantidad de compra pendiente. Las medidas originales se conservan en el plan.':'Product or purchase package unresolved; purchase quantity pending. Original measurements remain in the plan.'].filter(Boolean).join('\n')
   const quantityChanged = item.ruleOverrides?.quantity || (item.takeoff && Number(item.quantity) !== Number(item.takeoff.packages))
   if (item.ruleKey && quantityChanged) {
     const explanation = es ? `Cantidad ajustada manualmente: ${item.quantity} ${item.unit}. Sustituye la cantidad calculada; no se afirma el cálculo anterior como cantidad actual.`

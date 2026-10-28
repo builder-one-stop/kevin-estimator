@@ -1,8 +1,8 @@
 import {laborBasis,burdenItem} from './laborBasis.js'
 import Decimal from 'decimal.js'
-import { measureRooms } from './estimatingMarket.js'
+import { measureRooms,convertMeasurement } from './estimatingMarket.js'
 import { paintPackages, packageGallons } from './materialTakeoff.js'
-import { applyCatalogPrice } from './catalogPricing.js'
+import { applyCatalogPrice,catalogPriceSnapshot } from './catalogPricing.js'
 import { paintParameterEvidence } from './paintEvidence.js'
 import { reconcilePaintExpenses } from './paintReconciliation.js'
 
@@ -28,6 +28,12 @@ export const isInteriorWallPaint = task => has(task, 'paint') && has(task, 'wall
 // Dimensions come from the approved plan, not a model-proposed quantity. No height means no rule result.
 export function paintDimensions(task) {
   const description = task.measurements?.en || ''
+  const measured=description.match(/(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(ft|feet|inches|in|metros?|m|pies|pulgadas)\b/i)
+  if(measured){
+   const unit=u=>/^(in|pulg)/i.test(u)?'in':/^(m|metro)/i.test(u)?'m':'ft'
+   const value=(n,u)=>Number(convertMeasurement(Number(n),unit(u),'ft').toFixed(6))
+   return {lengthFt:value(measured[1],measured[2]||measured[6]),widthFt:value(measured[3],measured[4]||measured[6]),heightFt:value(measured[5],measured[6]),openingsSqFt:0,useGrossWalls:true}
+  }
   const match = description.match(/(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*[×xX]\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')?\s*(?:[×xX]|[,;]?\s*(?:height|h|high)\s*)\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|')/i)
   if (!match) return null
   return { lengthFt: Number(match[1]), widthFt: Number(match[2]), heightFt: Number(match[3]), openingsSqFt: 0, useGrossWalls: true }
@@ -54,7 +60,7 @@ const provisional = (reason, language) => ({ price: { status: 'provisional', sou
 export function makePaintItems(taskId, inputs, template, catalog, language = 'en', zip = '') {
   const areaSqFt = paintArea(inputs)
   // Quantity depends on the saved package, not the economic validity of its price.
-  const available = x => x && x.unitCost !== null
+  const available = x => Boolean(x)
   const paint = catalog.find(x => x.id === template.paintCatalogId && available(x) && packageGallons(x) > 0)
   const repair = catalog.find(x => x.id === template.repairCatalogId && available(x) && x.unit === 'ea' &&
     (x.category === 'patch' || (!x.category && /spackl|patch|filler/i.test(x.product))))
@@ -62,6 +68,7 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
   const takeoff = { areaSqFt, coats: positive(template.coats, 'COATS'), coverageSqFtPerGallon: positive(template.coverageSqFtPerGallon, 'COVERAGE'),
     wastePercent: positive(template.wastePercent, 'WASTE', true), packageGallons: pack }
   Object.assign(takeoff, paintPackages(takeoff))
+  if(!paint){takeoff.packageGallons=null;takeoff.packages=null}
   const patchCount = positive(template.patchCount, 'PATCH_COUNT', true)
   const laborRate = positive(template.hourlyRate, 'HOURLY_RATE', true),rateBasis=laborBasis(template)
   const item = (phase, kind, quantity, unit, unitCost, note) => ({
@@ -82,18 +89,19 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
   const entries = []
   for (const [phase, work, rate] of jobs) {
     if (phase === 'painting') {
-      let material = item(phase, 'material', takeoff.packages, paint?.unit || 'gal', paint?.unitCost ?? 0,
+      let material = item(phase, 'material', takeoff.packages??1, paint?.unit || 'gal', paint?.unitCost ?? 0,
         { en: 'Whole purchasable packages; coverage and waste are editable assumptions.', es: 'Envases completos; rendimiento y desperdicio son supuestos editables.' })
-      if (paint) material = applyCatalogPrice(material, paint, zip, language)
-      if(!paint){material.priceMissing=true;material.price.unitCost=null}
+      if (paint?.unitCost!==null&&paint) material = applyCatalogPrice(material, paint, zip, language)
+      if(!paint||paint.unitCost===null){material.priceMissing=true;material.price=paint?catalogPriceSnapshot(paint,zip):material.price;material.price.unitCost=null;if(paint){material.description=paint.product+' - '+paint.package;material.priceDate=paint.checkedAt}}
+      if(!paint)material.quantityPending=true
       material.origin = 'rule-engine'; material.ruleKey = `${phase}:material`; material.ruleVersion = PAINT_RULE_VERSION; material.takeoff = takeoff
       if (paint) material.translations = { en: material.description, es: material.description }
       entries.push(material)
     } else if (phase === 'repair') {
       let material = item(phase, 'material', patchCount, repair?.unit || 'ea', repair?.unitCost ?? 0,
         { en: 'Minor patch count is editable; preparation excludes this material.', es: 'La cantidad de reparaciones es editable; la preparación excluye este material.' })
-      if (repair) material = applyCatalogPrice(material, repair, zip, language)
-      if(!repair&&patchCount>0){material.priceMissing=true;material.price.unitCost=null}
+      if (repair?.unitCost!==null&&repair) material = applyCatalogPrice(material, repair, zip, language)
+      if((!repair||repair.unitCost===null)&&patchCount>0){material.priceMissing=true;material.price=repair?catalogPriceSnapshot(repair,zip):material.price;material.price.unitCost=null;if(repair){material.description=repair.product+' - '+repair.package;material.priceDate=repair.checkedAt}}
       material.origin = 'rule-engine'; material.ruleKey = `${phase}:material`; material.ruleVersion = PAINT_RULE_VERSION
       if (repair) material.translations = { en: material.description, es: material.description }
       entries.push(material)

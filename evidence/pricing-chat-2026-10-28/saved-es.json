@@ -1,0 +1,806 @@
+{
+  "id": "b56394de-0c6c-498b-949a-8536a1f18609",
+  "owner_id": "10000000-0000-4000-8000-000000000001",
+  "client_id": null,
+  "project_id": null,
+  "title": "Pintura de paredes de dormitorio",
+  "status": "Draft",
+  "markup_bps": 3333,
+  "document": {
+    "rules": {
+      "paint": {
+        "bedroom-walls": {
+          "inputs": {
+            "widthFt": 10,
+            "heightFt": 8,
+            "lengthFt": 12,
+            "openingsSqFt": 0,
+            "useGrossWalls": true
+          },
+          "version": "interior-walls-1",
+          "areaSqFt": 352,
+          "template": {
+            "coats": 2,
+            "hourlyRate": 75,
+            "patchCount": 1,
+            "productivity": {
+              "repair": 8,
+              "cleanup": 1000,
+              "painting": 150,
+              "protection": 800,
+              "preparation": 350
+            },
+            "wastePercent": 10,
+            "marginPercent": 25,
+            "paintCatalogId": null,
+            "expensesPercent": 5,
+            "repairCatalogId": "00000000-0000-4000-8000-000000000003",
+            "consumablesUsdPerSqFt": {
+              "cleanup": 0.03,
+              "protection": 0.08,
+              "preparation": 0.06
+            },
+            "coverageSqFtPerGallon": 350
+          },
+          "catalogSnapshots": [
+            {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "sku": "283433",
+              "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+              "unit": "ea",
+              "brand": "DAP",
+              "model": "12327",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "32 oz as labeled",
+              "product": "DryDex Dry Time Indicator Spackling Paste",
+              "cacheHit": false,
+              "category": "patch",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD03",
+              "unitCost": 11.48,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": null,
+              "validUntil": null,
+              "limitations": [
+                "No convertir oz a fl oz sin confirmar volumen/peso en especificación.",
+                "No es el mismo modelo que DAP 12330 vendido por Lowe's; no asumir equivalencia exacta.",
+                "HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "oz_as_labeled",
+                "amount": 32,
+                "purchase_unit": "container"
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": null,
+              "internalPriceApproval": "not-recorded"
+            }
+          ],
+          "parameterEvidence": {
+            "labor": {
+              "value": 75,
+              "reason": "Contractor charge assumption; not a BLS wage conversion.",
+              "status": "provisional"
+            },
+            "waste": {
+              "value": 10,
+              "reason": "Editable allowance, not manufacturer-verified loss.",
+              "status": "provisional"
+            },
+            "coverage": {
+              "value": 350,
+              "reason": "No matching product technical sheet attached; editable estimating assumption.",
+              "status": "provisional"
+            },
+            "productivity": {
+              "reason": "Requires measured job results for calibration.",
+              "status": "provisional",
+              "values": {
+                "repair": 8,
+                "cleanup": 1000,
+                "painting": 150,
+                "protection": 800,
+                "preparation": 350
+              }
+            }
+          }
+        }
+      }
+    },
+    "scope": {
+      "plan": {
+        "zip": "",
+        "tasks": [
+          {
+            "id": "bedroom-walls",
+            "room": {
+              "en": "Bedroom",
+              "es": "Dormitorio"
+            },
+            "work": {
+              "en": "Interior wall painting",
+              "es": "Pintura interior de paredes"
+            },
+            "finish": {
+              "en": "Eggshell, Ultra Pure White",
+              "es": "Eggshell, Ultra Pure White"
+            },
+            "product": {
+              "en": "paint: sku DOES-NOT-EXIST - product/price pending / producto/precio pendiente; The Home Depot | DAP DryDex Dry Time Indicator Spackling Paste | 32 oz as labeled | SKU 283433 | ea",
+              "es": "paint: sku DOES-NOT-EXIST - product/price pending / producto/precio pendiente; The Home Depot | DAP DryDex Dry Time Indicator Spackling Paste | 32 oz as labeled | SKU 283433 | ea"
+            },
+            "excluded": {
+              "en": "Ceiling, trim, doors and large repairs",
+              "es": "Techo, molduras, puertas y reparaciones mayores"
+            },
+            "included": {
+              "en": "Walls, protection, preparation, minor nail-hole patching and cleanup",
+              "es": "Paredes, protección, preparación, reparación menor y limpieza"
+            },
+            "confirmed": true,
+            "components": [
+              {
+                "en": "Interior wall painting materials",
+                "es": "Materiales de pintura interior de paredes"
+              }
+            ],
+            "provenance": {
+              "en": "Exact internal catalog selection; public web observations or current-owner imports. No live supplier query; job ZIP and buying store are separate.",
+              "es": "Selección exacta del catálogo interno; observaciones web públicas o importaciones de esta cuenta. Sin consulta en vivo; ZIP de obra y tienda de compra son distintos."
+            },
+            "assumptions": {
+              "en": "Two coats; 350 sf/gal; 10% waste; provisional productivity and consumables",
+              "es": "Dos manos; 350 sf/gal; 10% desperdicio; productividad y consumibles provisionales"
+            },
+            "preparation": {
+              "en": "Protect, prepare and patch minor nail holes once",
+              "es": "Proteger, preparar y reparar agujeros menores una vez"
+            },
+            "measurements": {
+              "en": "Pintar paredes interiores 144 x120 x96 in SKU DOES-NOT-EXIST",
+              "es": "Pintar paredes interiores 144 x120 x96 in SKU DOES-NOT-EXIST"
+            }
+          }
+        ],
+        "title": {
+          "en": "Bedroom wall painting",
+          "es": "Pintura de paredes de dormitorio"
+        },
+        "address": "",
+        "pending": [],
+        "markupBps": 3333,
+        "assumptions": {
+          "en": "Gross walls, no openings deducted. Template coverage, productivity, expenses and margin are editable assumptions; catalog prices are public online observations, not local quotes.",
+          "es": "Paredes brutas, sin descontar aberturas. Rendimiento, productividad, gastos y margen son supuestos editables; los precios del catálogo son observaciones públicas, no cotizaciones locales."
+        },
+        "materialEvidence": [
+          {
+            "id": null,
+            "url": "",
+            "role": "paint",
+            "unit": "",
+            "label": "paint: sku DOES-NOT-EXIST - product/price pending / producto/precio pendiente",
+            "reason": "NO_EXACT_PRODUCT",
+            "status": "quote_required",
+            "taskId": "bedroom-walls",
+            "unitCost": null,
+            "checkedAt": "",
+            "freshness": "unavailable"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000003",
+            "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+            "role": "repair",
+            "unit": "ea",
+            "label": "The Home Depot | DAP DryDex Dry Time Indicator Spackling Paste | 32 oz as labeled | SKU 283433 | ea",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 11.48,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh"
+          }
+        ],
+        "materialRequests": [
+          {
+            "sku": "DOES-NOT-EXIST",
+            "role": "paint",
+            "taskId": "bedroom-walls"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000003",
+            "role": "repair",
+            "taskId": "bedroom-walls"
+          }
+        ]
+      },
+      "revision": 1,
+      "approvalType": "plan"
+    },
+    "market": {
+      "id": "us-ca-los-angeles",
+      "city": "Los Angeles",
+      "region": "California",
+      "country": "US",
+      "areaUnit": "sf",
+      "currency": "USD",
+      "lengthUnit": "ft"
+    },
+    "aiUsage": {
+      "scope": "OpenAI API only; excludes ChatGPT subscription, hosting, Netlify and Supabase charges.",
+      "apiCalls": 0,
+      "inputTokens": 0,
+      "cachedTokens": 0,
+      "outputTokens": 0,
+      "rateVersions": [],
+      "schemaVersion": "api-usage-1",
+      "conversationId": "535f717a-7bc5-4832-84f7-01c4c37e0018",
+      "unmeteredCalls": 0,
+      "unpricedEvents": 0,
+      "billingVerified": false,
+      "estimatedCostUsd": 0,
+      "knownEstimatedCostUsd": 0,
+      "legacyRunsWithUnknownCallCount": 0
+    },
+    "business": {
+      "name": "One Stop Building & Remodeling",
+      "phone": "",
+      "address": "",
+      "license": ""
+    },
+    "language": "es",
+    "proposal": {
+      "intro": "",
+      "notes": "",
+      "scope": "",
+      "terms": "",
+      "exclusions": ""
+    },
+    "sections": [
+      {
+        "id": "bedroom-walls",
+        "items": [
+          {
+            "id": "c82c9916-15a3-4a0a-ab81-2a5a1828687b",
+            "unit": "sf",
+            "notes": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "protection:material",
+            "costType": "material",
+            "quantity": 352,
+            "unitCost": 0.08,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "Consumables allowance only; excludes separately counted paint and patch material.",
+              "es": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte."
+            },
+            "description": "Proteger piso y muebles",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Protect floor and furnishings",
+              "es": "Proteger piso y muebles"
+            }
+          },
+          {
+            "id": "b4c87ed1-4cd0-429c-857f-b46cd8486662",
+            "unit": "hr",
+            "notes": "352 sf ÷ 800 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "protection:labor",
+            "costType": "labor",
+            "quantity": 0.44,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "352 sf ÷ 800 per hour; rounded up to 0.01 hr.",
+              "es": "352 sf ÷ 800 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Proteger piso y muebles — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Protect floor and furnishings — labor",
+              "es": "Proteger piso y muebles — mano de obra"
+            }
+          },
+          {
+            "id": "95de702c-c45f-4c2c-8846-39431fd819dd",
+            "unit": "sf",
+            "notes": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "preparation:material",
+            "costType": "material",
+            "quantity": 352,
+            "unitCost": 0.06,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "Consumables allowance only; excludes separately counted paint and patch material.",
+              "es": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte."
+            },
+            "description": "Preparar superficies de pared",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Prepare wall surfaces",
+              "es": "Preparar superficies de pared"
+            }
+          },
+          {
+            "id": "c568f610-7c04-40b9-b1c4-7a07249cf790",
+            "unit": "hr",
+            "notes": "352 sf ÷ 350 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "preparation:labor",
+            "costType": "labor",
+            "quantity": 1.01,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "352 sf ÷ 350 per hour; rounded up to 0.01 hr.",
+              "es": "352 sf ÷ 350 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Preparar superficies de pared — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Prepare wall surfaces — labor",
+              "es": "Preparar superficies de pared — mano de obra"
+            }
+          },
+          {
+            "id": "f3fcac9b-be2b-4ea2-8b4c-1f8a2a480499",
+            "unit": "ea",
+            "notes": "La cantidad de reparaciones es editable; la preparación excluye este material.",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "sku": "283433",
+              "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+              "unit": "ea",
+              "brand": "DAP",
+              "model": "12327",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "32 oz as labeled",
+              "product": "DryDex Dry Time Indicator Spackling Paste",
+              "cacheHit": false,
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD03",
+              "unitCost": 11.48,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": null,
+              "validUntil": null,
+              "limitations": [
+                "No convertir oz a fl oz sin confirmar volumen/peso en especificación.",
+                "No es el mismo modelo que DAP 12330 vendido por Lowe's; no asumir equivalencia exacta.",
+                "HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "oz_as_labeled",
+                "amount": 32,
+                "purchase_unit": "container"
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": "fresh",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "repair:material",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 11.48,
+            "catalogId": "00000000-0000-4000-8000-000000000003",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "Minor patch count is editable; preparation excludes this material.",
+              "es": "La cantidad de reparaciones es editable; la preparación excluye este material."
+            },
+            "description": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled",
+            "needsReview": true,
+            "priceSource": "SKU 283433 | model 12327 | ea | https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689 | The Home Depot · DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled · precio público online; sucursal/ZIP no verificados",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled",
+              "es": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled"
+            }
+          },
+          {
+            "id": "92995cb8-4d53-48f6-affc-656ef7f7f737",
+            "unit": "hr",
+            "notes": "1 reparaciones ÷ 8 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "repair:labor",
+            "costType": "labor",
+            "quantity": 0.13,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "1 patches ÷ 8 per hour; rounded up to 0.01 hr.",
+              "es": "1 reparaciones ÷ 8 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Material para reparación menor — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Minor wall patch material — labor",
+              "es": "Material para reparación menor — mano de obra"
+            }
+          },
+          {
+            "id": "183ec055-80a7-4f27-89d7-b070fc795c5a",
+            "unit": "gal",
+            "notes": "Envases completos; rendimiento y desperdicio son supuestos editables.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "unitCost": null,
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "painting:material",
+            "takeoff": {
+              "coats": 2,
+              "areaSqFt": 352,
+              "packages": null,
+              "wastePercent": 10,
+              "packageGallons": null,
+              "requiredGallons": 2.2126,
+              "coverageSqFtPerGallon": 350
+            },
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 0,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "Whole purchasable packages; coverage and waste are editable assumptions.",
+              "es": "Envases completos; rendimiento y desperdicio son supuestos editables."
+            },
+            "description": "Pintura interior de paredes",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "priceMissing": true,
+            "translations": {
+              "en": "Interior wall paint",
+              "es": "Pintura interior de paredes"
+            },
+            "quantityPending": true
+          },
+          {
+            "id": "01b7d331-c764-4d5c-ae45-d2a5654d16f0",
+            "unit": "hr",
+            "notes": "704 sf-mano ÷ 150 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "painting:labor",
+            "costType": "labor",
+            "quantity": 4.7,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "704 coat-sf ÷ 150 per hour; rounded up to 0.01 hr.",
+              "es": "704 sf-mano ÷ 150 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Pintura interior de paredes — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Interior wall paint — labor",
+              "es": "Pintura interior de paredes — mano de obra"
+            }
+          },
+          {
+            "id": "69ed0978-03c4-4b98-8d61-dd744530849c",
+            "unit": "sf",
+            "notes": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "cleanup:material",
+            "costType": "material",
+            "quantity": 352,
+            "unitCost": 0.03,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "Consumables allowance only; excludes separately counted paint and patch material.",
+              "es": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte."
+            },
+            "description": "Limpiar y retirar protecciones",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Clean and remove protection",
+              "es": "Limpiar y retirar protecciones"
+            }
+          },
+          {
+            "id": "ce496687-355a-401f-830f-8cefa5c583f9",
+            "unit": "hr",
+            "notes": "352 sf ÷ 1000 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "cleanup:labor",
+            "costType": "labor",
+            "quantity": 0.36,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "352 sf ÷ 1000 per hour; rounded up to 0.01 hr.",
+              "es": "352 sf ÷ 1000 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Limpiar y retirar protecciones — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Clean and remove protection — labor",
+              "es": "Limpiar y retirar protecciones — mano de obra"
+            }
+          },
+          {
+            "id": "cd6b1bdb-337c-4c20-bb1b-589d188f9d42",
+            "unit": "lot",
+            "notes": "5% del costo de materiales y mano de obra; excluye esta partida. No incluye impuestos ni flete confirmados.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "expenses:expenses",
+            "costType": "other",
+            "quantity": 1,
+            "unitCost": 28.47,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "5% of material and labor cost; excludes this expenses line. No tax or freight claim.",
+              "es": "5% del costo de materiales y mano de obra; excluye esta partida. No incluye impuestos ni flete confirmados."
+            },
+            "description": "Supuesto de gastos del trabajo",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Job expenses allowance",
+              "es": "Supuesto de gastos del trabajo"
+            }
+          }
+        ],
+        "title": "Dormitorio"
+      }
+    ],
+    "conversationId": "535f717a-7bc5-4832-84f7-01c4c37e0018",
+    "pricingContext": {
+      "jobZip": ""
+    },
+    "materialPricing": {
+      "tax": null,
+      "stock": null,
+      "source": "server-internal-catalog",
+      "freight": null,
+      "externallyQueried": false
+    }
+  },
+  "version": 1,
+  "created_at": "2026-10-28T02:06:40.388Z",
+  "updated_at": "2026-10-28T02:06:40.388Z",
+  "finalized_at": null,
+  "finalized_version": null,
+  "finalization_request_id": null
+}

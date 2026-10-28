@@ -1,3 +1,4 @@
+import PlanMaterials from './PlanMaterials.jsx'
 import { useState } from 'react'
 import { localText } from '../../../shared/aiDomain.js'
 import { useAiText } from './strings.js'
@@ -20,6 +21,7 @@ export default function Plan({plan,onChange}) {
    {onChange&&<><label><input type="checkbox" checked={task.confirmed} onChange={e=>update('tasks',plan.tasks.map(t=>t.id===task.id?{...t,confirmed:e.target.checked}:t))}/>{a('confirmed')}</label><button onClick={()=>update('tasks',plan.tasks.filter(t=>t.id!==task.id))}>{a('removeTask')}</button></>}
   </details>)}
   {onChange&&<button onClick={()=>update('tasks',[...plan.tasks,{id:crypto.randomUUID(),...Object.fromEntries(['room','work','included','excluded','measurements','preparation','product','finish','assumptions','provenance'].map(k=>[k,{en:'',es:''}])),components:[{en:'',es:''}],confirmed:false}])}>{a('addTask')}</button>}
+  {plan.materialEvidence?.length>0&&<PlanMaterials plan={plan} onChange={onChange} language={language}/>}
   {!!plan.pending.length&&<h3>{a('pending')}</h3>}
   {plan.pending.map((q,i)=><div key={i}>{field('question',localText(q,lang),v=>update('pending',plan.pending.map((x,n)=>n===i?{...x,[lang]:v}:x)))}{onChange&&<button onClick={()=>update('pending',plan.pending.filter((_,n)=>n!==i))}>{a('remove')}</button>}</div>)}
   {onChange&&<button onClick={()=>update('pending',[...plan.pending,{en:'',es:''}])}>{a('addQuestion')}</button>}

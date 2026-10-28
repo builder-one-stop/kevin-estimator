@@ -1,3 +1,5 @@
+import {MaterialCatalogService} from './materialCatalog.js'
+import {candidateStores,serviceArea} from '../shared/southBaySuppliers.js'
 import { createServer } from 'node:http'
 import {sellerApiAllowed} from '../shared/salesPolicy.js'
 import { Readable } from 'node:stream'
@@ -64,6 +66,11 @@ export function createEstimatorHandler({ repo, provider, origin, logger, testMod
         const parameters=new URL(request.url).searchParams
         const library=publicReferenceLibrary(provider.library)
         data={...queryLibrary(library,{query:parameters.get('q')||'',category:parameters.get('category')||'',offset:Number(parameters.get('offset')),limit:Number(parameters.get('limit'))||6}),counts:libraryCounts(library),scope:testMode?'isolated-public-library':'versioned-public-references',externallyQueried:false}
+      } else if(parts[0]==='pricing'&&parts[1]==='catalog'&&parts.length===2&&request.method==='GET'){
+        const settings=(await repo.settings(owner))?.data||defaultSettings()
+        const query=Object.fromEntries(new URL(request.url).searchParams)
+        const result=new MaterialCatalogService(settings).search(query)
+        data={...result,scope:'public-and-current-owner-only',candidateStores,serviceArea}
       } else if (parts[0] === 'pricing' && parts[1] === 'references' && parts.length === 2 && request.method === 'GET') {
         data = { references: collectPriceReferences(await repo.priceReferenceEstimates(owner), owner), scope: 'current-owner-only', externallyQueried: false, learning: false }
       } else if (parts[0] === 'status' && request.method === 'GET') data = { mode: testMode ? (provider.isolatedRealTrades?'isolated-real-ai':'controlled-test') : 'real', configured: !!provider.client || testMode, localLibraryAvailable:Boolean(testMode&&provider.localTrades||provider.publicLibraryAvailable===true),actualCostsAvailable:Boolean((testMode||provider.durableActualCosts===true)&&provider.hybridWork&&provider.actualCosts) }

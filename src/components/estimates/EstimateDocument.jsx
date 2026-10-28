@@ -10,6 +10,7 @@ export default function EstimateDocument({record}) {
   <div className="document-heading"><div><small>{t(v.incomplete?'preliminary':'document')}</small><h2>{v.title}</h2></div><p>#{v.number}<br/>{t('revision')} {v.revision}<br/>{v.finalized?t('finalized'):t('draft')}</p></div>
   <dl className="document-meta">{[['date',v.date],['status',v.status],['client',v.client],['project',v.project]].map(([k,x])=><div key={k}><dt>{t(k)}</dt><dd>{x||t('unprovided')}</dd></div>)}</dl>{v.clientContact&&<p>{v.clientContact}</p>}{v.address&&<p>{v.address}</p>}
   {v.incomplete&&<p className="document-notice" role="status">{t('incompletePricing')}</p>}
+  {v.procurementNote&&<p className="document-notice">{v.procurementNote}</p>}
   {v.provisional&&<p className="document-notice">{t('provisional')}</p>}
   {v.hybrid&&<p>{t('currentMarkup')}: {v.markupBps/100}%</p>}
   {v.proposal.intro&&<section><h3>{t('intro')}</h3><p>{v.proposal.intro}</p></section>}

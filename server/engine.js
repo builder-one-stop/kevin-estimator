@@ -1,3 +1,4 @@
+import {MaterialCatalogService,prepareMaterialPlan,requestedMaterial} from './materialCatalog.js'
 import { buildLocalTradeDocument } from '../shared/localTradePlan.js'
 import {summarizeConversationUsage} from '../shared/apiUsage.js'
 import {attachHybridBudget} from '../shared/workRegistry.js'
@@ -56,6 +57,10 @@ export class EstimatorEngine {
    s.run={...s.run,status:'cancelled',preview:''};this.active.get(s.run.id)?.abort()
   } else if(body.action==='savePlan') {
    assertPlan(body.plan)
+   const planSettings=(await this.repo.settings(owner))?.data||defaultSettings()
+   const prepared=await prepareMaterialPlan(body.plan,planSettings,[])
+   body.plan=prepared.plan
+   s.materialPricing={snapshots:prepared.snapshots,enabled:prepared.enabled}
    if(row.estimate_id) {
     const current=await this.repo.estimate(owner,row.estimate_id)
     s.pending={plan:body.plan,revision:s.planRevision+1,estimateVersion:current.version,operations:[],blocked:true,costDelta:null,saleDelta:null}
@@ -162,7 +167,10 @@ export class EstimatorEngine {
   try {
    const context=await this.context(owner,row)
    const settings=(await this.repo.settings(owner))?.data||defaultSettings()
-   settings.catalog=effectiveCatalog(settings.catalog)
+   settings.catalog=effectiveCatalog(settings.catalog);settings.catalogIsEffective=true
+   const materialService=new MaterialCatalogService(settings)
+   const materialQuery=requestedMaterial(row.state.messages)
+   context.materialReferences=materialService.search({...materialQuery,role:'paint'}).rows.slice(0,6).map(x=>({id:x.id,product:x.product,brand:x.brand,sku:x.sku,model:x.model,package:x.package,unit:x.unit,unitCost:x.unitCost,checkedAt:x.checkedAt,status:x.status,source:x.provenanceClass==='current-owner'?'current-owner':x.sourceId?'public-research':'current-owner',localVerified:false}))
    const assets=await this.repo.assets(owner,row.id)
    if(assets.length)await stage('images')
    const images=await Promise.all(assets.map(a=>this.repo.image(owner,a.id)))
@@ -174,7 +182,7 @@ export class EstimatorEngine {
    const s=row.state
    if(s.run.mode==='plan') {
     if(result.lines.length||result.changes.length)throw fail('MODEL_INVALID_OUTPUT')
-    if(result.plan){assertPlan(result.plan);row.title=compactTitle(localText(result.plan.title,s.documentLanguage));s.plan=result.plan;s.planRevision++;s.approvedRevision=null}
+    if(result.plan){const prepared=await prepareMaterialPlan(result.plan,settings,row.state.messages);result.plan=prepared.plan;s.materialPricing={snapshots:prepared.snapshots,enabled:prepared.enabled};assertPlan(result.plan);row.title=compactTitle(localText(result.plan.title,s.documentLanguage));s.plan=result.plan;s.planRevision++;s.approvedRevision=null}
    } else if(s.run.mode==='generate') {
     if(result.plan||result.changes.length)throw fail('MODEL_CHANGED_APPROVED_PLAN')
     if(this.provider.localTrades===true && s.plan.tasks.length===1 && s.plan.tasks[0].id.startsWith('local-trade-')) {
@@ -192,6 +200,9 @@ export class EstimatorEngine {
     let markupBps=s.plan.markupBps
     if(paintTasks.length){
       const template=structuredClone(settings.paintTemplate||defaultPaintTemplate())
+      if(s.materialPricing?.enabled){
+       settings.catalog=structuredClone(s.materialPricing.snapshots)
+      }
       // Generation must preserve the approved markup, rather than silently replacing it with a template margin.
       if(paintMarkupBps(template.marginPercent)!==markupBps)template.marginPercent=paintMarginPercent(markupBps)
       const paint={}
@@ -199,9 +210,11 @@ export class EstimatorEngine {
         const approved=[task.product.en,task.product.es,...task.components.flatMap(x=>[x.en,x.es])].join(' ').toLowerCase()
         const selectedPaint=settings.catalog.find(x=>x.id===template.paintCatalogId)
         const selectedRepair=settings.catalog.find(x=>x.id===template.repairCatalogId)
+        const materialIds=s.plan.materialEvidence?.filter(x=>x.taskId===task.id)||[]
+        const selectedIds=s.materialPricing?.enabled?{paintCatalogId:materialIds.find(x=>x.role==='paint')?.id||null,repairCatalogId:materialIds.find(x=>x.role==='repair')?.id||null}:null
         const forTask={...template,
           paintCatalogId:selectedPaint && approved.includes(selectedPaint.brand.toLowerCase()) && approved.includes(selectedPaint.product.toLowerCase()) ? template.paintCatalogId : null,
-          repairCatalogId:selectedRepair && approved.includes(selectedRepair.brand.toLowerCase()) && approved.includes(selectedRepair.product.toLowerCase()) ? template.repairCatalogId : null}
+          repairCatalogId:selectedRepair && approved.includes(selectedRepair.brand.toLowerCase()) && approved.includes(selectedRepair.product.toLowerCase()) ? template.repairCatalogId : null,...selectedIds}
         const calculated=makePaintItems(task.id,inputs,forTask,settings.catalog,s.documentLanguage,s.plan.zip)
         document.sections.find(section=>section.id===task.id).items=calculated.items
         paint[task.id]={version:PAINT_RULE_VERSION,inputs,template:structuredClone(forTask),parameterEvidence:calculated.parameterEvidence,catalogSnapshots:settings.catalog.filter(x=>[forTask.paintCatalogId,forTask.repairCatalogId].includes(x.id)).map(x=>structuredClone(x)),areaSqFt:calculated.areaSqFt}
@@ -210,6 +223,7 @@ export class EstimatorEngine {
       document.scope.plan.markupBps=markupBps
       assertDocument(document,markupBps)
     }
+    if(s.materialPricing?.enabled){document.materialPricing={source:'server-internal-catalog',externallyQueried:false,tax:null,freight:null,stock:null};document.pricingContext=structuredClone(s.plan.pricingContext||{jobZip:s.plan.zip})}
     estimate={id:randomUUID(),title:localText(s.plan.title,s.documentLanguage),markup_bps:markupBps,document};estimateVersion=0
     }
    } else {
