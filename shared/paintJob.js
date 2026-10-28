@@ -71,12 +71,15 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
   const paint = catalog.find(x => x.id === template.paintCatalogId && available(x) && matchesMaterialRole(x,'paint') && packageGallons(x) > 0)
   const repair = catalog.find(x => x.id === template.repairCatalogId && available(x) && x.unit === 'ea' &&
     matchesMaterialRole(x,'repair'))
+  const parameterEvidence=paintParameterEvidence(template,catalog)
+  const coverageMismatch=parameterEvidence.coverage.status==='product-mismatch'
   const pack = packageGallons(paint) || 1
   if(paint && (!['ea','gal','qt'].includes(paint.unit) || paint.unit==='gal' && pack!==1 || paint.unit==='qt' && pack!==0.25)) throw Error('PRODUCT_COVERAGE_MISMATCH')
   const takeoff = { areaSqFt, coats: positive(template.coats, 'COATS'), coverageSqFtPerGallon: positive(template.coverageSqFtPerGallon, 'COVERAGE'),
     wastePercent: positive(template.wastePercent, 'WASTE', true), packageGallons: pack }
   Object.assign(takeoff, paintPackages(takeoff))
   if(!paint){takeoff.packageGallons=null;takeoff.packages=null}
+  if(coverageMismatch){takeoff.requiredGallons=null;takeoff.packages=null}
   const patchCount = positive(template.patchCount, 'PATCH_COUNT', true)
   const repairPackages = patchCount===0 ? 0 : positive(template.repairPackages ?? patchCount, 'REPAIR_PACKAGES', true)
   if(!Number.isSafeInteger(patchCount) || !Number.isSafeInteger(repairPackages)) throw Error('INVALID_REPAIR_PACKAGES')
@@ -105,7 +108,8 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
         { en: 'Whole purchasable packages; coverage and waste are editable assumptions.', es: 'Envases completos; rendimiento y desperdicio son supuestos editables.' })
       if (paint?.unitCost!==null&&paint) material = applyCatalogPrice(material, paint, zip, language)
       if(!paint||paint.unitCost===null){material.priceMissing=true;material.price=paint?catalogPriceSnapshot(paint,zip):material.price;material.price.unitCost=null;if(paint){material.description=paint.product+' - '+paint.package;material.priceDate=paint.checkedAt}}
-      if(!paint)material.quantityPending=true
+      if(!paint||coverageMismatch)material.quantityPending=true
+      if(template.technicalProfile)material.technicalCoverage=parameterEvidence.coverage
       material.origin = 'rule-engine'; material.ruleKey = `${phase}:material`; material.ruleVersion = PAINT_RULE_VERSION; material.takeoff = takeoff
       if (paint) material.translations = { en: material.description, es: material.description }
       entries.push(material)
@@ -127,7 +131,7 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
     if(laborRate===0&&laborItem.quantity>0){laborItem.priceMissing=true;laborItem.price.unitCost=null}
     laborItem.rateBasis=rateBasis;entries.push(laborItem);const burden=burdenItem(laborItem,rateBasis,language);if(burden)entries.push(burden)
   }
-  entries.push(...supplementalPaintItems(taskId,selections,catalog,language,zip))
+  entries.push(...supplementalPaintItems(taskId,selections,catalog,language,zip,areaSqFt))
   if(selections.some(x=>x.role==='primer')){
    const note={en:'Primer application labor hours pending. Finish-paint coats/productivity do not establish primer labor. Confirm incremental hours, or explicitly enter zero if already included; no extra hours assumed.',es:'Horas de aplicación de imprimante pendientes. Las manos/productividad de terminación no determinan este trabajo. Confirma horas adicionales o indica cero explícitamente si ya están incluidas; sin horas adicionales supuestas.'}
    const primerLabor={id:crypto.randomUUID(),taskId,ruleKey:'supplement:primer:labor',ruleVersion:PAINT_RULE_VERSION,description:language==='es'?'Aplicación de imprimante - mano de obra':'Primer application - labor',translations:{en:'Primer application - labor',es:'Aplicación de imprimante - mano de obra'},quantity:1,quantityPending:true,unit:'hr',unitCost:laborRate,costType:'labor',markupBps:null,origin:'rule-engine',needsReview:true,notes:note[language],ruleNotes:note,...provisional('PRIMER_LABOR_HOURS_PENDING',language),...(laborRate===0?{priceMissing:true}:{})}
@@ -140,7 +144,7 @@ export function makePaintItems(taskId, inputs, template, catalog, language = 'en
   entries.push(item('expenses', 'expenses', 1, 'lot', expenses,
     { en: `${template.expensesPercent}% of material and labor cost; excludes this expenses line. No tax or freight claim.`,
       es: `${template.expensesPercent}% del costo de materiales y mano de obra; excluye esta partida. No incluye impuestos ni flete confirmados.` }))
-  return { items: entries, areaSqFt, takeoff, parameterEvidence: paintParameterEvidence(template, catalog) }
+  return { items: entries, areaSqFt, takeoff, parameterEvidence }
 }
 
 export function paintMarkupBps(marginPercent) {
@@ -154,7 +158,7 @@ export function paintMarginPercent(markupBps) {
   return new Decimal(markup).times(100).div(new Decimal(10000).plus(markup)).toNumber()
 }
 
-export function recalculatePaintDocument(document, taskId, templateChanges = {}, inputChanges = {}, catalog = []) {
+export function recalculatePaintDocument(document, taskId, templateChanges = {}, inputChanges = {}, catalog = [], options = {}) {
   const rule = document.rules?.paint?.[taskId]
   if (!rule) throw Error('NO_PAINT_RULE')
   const template = { ...rule.template, ...templateChanges, productivity: { ...rule.template.productivity, ...templateChanges.productivity },
@@ -176,7 +180,8 @@ export function recalculatePaintDocument(document, taskId, templateChanges = {},
     const switched = next.ruleKey === 'painting:material' && template.paintCatalogId !== rule.template.paintCatalogId ||
       next.ruleKey === 'repair:material' && template.repairCatalogId !== rule.template.repairCatalogId ||
       next.materialSelectionId && ['catalogId','role'].some(field=>template.materialSelections?.find(x=>x.selectionId===next.materialSelectionId)?.[field] !== rule.template.materialSelections?.find(x=>x.selectionId===next.materialSelectionId)?.[field])
-    const overrides = switched ? { ...previous.ruleOverrides, price: true } : previous.ruleOverrides || {}
+    const overrides = switched ? { ...previous.ruleOverrides, price: true } : {...previous.ruleOverrides}
+    if(options.resetQuantityKeys?.includes(next.ruleKey))delete overrides.quantity
     return { ...next, id: previous.id, ...(switched?{previousMaterialSelection:{price:structuredClone(previous.price),quantity:previous.quantity,quantityPending:previous.quantityPending??false,unit:previous.unit,catalogId:previous.catalogId??null}}:previous.previousMaterialSelection?{previousMaterialSelection:previous.previousMaterialSelection}:{}), ruleOverrides: overrides, ...(Object.keys(overrides).length ? { origin: switched ? 'manual' : previous.origin } : {}),
       ...(overrides.quantity ? { quantity: previous.quantity, takeoff: previous.takeoff, quantityPending: switched || previous.quantityPending===true || next.quantityPendingReason==='PURCHASE_UNIT_REVIEW'&&!(overrides.price&&previous.unit==='ea'&&previous.price?.status==='manual'), ...(switched ? { quantityPendingReason:'PACKAGE_CHANGED', previousPurchaseQuantity:{quantity:previous.quantity,unit:previous.unit,catalogId:previous.catalogId??null} } : {quantityPendingReason:previous.quantityPendingReason,previousPurchaseQuantity:previous.previousPurchaseQuantity}) } : {}),
       ...(overrides.price && !switched ? { unitCost: previous.unitCost, unit: previous.unit, catalogId: previous.catalogId, costType: previous.costType,

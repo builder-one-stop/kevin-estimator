@@ -39,7 +39,7 @@ describe('price evidence and owner reference reuse', () => {
     const template = defaultPaintTemplate()
     expect(paintParameterEvidence(template, researchCatalog).coverage.status).toBe('provisional')
     const same = [{ ...paint, id: template.paintCatalogId, product: 'BEHR PREMIUM PLUS Interior Eggshell', model: '205001' }]
-    expect(paintParameterEvidence(template, same).coverage).toMatchObject({ status: 'documented-range-assumption', range: [250, 400] })
+    expect(paintParameterEvidence(template, same).coverage).toMatchObject({ status: 'provisional' }) // A family/model regex is not an exact accepted technical snapshot.
     expect(paintParameterEvidence(template, same).labor.status).toBe('provisional')
   })
   it('enforces authenticated owner isolation in the actual reference HTTP endpoint', async () => {

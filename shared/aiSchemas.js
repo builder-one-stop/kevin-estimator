@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import {validTechnicalSnapshot} from './technicalCoverage.js'
 import {materialRoles,supplementalMaterialRoles} from './materialSelection.js'
 import {offerContextSchema} from './priceOffers.js'
 import { conversionsSchema, roomsSchema } from './estimatingMarket.js'
@@ -66,9 +67,10 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
 }).strict().refine(x => x.status !== 'verified' || (x.unitCost !== null && x.verifiedZip && x.localPriceEvidence && x.vendor && x.location && x.url), 'Local verification requires product, exact ZIP and product/branch evidence')
   .refine(x => x.status !== 'public_observed' || x.unitCost !== null, 'An observed price requires a value')
   .refine(x => x.status !== 'quote_required' || x.unitCost === null, 'A quote-required record has no observed price')
-export const supplementalSelectionSchema=z.object({selectionId:z.string().min(1).max(80),role:z.enum(supplementalMaterialRoles),catalogId:z.string().max(80).nullable(),purchaseQuantity:z.number().int().min(0).max(1000000).nullable(),requestedLabel:z.string().max(1000).optional()}).strict()
+export const technicalSnapshotSchema=z.custom(value=>validTechnicalSnapshot(value),'Unknown or changed technical snapshot')
+export const supplementalSelectionSchema=z.object({selectionId:z.string().min(1).max(80),role:z.enum(supplementalMaterialRoles),quantityMode:z.enum(['manual','documented-coverage']).optional(),coverageAreaMode:z.enum(['room-walls','manual-area']).nullable().optional(),coverageAreaSqFt:z.number().positive().finite().nullable().optional(),technicalProfile:technicalSnapshotSchema.nullable().optional(),coats:z.number().positive().max(10).nullable().optional(),coverageSqFtPerGallon:z.number().positive().max(10000).nullable().optional(),wastePercent:z.number().min(0).max(100).nullable().optional(),catalogId:z.string().max(80).nullable(),purchaseQuantity:z.number().int().min(0).max(1000000).nullable(),requestedLabel:z.string().max(1000).optional()}).strict()
 export const paintTemplateSchema = z.object({
-  materialSelections:z.array(supplementalSelectionSchema).max(30).optional(),
+  technicalProfile:technicalSnapshotSchema.nullable().optional(),materialSelections:z.array(supplementalSelectionSchema).max(30).optional(),
   coats: z.number().positive().max(10), coverageSqFtPerGallon: z.number().positive().max(10000), wastePercent: z.number().min(0).max(100), patchCount: z.number().int().min(0).max(1000), repairPackages: z.number().int().min(0).max(1000).optional(),
   paintCatalogId: z.string().uuid().nullable(), repairCatalogId: z.string().uuid().nullable(),
   hourlyRate: z.number().min(0).max(10000), expensesPercent: z.number().min(0).max(100), marginPercent: z.number().min(0).max(90),

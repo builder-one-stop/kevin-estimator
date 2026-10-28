@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "profiles": [
+    {
+      "id": "behr-ultra-275001-white-eggshell-v1",
+      "version": 1,
+      "role": "paint",
+      "identity": {
+        "brand": "BEHR",
+        "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+        "model": "275001",
+        "package": "1 US gal · eggshell · Ultra Pure White",
+        "unit": "gal",
+        "variant": "",
+        "skus": [
+          "433052"
+        ]
+      },
+      "manufacturerNumber": "2750",
+      "base": "Ultra Pure White",
+      "sheen": "eggshell",
+      "coverageUnit": "sf/USgal/coat",
+      "range": [
+        250,
+        400
+      ],
+      "filmMils": [
+        {
+          "wet": 6.4,
+          "dry": 2.4,
+          "coverage": 250
+        },
+        {
+          "wet": 4,
+          "dry": 1.5,
+          "coverage": 400
+        }
+      ],
+      "criterion": "lower-range-bound-estimating-choice",
+      "manufacturerGuarantee": false,
+      "revision": "11/2020",
+      "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/da/dae4efe2-cd05-4c12-b7f8-344757743ad9.pdf",
+      "sourcePage": 1,
+      "bridgeUrl": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+      "corroborationUrl": "https://www.behr.com/pro/products/interior-products/interior-paints-and-coatings/paints-and-coatings/behr-ultra-interior/behr-ultra-interior-eggshell-enamel-2750",
+      "consultedAt": "2026-10-28",
+      "pdfSha256": "8e88f1fa499c0735d9bbc0ff40ad7e069f45010c1c2f6b677ae363cc70b916e8",
+      "conditions": {
+        "en": "Prepared, clean, dry substrate; texture, porosity and application affect coverage. Spray loss excluded. Coat count and job waste require review. No labor productivity inferred.",
+        "es": "Soporte preparado, limpio y seco; textura, porosidad y aplicación afectan rendimiento. Excluye pérdida por pulverización. Revisar manos y merma de obra. Sin productividad laboral inferida."
+      },
+      "applicationTemperatureF": [
+        50,
+        90
+      ],
+      "basis": "Per applied layer at stated wet/dry film; not a whole multi-coat system guarantee.",
+      "scopeLimit": "Only model275001/Ultra Pure White/eggshell/1USgal; not2753/2754, PREMIUM PLUS or other sheens."
+    },
+    {
+      "id": "kilz2-20941-white-us1gal-v1",
+      "version": 1,
+      "role": "primer",
+      "identity": {
+        "brand": "KILZ",
+        "product": "KILZ 2 ALL PURPOSE White Interior/Exterior Primer",
+        "model": "20941",
+        "package": "1 US gal · White",
+        "unit": "gal",
+        "variant": "",
+        "skus": [
+          "",
+          "140770"
+        ]
+      },
+      "manufacturerNumber": "2000",
+      "base": "White",
+      "sheen": "primer; sheen depends on substrate",
+      "coverageUnit": "sf/USgal/coat",
+      "range": [
+        300,
+        400
+      ],
+      "filmMils": [
+        {
+          "wet": 5.3,
+          "dry": 1.7,
+          "coverage": 300
+        },
+        {
+          "wet": 4,
+          "dry": 1.3,
+          "coverage": 400
+        }
+      ],
+      "criterion": "lower-range-bound-estimating-choice",
+      "manufacturerGuarantee": false,
+      "revision": "03/2019 (legacy header 6/2014)",
+      "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/b5/b505644b-bcec-4656-9ad9-64839581d23d.pdf",
+      "sourcePage": 1,
+      "bridgeUrl": "https://www.homedepot.com/p/KILZ-KILZ-2-ALL-PURPOSE-1-gal-White-Interior-Exterior-Multi-Surface-Primer-Sealer-and-Stain-Blocker-20941/100096395",
+      "corroborationUrl": "https://www.kilz.com/primer/kilz-2",
+      "consultedAt": "2026-10-28",
+      "pdfSha256": "0e72498490391aef975c7952d1ad8637ac13cb6e5291e30f3beb537cb26f0dc9",
+      "conditions": {
+        "en": "Prepared, clean, dry substrate; texture, porosity and application affect coverage. Spray loss excluded. Coat count and job waste require review. No labor productivity inferred.",
+        "es": "Soporte preparado, limpio y seco; textura, porosidad y aplicación afectan rendimiento. Excluye pérdida por pulverización. Revisar manos y merma de obra. Sin productividad laboral inferida."
+      },
+      "applicationTemperatureF": [
+        50,
+        90
+      ],
+      "basis": "Per applied layer at stated wet/dry film; not a whole multi-coat system guarantee.",
+      "scopeLimit": "Only model20941/KILZ2 All-Purpose White/1USgal; notGray, KILZ3 or other formulations."
+    }
+  ]
+}

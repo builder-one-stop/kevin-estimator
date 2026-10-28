@@ -189,9 +189,9 @@ export default function EstimateWorkspace({ estimateId, embedded = false, editor
     updateItem(sectionId, itemId, item => ({ ...applyCatalogPrice(item, entry, priceJobZip(draftRef.current.document), language),
       ...(item.ruleKey ? { ruleOverrides: { ...item.ruleOverrides, price: true } } : {}) }))
   }
-  function recalculatePaint(sectionId, template, inputs) {
+  function recalculatePaint(sectionId, template, inputs, options) {
     const markupBps = paintMarkupBps(template.marginPercent)
-    const document = recalculatePaintDocument(draftRef.current.document, sectionId, template, inputs, catalog)
+    const document = recalculatePaintDocument(draftRef.current.document, sectionId, template, inputs, catalog, options)
     edit(current => {
       return { ...current, markup_bps: markupBps, document: { ...document, scope: { ...document.scope, plan: { ...document.scope.plan, markupBps } } } }
     })
@@ -383,7 +383,7 @@ export default function EstimateWorkspace({ estimateId, embedded = false, editor
             </div>
             {draft.document.rules?.trades?.[section.id]?.trade==='drywall'&&<DrywallFinishEditor document={draft.document} sectionId={section.id} language={language} onChange={document=>updateDocument(()=>document)}/>}
               {draft.document.rules?.trades?.[section.id] && <TradeRuleEditor document={draft.document} sectionId={section.id} language={language} onChange={document=>updateDocument(()=>document)}/>}
-              {draft.document.rules?.paint?.[section.id] && <PaintRuleEditor key={section.id} rule={draft.document.rules.paint[section.id]} catalog={catalog} language={language} onRecalculate={(template,inputs) => recalculatePaint(section.id,template,inputs)}/>}
+              {draft.document.rules?.paint?.[section.id] && <PaintRuleEditor key={section.id} rule={draft.document.rules.paint[section.id]} catalog={catalog} language={language} onRecalculate={(template,inputs,options) => recalculatePaint(section.id,template,inputs,options)}/>}
             {!section.collapsed && <><div className="estimate-grid-labels"><span>{t('estimateEditor.description')}</span><span>{t('estimateEditor.qty')}</span><span>{t('estimateEditor.unit')}</span><span>{t('estimateEditor.unitCost')}</span><span>{t('estimateEditor.costType')}</span><span>{t('estimateEditor.cost')}</span><span /></div>
               {section.items.map((item, itemIndex) => <div className="estimate-item-wrap" key={item.id}><div className="estimate-item-row">
                 <input aria-label={t('estimateEditor.description')} value={item.description} onChange={(event) => updateItem(section.id, item.id, (row) => reviseManualPrice(row, { description: event.target.value, translations: undefined }, language))} placeholder={t('estimateEditor.description')} />

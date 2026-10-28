@@ -1,4 +1,5 @@
 import Decimal from 'decimal.js'
+import {technicalCoverageNote} from './technicalCoverage.js'
 import { takeoffSummary } from './materialTakeoff.js'
 
 const cost = item => new Decimal(item.quantity).times(new Decimal(item.unitCost).times(100).toDecimalPlaces(0,Decimal.ROUND_HALF_UP)).toDecimalPlaces(0,Decimal.ROUND_HALF_UP).toNumber()
@@ -40,7 +41,7 @@ export function markReviewedPaintChange(previous, next) {
     ...(quantity?{takeoff:undefined}:{}) }
 }
 
-export function paintLineNotes(item, rule, language = 'en') {
+function basePaintLineNotes(item, rule, language = 'en') {
   const es = language === 'es'
   const local = value => typeof value === 'string' ? value : value?.[language] || value?.en || ''
   const custom = item.ruleOverrides?.notes ? item.notes : ''
@@ -55,6 +56,7 @@ export function paintLineNotes(item, rule, language = 'en') {
   if(item.quantityPending&&item.ruleKey==='supplement:primer:labor')return [custom,local(item.ruleNotes)].filter(Boolean).join('\n')
   if(item.quantityPendingReason==='PURCHASE_UNIT_REVIEW'&&item.quantityPending)return [custom,es?'Unidad de precio y envase requieren revisión; sin convertir una unidad de consumo en un envase de compra.':'Price unit and package require review; no conversion from consumption units to purchase packages inferred.',local(item.ruleNotes)].filter(Boolean).join('\n')
   if(item.quantityPending&&item.materialSelectionId)return [custom,es?'Cantidad de compra pendiente para esta función; sin consumo supuesto.':'Purchase quantity pending for this function; no consumption assumed.',local(item.ruleNotes)].filter(Boolean).join('\n')
+  if(item.quantityPending&&item.technicalCoverage)return [custom,es?'Cantidad de compra pendiente; revisa coincidencia de ficha y parámetros de rendimiento.':'Purchase quantity pending; review sheet match and coverage inputs.'].filter(Boolean).join('\n')
   if(item.quantityPending)return [custom,es?'Producto o envase sin resolver; cantidad de compra pendiente. Las medidas originales se conservan en el plan.':'Product or purchase package unresolved; purchase quantity pending. Original measurements remain in the plan.'].filter(Boolean).join('\n')
   const quantityChanged = item.ruleOverrides?.quantity || (item.takeoff && Number(item.quantity) !== Number(item.takeoff.packages))
   if (item.ruleKey && quantityChanged) {
@@ -65,3 +67,5 @@ export function paintLineNotes(item, rule, language = 'en') {
   const notes = item.ruleNotes ? local(item.ruleNotes) : item.basis && [item.basis.en,item.basis.es].includes(item.notes) ? local(item.basis) : item.notes
   return [notes,takeoffSummary(item.takeoff,language)].filter(Boolean).join('\n')
 }
+
+export function paintLineNotes(item,rule,language='en'){return [basePaintLineNotes(item,rule,language),technicalCoverageNote(item.technicalCoverage,language)].filter(Boolean).join('\n')}

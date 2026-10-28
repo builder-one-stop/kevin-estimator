@@ -24,7 +24,8 @@ export function packageGallons(entry) {
 export function takeoffSummary(takeoff, language = 'en') {
   if (!takeoff?.packages) return ''
   const { areaSqFt, coats, coverageSqFtPerGallon, wastePercent, requiredGallons, packageGallons: pack, packages } = takeoff
+  const scope=takeoff.areaSource==='manual-area'?(language==='es'?' Superficie parcial manual.':' Manual partial area.'):takeoff.areaSource==='room-walls'?(language==='es'?' Paredes actuales elegidas explícitamente.':' Current wall area explicitly selected.'):''
   return language === 'es'
-    ? `${areaSqFt} sf × ${coats} manos × (1 + ${wastePercent}% merma) ÷ ${coverageSqFtPerGallon} sf/gal = ${requiredGallons} gal; ${packages} envases de ${pack} gal. Rendimiento y merma son supuestos editables.`
-    : `${areaSqFt} sf × ${coats} coats × (1 + ${wastePercent}% waste) ÷ ${coverageSqFtPerGallon} sf/gal = ${requiredGallons} gal; ${packages} × ${pack} gal package(s). Coverage and waste are editable assumptions.`
+    ? `${areaSqFt} sf × ${coats} manos × (1 + ${wastePercent}% merma) ÷ ${coverageSqFtPerGallon} sf/gal = ${requiredGallons} gal; ${packages} envases de ${pack} gal. Rendimiento y merma son supuestos editables.${scope}`
+    : `${areaSqFt} sf × ${coats} coats × (1 + ${wastePercent}% waste) ÷ ${coverageSqFtPerGallon} sf/gal = ${requiredGallons} gal; ${packages} × ${pack} gal package(s). Coverage and waste are editable assumptions.${scope}`
 }

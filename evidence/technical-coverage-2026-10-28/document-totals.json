@@ -1,0 +1,82 @@
+{
+  "applied-en": {
+    "sections": [
+      {
+        "id": "bedroom-walls",
+        "costCents": 84336
+      }
+    ],
+    "costsByType": {
+      "material": 30520,
+      "labor": 49800,
+      "equipment": 0,
+      "other": 4016
+    },
+    "laborHours": 7.64,
+    "costCents": 84336,
+    "markupCents": 28109,
+    "profitCents": 28109,
+    "priceCents": 112445,
+    "marginPercent": 24.997999021743965
+  },
+  "resized-en": {
+    "sections": [
+      {
+        "id": "bedroom-walls",
+        "costCents": 144766
+      }
+    ],
+    "costsByType": {
+      "material": 48322,
+      "labor": 89550,
+      "equipment": 0,
+      "other": 6894
+    },
+    "laborHours": 12.94,
+    "costCents": 144766,
+    "markupCents": 48251,
+    "profitCents": 48251,
+    "priceCents": 193017,
+    "marginPercent": 24.998316210489232
+  },
+  "applied-es": {
+    "sections": [
+      {
+        "id": "bedroom-walls",
+        "costCents": 84336
+      }
+    ],
+    "costsByType": {
+      "material": 30520,
+      "labor": 49800,
+      "equipment": 0,
+      "other": 4016
+    },
+    "laborHours": 7.64,
+    "costCents": 84336,
+    "markupCents": 28109,
+    "profitCents": 28109,
+    "priceCents": 112445,
+    "marginPercent": 24.997999021743965
+  },
+  "resized-es": {
+    "sections": [
+      {
+        "id": "bedroom-walls",
+        "costCents": 144766
+      }
+    ],
+    "costsByType": {
+      "material": 48322,
+      "labor": 89550,
+      "equipment": 0,
+      "other": 6894
+    },
+    "laborHours": 12.94,
+    "costCents": 144766,
+    "markupCents": 48251,
+    "profitCents": 48251,
+    "priceCents": 193017,
+    "marginPercent": 24.998316210489232
+  }
+}
