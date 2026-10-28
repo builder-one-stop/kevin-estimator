@@ -1,4 +1,4 @@
-import {researchCatalog} from './researchCatalog.js'
+import {researchCatalog,researchBindingIssue} from './researchCatalog.js'
 import {catalogSchema} from './aiSchemas.js'
 import {offerIdentity} from './priceOffers.js'
 import {packageGallons} from './materialTakeoff.js'
@@ -20,7 +20,8 @@ export function previewCatalogImport(input,{previous=[],mode='merge',today=new D
   }
   const parsed=catalogSchema.safeParse({...raw,id})
   if(!parsed.success){for(const error of parsed.error.issues)issue(errors,number,'INVALID_RECORD',error.path.join('.'));rows.push({row:number,product:String(raw.product||''),id,action:'invalid'});continue}
-  const entry=parsed.data,old=previous.find(r=>r.id===id),action=old?(content(entry)===content(old)?'unchanged':'updated'):'inserted'
+  const entry=parsed.data,bindingIssue=researchBindingIssue(entry);if(bindingIssue)issue(errors,number,bindingIssue,'sourceId')
+  const old=previous.find(r=>r.id===id),action=old?(content(entry)===content(old)?'unchanged':'updated'):'inserted'
   rows.push({row:number,...entry,action})
   if(!['ea','gal','qt','sf','lf'].includes(entry.unit))issue(errors,number,'MATERIAL_UNIT_REQUIRED','unit')
   if(entry.unitCost!==null&&!entry.package)issue(errors,number,'PRICE_PACKAGE_MISSING','package')

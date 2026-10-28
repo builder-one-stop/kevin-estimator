@@ -9,7 +9,7 @@ import {catalogSchema} from '../../shared/aiSchemas.js'
 const seed=()=>catalogSchema.parse(Object.fromEntries(Object.keys(catalogSchema.shape).filter(k=>Object.hasOwn(researchCatalog[0],k)).map(k=>[k,researchCatalog[0][k]])))
 afterEach(cleanup)
 it('previews merge/replace without mutating previous records and reuses an exact offer ID for repeated files',()=>{
- const old=seed(),before=structuredClone(old),input={...old,id:undefined,product:'Renamed same SKU',unitCost:55}
+ const old={...seed(),id:crypto.randomUUID(),sourceId:undefined},before=structuredClone(old),input={...old,id:undefined,product:'Renamed same SKU',unitCost:55}
  const preview=previewCatalogImport([input],{previous:[old],today:'2026-10-28'})
  expect(preview.valid).toBe(true);expect(preview.catalog[0]).toMatchObject({id:old.id,unitCost:55});expect(preview.counts.updated).toBe(1);expect(old).toEqual(before)
  expect(previewCatalogImport([input],{previous:preview.catalog,today:'2026-10-28'}).counts.unchanged).toBe(1)
@@ -26,7 +26,7 @@ it('rejects duplicate IDs, same-SKU renamed offers, source collisions and unknow
 it('checks purchased-package units and observed dates while preserving null and historical reference prices',()=>{
  const a=seed()
  for(const changed of [{package:'5 US gal',unit:'gal'},{unit:'hr'},{package:''},{checkedAt:'2099-01-01'}])expect(previewCatalogImport([{...a,...changed}],{today:'2026-10-28'}).valid).toBe(false)
- const pending=previewCatalogImport([{...a,package:'5 US gal',unit:'ea',unitCost:null,status:'quote_required'}],{today:'2026-10-28'})
+ const pending=previewCatalogImport([{...a,id:crypto.randomUUID(),sourceId:undefined,package:'5 US gal',unit:'ea',unitCost:null,status:'quote_required'}],{today:'2026-10-28'})
  expect(pending.valid).toBe(true);expect(pending.catalog[0].unitCost).toBeNull()
  const stale=previewCatalogImport([{...a,checkedAt:'2026-01-01',validUntil:'2026-02-01'}],{today:'2026-10-28'})
  expect(stale.valid).toBe(true);expect(stale.warnings.some(i=>i.code==='STALE_REFERENCE')).toBe(true);expect(stale.catalog[0].checkedAt).toBe('2026-01-01')

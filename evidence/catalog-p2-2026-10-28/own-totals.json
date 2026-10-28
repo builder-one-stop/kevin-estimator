@@ -1,0 +1,20 @@
+{
+  "sections": [
+    {
+      "id": "bedroom-walls",
+      "costCents": 66283
+    }
+  ],
+  "costsByType": {
+    "material": 13327,
+    "labor": 49800,
+    "equipment": 0,
+    "other": 3156
+  },
+  "laborHours": 6.64,
+  "costCents": 66283,
+  "markupCents": 22092,
+  "profitCents": 22092,
+  "priceCents": 88375,
+  "marginPercent": 24.9980198019802
+}

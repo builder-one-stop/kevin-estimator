@@ -1,0 +1,9 @@
+{
+  "pages": 3,
+  "selectedOwnSku": true,
+  "ownProduct": true,
+  "originalDate": true,
+  "knownSubtotal": true,
+  "allPagesNumbered": true,
+  "textWithinBounds": true
+}

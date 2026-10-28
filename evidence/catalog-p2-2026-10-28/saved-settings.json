@@ -1,0 +1,99 @@
+{
+  "owner_id": "10000000-0000-4000-8000-000000000002",
+  "version": 2,
+  "data": {
+    "labor": {
+      "hourlyRate": 0,
+      "productivity": ""
+    },
+    "catalog": [
+      {
+        "id": "a1000000-0000-4000-8000-000000000001",
+        "sku": "QA-IMPORT",
+        "url": "https://example.invalid/qa-source",
+        "unit": "ea",
+        "brand": "SYNTHETIC",
+        "status": "manual",
+        "vendor": "Synthetic supplier",
+        "package": "5 US gal",
+        "product": "SYNTHETIC QA interior paint",
+        "currency": "USD",
+        "evidence": "Synthetic import fixture only; not a supplier price.",
+        "location": "",
+        "unitCost": 110,
+        "checkedAt": "2026-10-25",
+        "priceHistory": [
+          {
+            "sku": "QA-IMPORT",
+            "url": "https://example.invalid/qa-source",
+            "unit": "ea",
+            "brand": "SYNTHETIC",
+            "status": "manual",
+            "vendor": "Synthetic supplier",
+            "package": "5 US gal",
+            "product": "SYNTHETIC QA interior paint",
+            "version": 1,
+            "evidence": "Synthetic import fixture only; not a supplier price.",
+            "location": "",
+            "unitCost": 100,
+            "checkedAt": "2026-10-25",
+            "validUntil": null,
+            "verifiedZip": null,
+            "localPriceEvidence": ""
+          }
+        ],
+        "priceVersion": 2
+      },
+      {
+        "id": "a1000000-0000-4000-8000-000000000003",
+        "sku": "QA-PENDING",
+        "url": "https://example.invalid/qa-source",
+        "unit": "ea",
+        "brand": "SYNTHETIC",
+        "status": "quote_required",
+        "vendor": "Synthetic supplier",
+        "package": "5 US gal",
+        "product": "SYNTHETIC QA interior paint",
+        "currency": "USD",
+        "evidence": "Synthetic import fixture only; not a supplier price.",
+        "location": "",
+        "unitCost": null,
+        "checkedAt": "2026-10-25",
+        "priceHistory": [],
+        "priceVersion": 1
+      }
+    ],
+    "business": {
+      "name": "One Stop Building & Remodeling",
+      "phone": "",
+      "address": "",
+      "license": ""
+    },
+    "preferences": [],
+    "paintTemplate": {
+      "coats": 2,
+      "hourlyRate": 75,
+      "patchCount": 1,
+      "productivity": {
+        "repair": 8,
+        "cleanup": 1000,
+        "painting": 150,
+        "protection": 800,
+        "preparation": 350
+      },
+      "wastePercent": 10,
+      "marginPercent": 25,
+      "paintCatalogId": "00000000-0000-4000-8000-000000000001",
+      "repairPackages": 1,
+      "expensesPercent": 5,
+      "repairCatalogId": "00000000-0000-4000-8000-000000000003",
+      "consumablesUsdPerSqFt": {
+        "cleanup": 0.03,
+        "protection": 0.08,
+        "preparation": 0.06
+      },
+      "coverageSqFtPerGallon": 350
+    }
+  },
+  "updated_at": "2026-10-28T17:24:24.438Z"
+}

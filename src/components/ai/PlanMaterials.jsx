@@ -1,12 +1,9 @@
-import {matchesMaterialRole,materialSelectionKey,supplementalMaterialRoles} from '../../../shared/materialSelection.js'
+import {materialSelectionKey,supplementalMaterialRoles} from '../../../shared/materialSelection.js'
 import {webReferenceNotice} from '../../../shared/catalogPricing.js'
-import {useEffect,useState} from 'react'
-import {aiRequest} from '../../services/ai.js'
+import MaterialReferencePicker from './MaterialReferencePicker.jsx'
 import {candidateStores,serviceArea} from '../../../shared/southBaySuppliers.js'
 export default function PlanMaterials({plan,onChange,language}){
- const editable=Boolean(onChange),es=language==='es',tr=(en,sp)=>es?sp:en
- const [options,setOptions]=useState([]),[error,setError]=useState(false)
- useEffect(()=>{if(!editable)return;let active=true;aiRequest('pricing/catalog').then(x=>{if(active)setOptions(x.rows)}).catch(()=>{if(active)setError(true)});return()=>{active=false}},[editable])
+ const es=language==='es',tr=(en,sp)=>es?sp:en
  const context=plan.pricingContext||{jobZip:plan.zip||'',storeId:'',storeZip:''},requests=plan.materialRequests||[]
  const same=(a,b)=>a.taskId===b.taskId&&materialSelectionKey(a)===materialSelectionKey(b)
  const update=(row,patch)=>onChange({...plan,materialRequests:requests.map(r=>same(r,row)?{...r,...patch}:r)})
@@ -25,7 +22,7 @@ export default function PlanMaterials({plan,onChange,language}){
  <strong>{roleLabel(row.role)} — {row.label}</strong><p>{row.unitCost==null?tr('Price pending','Precio pendiente'):`USD ${row.unitCost}/${row.unit}`} · {({verified:tr('Local evidence','Evidencia local'),public_observed:tr('Public web reference','Referencia web pública'),quote_required:tr('Pending','Pendiente'),provisional:'Provisional',manual:'Manual'})[row.status]||tr('Pending','Pendiente')} · {row.freshness==='stale'?tr('Stale snapshot','Fuente vencida'):row.freshness==='fresh'?tr('Source date within review period','Fecha dentro del período de revisión'):tr('Evidence pending','Evidencia pendiente')} · {row.checkedAt||tr('Date pending','Fecha pendiente')}</p>
  {row.alternativeAccepted&&<p>{tr('Accepted budgeting alternative; equivalence is not confirmed. Editable coverage and suitability assumptions require review.','Alternativa referencial aceptada; no confirma equivalencia. Revisa los supuestos editables de rendimiento y adecuación.')} {row.alternativeFor}</p>}{row.url&&<a href={row.url} target="_blank" rel="noreferrer">{tr('Recorded source','Fuente registrada')}</a>}
  {onChange&&!row.id&&<p>{tr('Selecting a reference below explicitly accepts it as a budgeting alternative, not an exact match to the missing product.','Elegir una referencia abajo la acepta explícitamente como alternativa para presupuestar, no como coincidencia exacta del producto faltante.')}</p>}
- {onChange&&<label>{tr('Choose exact reference','Elegir referencia exacta')} ({row.role})<select aria-label={`${tr('Choose exact reference','Elegir referencia exacta')} (${row.role})`} value={row.id||''} onChange={e=>choose(row,e.target.value)}><option value="">{tr('Unresolved / keep pending','Sin resolver / mantener pendiente')}</option>{options.filter(p=>matchesMaterialRole(p,row.role)).map(p=><option key={p.id} value={p.id}>{p.vendor} | {p.product} | {p.package} | SKU {p.sku||'-'}</option>)}</select></label>}
+ {onChange&&<MaterialReferencePicker role={row.role} value={row.id} label={row.label} language={language} onChange={id=>choose(row,id)}/>}
  {supplementalMaterialRoles.includes(row.role)&&<>
  {onChange&&<label>{tr('Material function','Función del material')}<select aria-label={tr('Material function','Función del material')} value={row.role} onChange={e=>update(row,{role:e.target.value,id:'',selectionReason:undefined})}>{supplementalMaterialRoles.map(role=><option key={role} value={role}>{roleLabel(role)}</option>)}</select></label>}
  {onChange?<label>{tr('Whole purchase packages (blank pending)','Envases completos de compra (vacío pendiente)')}<input aria-label={tr('Whole purchase packages (blank pending)','Envases completos de compra (vacío pendiente)')} type="number" min="0" max="1000000" step="1" value={row.purchaseQuantity??''} onChange={e=>update(row,{purchaseQuantity:e.target.value===''?null:Number(e.target.value)})}/></label>:<p>{row.purchaseQuantity==null?tr('Purchase quantity pending; no consumption assumed.','Cantidad de compra pendiente; sin consumo supuesto.'):`${row.purchaseQuantity} ${tr('whole purchase packages','envases completos de compra')}`}</p>}
@@ -36,6 +33,5 @@ export default function PlanMaterials({plan,onChange,language}){
  {onChange&&<div className="ai-grid"><label>{tr('Optional job ZIP','ZIP opcional de obra')}<input value={context.jobZip||''} inputMode="numeric" maxLength={5} pattern="[0-9]{5}|" onChange={e=>setContext({jobZip:e.target.value})}/></label>
  <label>{tr('Optional buying store candidate','Candidata opcional de compra')}<select aria-label={tr('Optional buying store candidate','Candidata opcional de compra')} value={candidateStores.find(s=>s.storeId===context.storeId&&s.storeZip===context.storeZip)?.id||''} onChange={e=>{const store=candidateStores.find(s=>s.id===e.target.value);setContext(store?{supplierId:store.supplierId,storeId:store.storeId,storeZip:store.storeZip}:{supplierId:'',storeId:'',storeZip:''})}}><option value="">{tr('No store selected','Sin tienda elegida')}</option>{candidateStores.map(s=><option key={s.id} value={s.id}>{s.vendor} {s.label} #{s.storeId} · {s.storeZip}</option>)}</select></label></div>}
  <p>{tr('Service base','Base de servicio')}: {serviceArea.baseCity}. {tr('Coast south toward Palos Verdes. Buying-store ZIP is separate from job ZIP. Selecting a candidate does not verify its price or stock.','Costa al sur hacia Palos Verdes. ZIP de compra y ZIP de obra son distintos. Elegir una candidata no verifica precio ni stock.')}</p>
- {error&&<p role="status">{tr('Catalog unavailable; keep the plan and pending materials.','Catálogo no disponible; conserva el plan y materiales pendientes.')}</p>}
  </section>
 }

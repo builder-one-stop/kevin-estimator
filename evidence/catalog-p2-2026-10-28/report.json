@@ -1,0 +1,13 @@
+{
+  "environment": "Isolated PGlite, existing synthetic admin-B/operator-A roles, no external service.",
+  "checks": [
+    "Changed research identity and unknown sourceId rejected before persistence with useful messages",
+    "Maintenance queue exposes missing/stale coverage without changing source dates or amounts",
+    "Invalid units/duplicates block apply; preview never persists",
+    "Merge preserves pending entries; Save/reload versions only this owner catalog",
+    "Second import updates existingID with history; replace removals explicit; cancel preserves list",
+    "Operator-A data remains empty; admin permissions unchanged;390px fit",
+    "67 account records; later-page OWN-65 reachable, server search resets cursor; operator-A cannot see account-B quote; explicit selection → approved plan → three packages at20.65 → reload → actual PDF; original source date retained"
+  ],
+  "errors": []
+}

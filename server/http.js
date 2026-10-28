@@ -11,7 +11,7 @@ import { settingsSchema, defaultSettings } from '../shared/aiSchemas.js'
 import { createWorkersHandler } from './workers.js'
 import { normalizeSignature } from './signature.js'
 import { fail } from '../shared/aiDomain.js'
-import { versionManagedCatalog } from '../shared/researchCatalog.js'
+import { versionManagedCatalog,researchBindingIssue } from '../shared/researchCatalog.js'
 import { collectPriceReferences, assessPrice } from '../shared/priceEvidence.js'
 import {actualCostComparison} from './localActualCosts.js'
 import { queryLibrary,libraryCounts } from '../shared/localPriceLibrary.js'
@@ -83,6 +83,7 @@ export function createEstimatorHandler({ repo, provider, origin, logger, testMod
             if (await repo.access(owner) !== 'admin') throw fail('BETA_ADMIN_REQUIRED',403)
             for (const entry of x.data.catalog) {
               const previous = current.catalog.find(row => row.id === entry.id)
+              if(JSON.stringify(entry)!==JSON.stringify(previous)&&researchBindingIssue(entry))throw fail(researchBindingIssue(entry))
               if (entry.status === 'verified' && JSON.stringify(entry) !== JSON.stringify(previous) && assessPrice(entry,entry.verifiedZip).status !== 'verified') throw fail('CATALOG_EVIDENCE_REQUIRED')
             }
             x.data.catalog = versionManagedCatalog(current.catalog, x.data.catalog)

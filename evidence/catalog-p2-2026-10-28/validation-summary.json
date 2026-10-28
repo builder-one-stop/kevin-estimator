@@ -1,0 +1,15 @@
+{
+  "tests": 415,
+  "files": 77,
+  "success": true,
+  "lint": "passed",
+  "guardedProductionBuild": "passed-existing-Kevin-public-config",
+  "officialNetlifyPackaging": "passed",
+  "secretFixtureSymlinkScan": "passed",
+  "pdfs": 5,
+  "pages": 22,
+  "pdfVisualReview": "all pages reviewed",
+  "sourceCheckoutsPreserved": true,
+  "qaProcessesClosed": true,
+  "remoteActions": false
+}

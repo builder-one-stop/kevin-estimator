@@ -1,6 +1,6 @@
 import json,zipfile,stat,hashlib,re,struct,sys
 from pathlib import Path
-root=Path.cwd().resolve();folder=root/'.test-tmp/netlify-functions';out=root/'evidence/pricing-mobile-2026-10-28';private={}
+root=Path.cwd().resolve();folder=root/'.test-tmp/netlify-functions';out=root/(sys.argv[3] if len(sys.argv)>3 else 'evidence/pricing-mobile-2026-10-28');private={}
 for line in Path(sys.argv[1]).read_text().splitlines():
  m=re.match(r'\s*([A-Z][A-Z0-9_]*)\s*=\s*(.*)$',line)
  if m and re.search('SECRET|SERVICE_ROLE|API_KEY|ACCESS_TOKEN|PASSWORD',m[1]):

@@ -119,7 +119,7 @@ describe('painting multiple SKU functions',()=>{
   expect(extras(doc)[0].price.unitCost).toBeNull()
  })
  it('keeps an incompatible price-per-linear-foot entry pending instead of pricing a complete package as one foot',()=>{
-  const source={...researchCatalog.find(x=>x.sourceId==='LO04'),unit:'lf'}
+  const source={...researchCatalog.find(x=>x.sourceId==='LO04'),sourceId:undefined,unit:'lf'}
   const items=makePaintItems('t',input,{...defaultPaintTemplate(),materialSelections:[{selectionId:'test-unit',role:'protection',catalogId:source.id,purchaseQuantity:1}]},[...researchCatalog.filter(x=>x.id!==source.id),source]).items
   expect(items.find(x=>x.materialSelectionId)).toMatchObject({quantityPending:true,quantityPendingReason:'PURCHASE_UNIT_REVIEW',unit:'lf',unitCost:8.28})
   expect(itemCostCents(items.find(x=>x.materialSelectionId))).toBe(0)

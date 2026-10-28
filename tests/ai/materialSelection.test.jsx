@@ -25,7 +25,7 @@ it.each(['primer','patch','abrasive','protection'])('does not offer a %s as fini
 it.each(['Shrink Free Spackling','Wall Primer','Primer for paint','Patch filler'])('keeps an unclassified %s out of paint suggestions',product=>expect(matchesMaterialRole({product},'paint')).toBe(false))
 it.each(['Synthetic interior paint','Interior Paint & Primer','Interior Paint + Primer','Pintura interior','Interior Paint and Primer'])('allows a classified product name %s only as a suggestion requiring an exact selected reference',product=>expect(matchesMaterialRole({product},'paint')).toBe(true))
 it.each(['en','es'])('shows exact known paint with missing price as pending, and excludes quart filler and primer in the %s rule selector',language=>{
- const pending={...researchCatalog[0],id:'pending-paint',unitCost:null,status:'quote_required',product:'Synthetic pending interior paint'}
+ const pending={...researchCatalog[0],id:'pending-paint',sourceId:undefined,unitCost:null,status:'quote_required',product:'Synthetic pending interior paint'}
  const html=renderToStaticMarkup(createElement(PaintRuleEditor,{rule:{template:defaultPaintTemplate(),inputs:{lengthFt:12,widthFt:10,heightFt:8},areaSqFt:352,version:'interior-walls-1'},catalog:[...researchCatalog,pending],language,onRecalculate:()=>{}}))
  const paint=html.match(new RegExp(`<select aria-label="${language==='es'?'Pintura':'Paint'}"[^>]*>([\\s\\S]*?)</select>`))[1]
  expect(paint).toContain('Synthetic pending interior paint');expect(paint).toContain(language==='es'?'Precio pendiente':'Price pending')

@@ -20,7 +20,7 @@ describe('explicit exact-product technical coverage',()=>{
   expect(primerProfile).toMatchObject({manufacturerNumber:'2000',range:[300,400],revision:'03/2019 (legacy header 6/2014)'})
   expect(profile.pdfSha256).toBe('8e88f1fa499c0735d9bbc0ff40ad7e069f45010c1c2f6b677ae363cc70b916e8')
   expect(primerProfile.bridgeUrl).toContain('20941/100096395')
-  expect(technicalCoverageFor({...primer,sku:'140770'},'primer')).toEqual(primerProfile)
+  expect(technicalCoverageFor({...primer,sourceId:undefined,sku:'140770'},'primer')).toEqual(primerProfile)
   expect(researchCatalog.filter(x=>technicalCoverageFor(x))).toHaveLength(2)
  })
  it.each([{model:'275301'},{sku:'OTHER'},{package:'5 US gal',unit:'ea'},{product:'BEHR PREMIUM PLUS Interior Eggshell',model:'205001'},{variant:'Blue'},{brand:'Different'},{category:'primer'}])('does not transfer the BEHR sheet to altered identity %j',change=>expect(technicalCoverageFor({...paint,...change},'paint')).toBeNull())

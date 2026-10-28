@@ -1,0 +1,14 @@
+{
+  "ai": {
+    "RESEARCH_IDENTITY_CHANGED": true,
+    "UNKNOWN_RESEARCH_SOURCE": true,
+    "nextOffset": true,
+    "classificationPending": true
+  },
+  "ai-run": {
+    "RESEARCH_IDENTITY_CHANGED": true,
+    "UNKNOWN_RESEARCH_SOURCE": true,
+    "nextOffset": true,
+    "classificationPending": true
+  }
+}

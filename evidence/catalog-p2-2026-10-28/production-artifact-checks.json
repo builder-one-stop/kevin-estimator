@@ -1,0 +1,114 @@
+{
+  "packager": "@netlify/zip-it-and-ship-it 16.5.0 (existing Netlify CLI27.14.2 cache)",
+  "bundler": "nft",
+  "runtime": "nodejs24.x",
+  "functions": [
+    {
+      "name": "ai-run",
+      "bytes": 2237021,
+      "sha256": "cc967212107c9bf28b5f2368901b24bfa1965accc2d00ddb76405d82c72b4631",
+      "entries": 705,
+      "native": [],
+      "hasLinuxNativePair": false,
+      "hasBootstrap": true,
+      "newPricingMarkers": {
+        "275001": true,
+        "20941": true,
+        "technicalProfile": true,
+        "materialSelections": true
+      }
+    },
+    {
+      "name": "ai",
+      "bytes": 20559630,
+      "sha256": "45d7fe39c1cf1334da0e3eca35028c36db1a387184d460a8267544ac2619746c",
+      "entries": 808,
+      "native": [
+        {
+          "file": "node_modules/@img/sharp-libvips-linux-x64/lib/libvips-cpp.so.8.18.7",
+          "elf64x86": true,
+          "sha256": "4aa73553408c3964071728f4a231a8e86918e39bc49f1fbae75355f7ea933ea9"
+        },
+        {
+          "file": "node_modules/@img/sharp-linux-x64/lib/sharp-linux-x64-0.35.5.node",
+          "elf64x86": true,
+          "sha256": "cf896cc1b7f3ae9c3e8eb3d7b2b198b8de2824ff7d0681d684bab5a825def335"
+        }
+      ],
+      "hasLinuxNativePair": true,
+      "hasBootstrap": true,
+      "newPricingMarkers": {
+        "275001": true,
+        "20941": true,
+        "technicalProfile": true,
+        "materialSelections": true
+      }
+    },
+    {
+      "name": "worker-cleanup",
+      "bytes": 19546438,
+      "sha256": "7c1d8790345f91b5e22d6ff4cd7dc05efef89b294226d3a80bdf06d331f84a0b",
+      "entries": 359,
+      "native": [
+        {
+          "file": "node_modules/@img/sharp-libvips-linux-x64/lib/libvips-cpp.so.8.18.7",
+          "elf64x86": true,
+          "sha256": "4aa73553408c3964071728f4a231a8e86918e39bc49f1fbae75355f7ea933ea9"
+        },
+        {
+          "file": "node_modules/@img/sharp-linux-x64/lib/sharp-linux-x64-0.35.5.node",
+          "elf64x86": true,
+          "sha256": "cf896cc1b7f3ae9c3e8eb3d7b2b198b8de2824ff7d0681d684bab5a825def335"
+        }
+      ],
+      "hasLinuxNativePair": true,
+      "hasBootstrap": true,
+      "newPricingMarkers": {
+        "275001": false,
+        "20941": false,
+        "technicalProfile": false,
+        "materialSelections": false
+      }
+    },
+    {
+      "name": "workers",
+      "bytes": 19550054,
+      "sha256": "183d2dd7790dfa14a9128ce3bf8514b986109c12bb3356eeda0b873bf9081358",
+      "entries": 359,
+      "native": [
+        {
+          "file": "node_modules/@img/sharp-libvips-linux-x64/lib/libvips-cpp.so.8.18.7",
+          "elf64x86": true,
+          "sha256": "4aa73553408c3964071728f4a231a8e86918e39bc49f1fbae75355f7ea933ea9"
+        },
+        {
+          "file": "node_modules/@img/sharp-linux-x64/lib/sharp-linux-x64-0.35.5.node",
+          "elf64x86": true,
+          "sha256": "cf896cc1b7f3ae9c3e8eb3d7b2b198b8de2824ff7d0681d684bab5a825def335"
+        }
+      ],
+      "hasLinuxNativePair": true,
+      "hasBootstrap": true,
+      "newPricingMarkers": {
+        "275001": false,
+        "20941": false,
+        "technicalProfile": false,
+        "materialSelections": false
+      }
+    }
+  ],
+  "secretMatches": [],
+  "fixtureMatches": [],
+  "forbiddenFiles": [],
+  "symlinks": [],
+  "productionDist": {
+    "kevinTargetPresent": true,
+    "existingPublicKeyPresent": true,
+    "privateValuesCheckedByName": [
+      "SUPABASE_SERVICE_ROLE_KEY",
+      "OPENAI_API_KEY",
+      "KEVIN_OPENAI_API_KEY"
+    ]
+  },
+  "status": "passed"
+}

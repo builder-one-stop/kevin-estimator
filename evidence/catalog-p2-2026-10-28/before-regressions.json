@@ -1,0 +1,26 @@
+{
+  "passed": 0,
+  "failed": 5,
+  "failures": [
+    {
+      "name": "rejects product identity replacement through a research source binding",
+      "message": "AssertionError: expected true to be false // Object.is equality"
+    },
+    {
+      "name": "quarantines previously stored changed identities without deleting price/history or inferring function",
+      "message": "AssertionError: expected undefined to be true // Object.is equality"
+    },
+    {
+      "name": "rejects unknown sourceId rather than accepting a row that disappears",
+      "message": "AssertionError: expected true to be false // Object.is equality"
+    },
+    {
+      "name": "preserves previously stored unknown source rows as pending unlinked account records",
+      "message": "AssertionError: expected undefined to match object { unitCost: 46.98, …(2) }"
+    },
+    {
+      "name": "pages a role-filtered account catalog beyond40 and searches later rows",
+      "message": "ZodError: ["
+    }
+  ]
+}

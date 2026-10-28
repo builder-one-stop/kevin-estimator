@@ -8,7 +8,7 @@ import {InternalCatalogProvider,resolvePrice} from './pricing.js'
 import {requestedMaterials,materialSlot} from './materialIntent.js'
 export {requestedMaterial,requestedMaterials} from './materialIntent.js'
 const normalize=x=>String(x??'').trim().toLowerCase()
-export const materialQuerySchema=z.object({id:z.string().max(80).optional(),sku:z.string().max(100).optional(),model:z.string().max(100).optional(),variant:z.string().max(200).optional(),package:z.string().max(200).optional(),vendor:z.string().max(200).optional(),storeId:z.string().max(100).optional(),storeZip:z.string().regex(/^\d{5}$/).optional(),role:z.enum(materialRoles).optional(),q:z.string().max(200).optional()}).strict()
+export const materialQuerySchema=z.object({limit:z.coerce.number().int().min(1).max(40).default(40),offset:z.coerce.number().int().min(0).max(1000).default(0),id:z.string().max(80).optional(),sku:z.string().max(100).optional(),model:z.string().max(100).optional(),variant:z.string().max(200).optional(),package:z.string().max(200).optional(),vendor:z.string().max(200).optional(),storeId:z.string().max(100).optional(),storeZip:z.string().regex(/^\d{5}$/).optional(),role:z.enum(materialRoles).optional(),q:z.string().max(200).optional()}).strict()
 export class MaterialCatalogService{
  constructor(settings={}){this.rows=settings.catalogIsEffective?settings.catalog:effectiveCatalog(settings.catalog||[])}
  search(raw={}){
@@ -16,7 +16,8 @@ export class MaterialCatalogService{
   const rows=this.rows.filter(row=>matchesMaterialRole(row,query.role)&&['id','sku','model','variant','package','vendor'].every(key=>!query[key]||normalize(row[key])===normalize(query[key]))&&
    (!query.storeId||row.offer?.storeId===query.storeId)&&(!query.storeZip||row.offer?.storeZip===query.storeZip)&&
    (!query.q||materialTextSuggestion(row,query.q)))
-  return {rows:rows.slice(0,40),total:rows.length,matchType:query.q?'suggestions':Object.keys(query).some(k=>k!=='role')?'exact':'catalog',externallyQueried:false}
+  const {offset,limit}=query
+  return {rows:rows.slice(offset,offset+limit),total:rows.length,offset,limit,nextOffset:offset+limit<rows.length?offset+limit:null,matchType:query.q?'suggestions':Object.keys(query).some(k=>!['role','offset','limit'].includes(k))?'exact':'catalog',externallyQueried:false}
  }
  async resolve(entry,jobZip=''){
   if(entry.unitCost===null)return {...structuredClone(entry),...catalogPriceSnapshot(entry,jobZip),category:entry.category}

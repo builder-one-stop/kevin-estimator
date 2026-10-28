@@ -62,13 +62,23 @@ export const researchCatalog = Object.freeze(research.observations.map((observat
   })
 }))
 
+// A research binding carries product classification only while exact identity is unchanged.
+export function researchBindingIssue(row) {
+ if(!row.sourceId)return null
+ const source=researchCatalog.find(x=>x.sourceId===row.sourceId)
+ if(!source)return 'UNKNOWN_RESEARCH_SOURCE'
+ return ['product','brand','sku','model','variant','package','unit'].some(k=>String(row[k]??'').trim().toLowerCase()!==String(source[k]??'').trim().toLowerCase())?'RESEARCH_IDENTITY_CHANGED':null
+}
+const pendingBinding=(row,issue)=>({...row,category:null,classificationPending:true,sourceBindingIssue:issue,packageData:null,conversion:null,technicalProfile:null,technicalCoverage:null})
 export function effectiveCatalog(managed = []) {
   const overrides = new Map(managed.filter(entry => entry.sourceId).map(entry => [entry.sourceId, entry]))
   return [...researchCatalog.map(entry => {
     const override = overrides.get(entry.sourceId)
-    return override ? { ...entry, ...override, provenanceClass:'current-owner', packageData: override.package === entry.package ? entry.packageData : null,
-      conversion: override.package === entry.package ? entry.conversion : null } : entry
-  }), ...managed.filter(entry => !entry.sourceId)]
+    if(!override)return entry
+    const merged={...entry,...override,provenanceClass:'current-owner'}
+    const issue=researchBindingIssue(override)
+    return issue?pendingBinding(merged,issue):merged
+  }), ...managed.filter(entry => !entry.sourceId||!researchCatalog.some(r=>r.sourceId===entry.sourceId)).map(entry=>{const issue=researchBindingIssue(entry);return issue?pendingBinding(entry,issue):entry})]
 }
 
 export function exactCatalogMatch(entry, query) {

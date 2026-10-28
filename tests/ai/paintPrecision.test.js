@@ -43,7 +43,7 @@ describe('painting precision audit matrix',()=>{
   expect(()=>document({...template,repairPackages:1.5})).toThrow('INVALID_REPAIR_PACKAGES')
  })
  it('uses per-package cost for a five-gallon pail and rejects incompatible price units',()=>{
-  const p={...researchCatalog[0],id:'synthetic-five',package:'5 US gal',packageData:null,conversion:null,unit:'ea',unitCost:100}
+  const p={...researchCatalog[0],id:'synthetic-five',sourceId:undefined,package:'5 US gal',packageData:null,conversion:null,unit:'ea',unitCost:100}
   expect(row(document({...template,paintCatalogId:p.id},[p]),'painting:material')).toMatchObject({quantity:1,unit:'ea',unitCost:100,takeoff:{packages:1,packageGallons:5}})
   expect(()=>document({...template,paintCatalogId:p.id},[{...p,unit:'gal'}])).toThrow('PRODUCT_COVERAGE_MISMATCH')
   const nominal=researchCatalog.find(r=>r.sourceId==='LO01')
@@ -70,7 +70,7 @@ describe('painting precision audit matrix',()=>{
  })
  it('preserves manual quantities on recalculation but requires confirmation after changing the purchase package',()=>{
   let doc=document();Object.assign(row(doc,'painting:material'),{quantity:4,ruleOverrides:{quantity:true},takeoff:undefined})
-  const five={...researchCatalog[0],id:'synthetic-five',unit:'ea',package:'5 US gal',packageData:null,conversion:null}
+  const five={...researchCatalog[0],id:'synthetic-five',sourceId:undefined,unit:'ea',package:'5 US gal',packageData:null,conversion:null}
   doc=recalculatePaintDocument(doc,'bedroom-walls',{paintCatalogId:five.id},{},[five])
   expect(row(doc,'painting:material')).toMatchObject({quantity:4,quantityPending:true,quantityPendingReason:'PACKAGE_CHANGED',previousPurchaseQuantity:{quantity:4,unit:'gal'}})
   doc=recalculatePaintDocument(doc,'bedroom-walls',{}, {lengthFt:13})

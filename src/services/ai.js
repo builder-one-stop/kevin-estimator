@@ -1,10 +1,11 @@
 import { supabase } from '../supabaseClient.js'
-export async function aiRequest(path, body, method=body?'POST':'GET', binary=false) {
+export async function aiRequest(path, body, method=body?'POST':'GET', binary=false,options={}) {
  const {data}=await supabase.auth.getSession()
+ options.signal?.throwIfAborted()
  if(!data.session)throw Object.assign(new Error('UNAUTHORIZED'),{code:'UNAUTHORIZED'})
  let response
- try{response=await fetch(`/api/ai/${path}`,{method,headers:{Authorization:`Bearer ${data.session.access_token}`,...(method!=='GET'?{'Content-Type':'application/json'}:{})},...(method!=='GET'?{body:JSON.stringify(body||{})}:{})})}
- catch{throw Object.assign(new Error('API_UNAVAILABLE'),{code:'API_UNAVAILABLE'})}
+ try{response=await fetch(`/api/ai/${path}`,{method,signal:options.signal,headers:{Authorization:`Bearer ${data.session.access_token}`,...(method!=='GET'?{'Content-Type':'application/json'}:{})},...(method!=='GET'?{body:JSON.stringify(body||{})}:{})})}
+ catch(e){if(options.signal?.aborted)throw e;throw Object.assign(new Error('API_UNAVAILABLE'),{code:'API_UNAVAILABLE'})}
  if(!response.ok){let value;try{value=await response.json()}catch{/* Vite proxy may return a non-JSON 502 */}throw Object.assign(new Error(value?.error||'API_UNAVAILABLE'),{code:value?.error||'API_UNAVAILABLE'})}
  return binary?response.blob():response.json()
 }
