@@ -1,0 +1,1840 @@
+{
+  "id": "08b27a8a-16b7-4fd9-b94f-060419b9f2bd",
+  "owner_id": "10000000-0000-4000-8000-000000000001",
+  "client_id": null,
+  "project_id": null,
+  "title": "Pintura de paredes de dormitorio",
+  "status": "Draft",
+  "markup_bps": 3333,
+  "document": {
+    "rules": {
+      "paint": {
+        "bedroom-walls": {
+          "inputs": {
+            "widthFt": 10,
+            "heightFt": 8,
+            "lengthFt": 13,
+            "openingsSqFt": 0,
+            "useGrossWalls": true
+          },
+          "version": "interior-walls-1",
+          "areaSqFt": 368,
+          "template": {
+            "coats": 2,
+            "hourlyRate": 75,
+            "patchCount": 1,
+            "productivity": {
+              "repair": 8,
+              "cleanup": 1000,
+              "painting": 150,
+              "protection": 800,
+              "preparation": 350
+            },
+            "wastePercent": 10,
+            "marginPercent": 25,
+            "paintCatalogId": "00000000-0000-4000-8000-000000000001",
+            "repairPackages": 1,
+            "expensesPercent": 5,
+            "repairCatalogId": "00000000-0000-4000-8000-000000000003",
+            "materialSelections": [
+              {
+                "role": "primer",
+                "catalogId": "00000000-0000-4000-8000-000000000016",
+                "selectionId": "primer-0f991a02082bec55",
+                "requestedLabel": "Dunn-Edwards | Dunn-Edwards ULTRA-GRIP Premium Ultra-Low VOC Multi-Surface Primer | 1 US gal · White | SKU UGPR00-1-WH-1 | gal",
+                "purchaseQuantity": null
+              },
+              {
+                "role": "protection",
+                "catalogId": "00000000-0000-4000-8000-000000000009",
+                "selectionId": "protection-ffaaa8965402b02b",
+                "requestedLabel": "Lowe's | ScotchBlue Original Multi-Surface 2090 Painter's Tape | 1 roll | SKU 590695 | ea",
+                "purchaseQuantity": 2
+              },
+              {
+                "role": "protection",
+                "catalogId": "00000000-0000-4000-8000-00000000000a",
+                "selectionId": "protection-5138f85ea4e12e79",
+                "requestedLabel": "Lowe's | Project Source Light Duty Plastic Drop Cloth | 1 sheet | SKU 3487100 | ea",
+                "purchaseQuantity": 1
+              },
+              {
+                "role": "abrasive",
+                "catalogId": "00000000-0000-4000-8000-000000000008",
+                "selectionId": "abrasive-13ce48bfdca6dc87",
+                "requestedLabel": "Lowe's | 3M PRO Grade Precision Medium 120 Grit Sheet Sandpaper | 6 sheets · 120 grit | SKU 6014059 | ea",
+                "purchaseQuantity": 1
+              }
+            ],
+            "consumablesUsdPerSqFt": {
+              "cleanup": 0.03,
+              "protection": 0.08,
+              "preparation": 0.06
+            },
+            "coverageSqFtPerGallon": 350
+          },
+          "catalogSnapshots": [
+            {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "sku": "433052",
+              "url": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+              "unit": "gal",
+              "brand": "BEHR",
+              "model": "275001",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "1 US gal · eggshell · Ultra Pure White",
+              "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+              "cacheHit": false,
+              "category": "interior_paint",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD01",
+              "unitCost": 46.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                "factor": 128,
+                "to_unit": "US_fl_oz"
+              },
+              "validUntil": null,
+              "limitations": [
+                "La ficha muestra Select store. No se aplicó promoción de tarjeta. Precio leído al abrir página original en web; HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "US_gallon",
+                "color": "Ultra Pure White",
+                "sheen": "eggshell",
+                "amount": 1
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": null,
+              "internalPriceApproval": "not-recorded"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "sku": "283433",
+              "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+              "unit": "ea",
+              "brand": "DAP",
+              "model": "12327",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "32 oz as labeled",
+              "product": "DryDex Dry Time Indicator Spackling Paste",
+              "cacheHit": false,
+              "category": "patch",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD03",
+              "unitCost": 11.48,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": null,
+              "validUntil": null,
+              "limitations": [
+                "No convertir oz a fl oz sin confirmar volumen/peso en especificación.",
+                "No es el mismo modelo que DAP 12330 vendido por Lowe's; no asumir equivalencia exacta.",
+                "HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "oz_as_labeled",
+                "amount": 32,
+                "purchase_unit": "container"
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": null,
+              "internalPriceApproval": "not-recorded"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000016",
+              "sku": "0460001",
+              "url": "https://catalinapaintstore.com/products/fresh-start-high-hiding-all-purpose?variant=31816202616901",
+              "unit": "gal",
+              "brand": "Benjamin Moore",
+              "model": "",
+              "status": "public_observed",
+              "vendor": "Catalina Paints",
+              "freight": "unknown",
+              "package": "1 US gal",
+              "product": "Fresh Start High Hiding All-Purpose Primer",
+              "category": "primer",
+              "currency": "USD",
+              "evidence": "official_public_HTML_HTTP_200",
+              "location": "",
+              "salesTax": "unknown",
+              "sourceId": "CA02",
+              "unitCost": 52.1,
+              "checkedAt": "2026-10-17",
+              "freshness": "direct_public_retrieval_2026-10-17",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                "factor": 128,
+                "to_unit": "US_fl_oz"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Variante Gallon identificada en opciones y JSON-LD; no usar desde 26.30 que corresponde a quart.",
+                "No se confirmó variante por sucursal ni entrega a ZIP."
+              ],
+              "packageData": {
+                "unit": "US_gallon",
+                "amount": 1
+              },
+              "supplierUrl": "https://catalinapaintstore.com/",
+              "verifiedZip": null,
+              "localContext": "local_supplier_online_offer_zip_pending",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_public_HTML_HTTP_200",
+              "supplierCoverage": "Red de tiendas en Los Ángeles declarada en web oficial. Retiro en sus tiendas; entrega dentro de 7 millas de cada tienda sujeta a elegibilidad de ZIP. No se comprobó sucursal o dirección de entrega concreta.",
+              "inventoryVerified": false
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000009",
+              "sku": "590695",
+              "url": "https://www.lowes.com/pd/ScotchBlue-1-88-in-x-60-yd-Painters-Tape/1003202270",
+              "unit": "ea",
+              "brand": "ScotchBlue",
+              "model": "2090-48C",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "Lowe's",
+              "freight": "unknown",
+              "package": "1 roll",
+              "product": "Original Multi-Surface 2090 Painter's Tape",
+              "cacheHit": false,
+              "category": "protection",
+              "currency": "USD",
+              "evidence": "official_public_HTML_HTTP_200",
+              "location": "Mid-city #2714, 4550 West Pico Blvd Unit D-101, Los Angeles, CA 90019",
+              "salesTax": "unknown",
+              "sourceId": "LO04",
+              "unitCost": 8.28,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "factor": 180,
+                "to_unit": "linear_ft"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Precio de un rollo; sin suscripción ni descuento.",
+                "Datos de entrega sin ubicación no prueban entrega a LA."
+              ],
+              "packageData": {
+                "unit": "roll",
+                "amount": 1,
+                "width_in": 1.88,
+                "length_yd": 60
+              },
+              "supplierUrl": "https://www.lowes.com/store/ca-los-angeles/2714",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_public_HTML_HTTP_200",
+              "supplierCoverage": "Sucursal local comprobada; fichas de productos sin tienda o ZIP asociado.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": null,
+              "internalPriceApproval": "not-recorded"
+            },
+            {
+              "id": "00000000-0000-4000-8000-00000000000a",
+              "sku": "3487100",
+              "url": "https://www.lowes.com/pd/Project-Source-9-ft-x-12-ft-Clear-0-7-mil-Light-duty-Plastic-Sheeting/5003330935",
+              "unit": "ea",
+              "brand": "Project Source",
+              "model": "110SG0912LOWES.7C",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "Lowe's",
+              "freight": "unknown",
+              "package": "1 sheet",
+              "product": "Light Duty Plastic Drop Cloth",
+              "cacheHit": false,
+              "category": "protection",
+              "currency": "USD",
+              "evidence": "official_public_HTML_HTTP_200",
+              "location": "Mid-city #2714, 4550 West Pico Blvd Unit D-101, Los Angeles, CA 90019",
+              "salesTax": "unknown",
+              "sourceId": "LO05",
+              "unitCost": 3.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "factor": 108,
+                "to_unit": "nominal_sq_ft"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Precio individual, no bundle o multipack.",
+                "Área nominal sin traslapos; uso/protección adecuada deben revisarse.",
+                "No hay sucursal/ZIP para la oferta."
+              ],
+              "packageData": {
+                "unit": "sheet",
+                "amount": 1,
+                "dimensions_ft": [
+                  9,
+                  12
+                ],
+                "thickness_mil": 0.7
+              },
+              "supplierUrl": "https://www.lowes.com/store/ca-los-angeles/2714",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_public_HTML_HTTP_200",
+              "supplierCoverage": "Sucursal local comprobada; fichas de productos sin tienda o ZIP asociado.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": null,
+              "internalPriceApproval": "not-recorded"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000008",
+              "sku": "6014059",
+              "url": "https://www.lowes.com/pd/3M-3M-Pro-Grade-Precision-rd-Sheets-Sandpaper-Purple-Abrasive-120-grit/5015565859",
+              "unit": "ea",
+              "brand": "3M",
+              "model": "SHT120-PGP-6T",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "Lowe's",
+              "freight": "unknown",
+              "package": "6 sheets · 120 grit",
+              "product": "PRO Grade Precision Medium 120 Grit Sheet Sandpaper",
+              "cacheHit": false,
+              "category": "abrasive",
+              "currency": "USD",
+              "evidence": "official_public_HTML_HTTP_200",
+              "location": "Mid-city #2714, 4550 West Pico Blvd Unit D-101, Los Angeles, CA 90019",
+              "salesTax": "unknown",
+              "sourceId": "LO03",
+              "unitCost": 6.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "factor": 6,
+                "to_unit": "sheet"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Paquete de 6; no confundir con SandBlaster Pro 20120-SBP-5 discontinuado en web.",
+                "Sin disponibilidad local confirmada."
+              ],
+              "packageData": {
+                "grit": 120,
+                "unit": "sheets",
+                "amount": 6,
+                "dimensions_in": [
+                  3.67,
+                  9
+                ]
+              },
+              "supplierUrl": "https://www.lowes.com/store/ca-los-angeles/2714",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_public_HTML_HTTP_200",
+              "supplierCoverage": "Sucursal local comprobada; fichas de productos sin tienda o ZIP asociado.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": null,
+              "internalPriceApproval": "not-recorded"
+            }
+          ],
+          "parameterEvidence": {
+            "labor": {
+              "value": 75,
+              "reason": "Contractor charge assumption; not a BLS wage conversion.",
+              "status": "provisional"
+            },
+            "waste": {
+              "value": 10,
+              "reason": "Editable allowance, not manufacturer-verified loss.",
+              "status": "provisional"
+            },
+            "coverage": {
+              "value": 350,
+              "reason": "No matching product technical sheet attached; editable estimating assumption.",
+              "status": "provisional"
+            },
+            "productivity": {
+              "reason": "Requires measured job results for calibration.",
+              "status": "provisional",
+              "values": {
+                "repair": 8,
+                "cleanup": 1000,
+                "painting": 150,
+                "protection": 800,
+                "preparation": 350
+              }
+            }
+          },
+          "retiredMaterialAllowances": {}
+        }
+      }
+    },
+    "scope": {
+      "plan": {
+        "zip": "",
+        "tasks": [
+          {
+            "id": "bedroom-walls",
+            "room": {
+              "en": "Bedroom",
+              "es": "Dormitorio"
+            },
+            "work": {
+              "en": "Interior wall painting",
+              "es": "Pintura interior de paredes"
+            },
+            "finish": {
+              "en": "Eggshell, Ultra Pure White",
+              "es": "Eggshell, Ultra Pure White"
+            },
+            "product": {
+              "en": "The Home Depot | BEHR BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer | 1 US gal · eggshell · Ultra Pure White | SKU 433052 | gal; The Home Depot | DAP DryDex Dry Time Indicator Spackling Paste | 32 oz as labeled | SKU 283433 | ea; Dunn-Edwards | Dunn-Edwards ULTRA-GRIP Premium Ultra-Low VOC Multi-Surface Primer | 1 US gal · White | SKU UGPR00-1-WH-1 | gal; Lowe's | ScotchBlue Original Multi-Surface 2090 Painter's Tape | 1 roll | SKU 590695 | ea; Lowe's | Project Source Light Duty Plastic Drop Cloth | 1 sheet | SKU 3487100 | ea; Lowe's | 3M PRO Grade Precision Medium 120 Grit Sheet Sandpaper | 6 sheets · 120 grit | SKU 6014059 | ea",
+              "es": "The Home Depot | BEHR BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer | 1 US gal · eggshell · Ultra Pure White | SKU 433052 | gal; The Home Depot | DAP DryDex Dry Time Indicator Spackling Paste | 32 oz as labeled | SKU 283433 | ea; Dunn-Edwards | Dunn-Edwards ULTRA-GRIP Premium Ultra-Low VOC Multi-Surface Primer | 1 US gal · White | SKU UGPR00-1-WH-1 | gal; Lowe's | ScotchBlue Original Multi-Surface 2090 Painter's Tape | 1 roll | SKU 590695 | ea; Lowe's | Project Source Light Duty Plastic Drop Cloth | 1 sheet | SKU 3487100 | ea; Lowe's | 3M PRO Grade Precision Medium 120 Grit Sheet Sandpaper | 6 sheets · 120 grit | SKU 6014059 | ea"
+            },
+            "excluded": {
+              "en": "Ceiling, trim, doors and large repairs",
+              "es": "Techo, molduras, puertas y reparaciones mayores"
+            },
+            "included": {
+              "en": "Walls, protection, preparation, minor nail-hole patching and cleanup",
+              "es": "Paredes, protección, preparación, reparación menor y limpieza"
+            },
+            "confirmed": true,
+            "components": [
+              {
+                "en": "Interior wall painting materials",
+                "es": "Materiales de pintura interior de paredes"
+              }
+            ],
+            "provenance": {
+              "en": "Exact internal catalog selection; public web observations or current-owner imports. No live supplier query; job ZIP and buying store are separate.",
+              "es": "Selección exacta del catálogo interno; observaciones web públicas o importaciones de esta cuenta. Sin consulta en vivo; ZIP de obra y tienda de compra son distintos."
+            },
+            "assumptions": {
+              "en": "Two coats; 350 sf/gal; 10% waste; provisional productivity and consumables",
+              "es": "Dos manos; 350 sf/gal; 10% desperdicio; productividad y consumibles provisionales"
+            },
+            "preparation": {
+              "en": "Protect, prepare and patch minor nail holes once",
+              "es": "Proteger, preparar y reparar agujeros menores una vez"
+            },
+            "measurements": {
+              "en": "Paint walls 12 x10 x8 ft; paint SKU 433052; primer SKU UGPR00-1-WH-1; protection SKU 590695; protection SKU 3487100; abrasive SKU 6014059",
+              "es": "Paint walls 12 x10 x8 ft; paint SKU 433052; primer SKU UGPR00-1-WH-1; protection SKU 590695; protection SKU 3487100; abrasive SKU 6014059"
+            }
+          }
+        ],
+        "title": {
+          "en": "Bedroom wall painting",
+          "es": "Pintura de paredes de dormitorio"
+        },
+        "address": "",
+        "pending": [],
+        "markupBps": 3333,
+        "assumptions": {
+          "en": "Gross walls, no openings deducted. Template coverage, productivity, expenses and margin are editable assumptions; catalog prices are public online observations, not local quotes.",
+          "es": "Paredes brutas, sin descontar aberturas. Rendimiento, productividad, gastos y margen son supuestos editables; los precios del catálogo son observaciones públicas, no cotizaciones locales."
+        },
+        "materialEvidence": [
+          {
+            "id": "00000000-0000-4000-8000-000000000001",
+            "url": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+            "role": "paint",
+            "unit": "gal",
+            "label": "The Home Depot | BEHR BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer | 1 US gal · eggshell · Ultra Pure White | SKU 433052 | gal",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 46.98,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000003",
+            "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+            "role": "repair",
+            "unit": "ea",
+            "label": "The Home Depot | DAP DryDex Dry Time Indicator Spackling Paste | 32 oz as labeled | SKU 283433 | ea",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 11.48,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh"
+          },
+          {
+            "id": "00000000-0000-4000-8000-00000000000d",
+            "url": "https://shop.dunnedwards.com/collections/d-e-primers/products/ultra-grip%C2%AE-premium-ultra-low-voc-multi-purpose-primer?variant=31786228449335",
+            "role": "primer",
+            "unit": "gal",
+            "label": "Dunn-Edwards | Dunn-Edwards ULTRA-GRIP Premium Ultra-Low VOC Multi-Surface Primer | 1 US gal · White | SKU UGPR00-1-WH-1 | gal",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 69,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh",
+            "selectionId": "primer-0f991a02082bec55",
+            "purchaseQuantity": 1
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000009",
+            "url": "https://www.lowes.com/pd/ScotchBlue-1-88-in-x-60-yd-Painters-Tape/1003202270",
+            "role": "protection",
+            "unit": "ea",
+            "label": "Lowe's | ScotchBlue Original Multi-Surface 2090 Painter's Tape | 1 roll | SKU 590695 | ea",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 8.28,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh",
+            "selectionId": "protection-ffaaa8965402b02b",
+            "purchaseQuantity": 2
+          },
+          {
+            "id": "00000000-0000-4000-8000-00000000000a",
+            "url": "https://www.lowes.com/pd/Project-Source-9-ft-x-12-ft-Clear-0-7-mil-Light-duty-Plastic-Sheeting/5003330935",
+            "role": "protection",
+            "unit": "ea",
+            "label": "Lowe's | Project Source Light Duty Plastic Drop Cloth | 1 sheet | SKU 3487100 | ea",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 3.98,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh",
+            "selectionId": "protection-5138f85ea4e12e79",
+            "purchaseQuantity": 1
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000008",
+            "url": "https://www.lowes.com/pd/3M-3M-Pro-Grade-Precision-rd-Sheets-Sandpaper-Purple-Abrasive-120-grit/5015565859",
+            "role": "abrasive",
+            "unit": "ea",
+            "label": "Lowe's | 3M PRO Grade Precision Medium 120 Grit Sheet Sandpaper | 6 sheets · 120 grit | SKU 6014059 | ea",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 6.98,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh",
+            "selectionId": "abrasive-13ce48bfdca6dc87",
+            "purchaseQuantity": 1
+          }
+        ],
+        "materialRequests": [
+          {
+            "sku": "433052",
+            "role": "paint",
+            "taskId": "bedroom-walls"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000003",
+            "role": "repair",
+            "taskId": "bedroom-walls"
+          },
+          {
+            "sku": "UGPR00-1-WH-1",
+            "role": "primer",
+            "taskId": "bedroom-walls",
+            "selectionId": "primer-0f991a02082bec55",
+            "purchaseQuantity": 1
+          },
+          {
+            "sku": "590695",
+            "role": "protection",
+            "taskId": "bedroom-walls",
+            "selectionId": "protection-ffaaa8965402b02b",
+            "purchaseQuantity": 2
+          },
+          {
+            "sku": "3487100",
+            "role": "protection",
+            "taskId": "bedroom-walls",
+            "selectionId": "protection-5138f85ea4e12e79",
+            "purchaseQuantity": 1
+          },
+          {
+            "sku": "6014059",
+            "role": "abrasive",
+            "taskId": "bedroom-walls",
+            "selectionId": "abrasive-13ce48bfdca6dc87",
+            "purchaseQuantity": 1
+          }
+        ]
+      },
+      "revision": 2,
+      "approvalType": "plan"
+    },
+    "market": {
+      "id": "us-ca-los-angeles",
+      "city": "Los Angeles",
+      "region": "California",
+      "country": "US",
+      "areaUnit": "sf",
+      "currency": "USD",
+      "lengthUnit": "ft"
+    },
+    "aiUsage": {
+      "scope": "OpenAI API only; excludes ChatGPT subscription, hosting, Netlify and Supabase charges.",
+      "apiCalls": 0,
+      "inputTokens": 0,
+      "cachedTokens": 0,
+      "outputTokens": 0,
+      "rateVersions": [],
+      "schemaVersion": "api-usage-1",
+      "conversationId": "29fba4d9-ec1a-48c8-974b-eb5cda7fdd9f",
+      "unmeteredCalls": 0,
+      "unpricedEvents": 0,
+      "billingVerified": false,
+      "estimatedCostUsd": 0,
+      "knownEstimatedCostUsd": 0,
+      "legacyRunsWithUnknownCallCount": 0
+    },
+    "business": {
+      "name": "One Stop Building & Remodeling",
+      "phone": "",
+      "address": "",
+      "license": ""
+    },
+    "language": "es",
+    "proposal": {
+      "intro": "",
+      "notes": "",
+      "scope": "",
+      "terms": "",
+      "exclusions": ""
+    },
+    "sections": [
+      {
+        "id": "bedroom-walls",
+        "items": [
+          {
+            "id": "c0458a7a-882d-4bfb-a482-77661e3168db",
+            "unit": "hr",
+            "notes": "368 sf ÷ 800 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "protection:labor",
+            "costType": "labor",
+            "quantity": 0.46,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "368 sf ÷ 800 per hour; rounded up to 0.01 hr.",
+              "es": "368 sf ÷ 800 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Proteger piso y muebles — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Protect floor and furnishings — labor",
+              "es": "Proteger piso y muebles — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "dda735fd-b798-410d-a87e-566d199502cf",
+            "unit": "hr",
+            "notes": "368 sf ÷ 350 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "preparation:labor",
+            "costType": "labor",
+            "quantity": 1.06,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "368 sf ÷ 350 per hour; rounded up to 0.01 hr.",
+              "es": "368 sf ÷ 350 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Preparar superficies de pared — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Prepare wall surfaces — labor",
+              "es": "Preparar superficies de pared — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "e4d69116-a94c-4558-89f0-cae1b8ffcdfc",
+            "unit": "ea",
+            "notes": "1 envases completos para reparación: supuesto de compra editable, no rendimiento por agujero.  La preparación excluye este material.",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "sku": "283433",
+              "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+              "unit": "ea",
+              "brand": "DAP",
+              "model": "12327",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "32 oz as labeled",
+              "product": "DryDex Dry Time Indicator Spackling Paste",
+              "cacheHit": false,
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD03",
+              "unitCost": 11.48,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": null,
+              "validUntil": null,
+              "limitations": [
+                "No convertir oz a fl oz sin confirmar volumen/peso en especificación.",
+                "No es el mismo modelo que DAP 12330 vendido por Lowe's; no asumir equivalencia exacta.",
+                "HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "oz_as_labeled",
+                "amount": 32,
+                "purchase_unit": "container"
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": "fresh",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "repair:material",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 11.48,
+            "catalogId": "00000000-0000-4000-8000-000000000003",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "1 whole repair package(s): editable purchase allowance, not yield per hole.  Preparation excludes this material.",
+              "es": "1 envases completos para reparación: supuesto de compra editable, no rendimiento por agujero.  La preparación excluye este material."
+            },
+            "description": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled",
+            "needsReview": true,
+            "priceSource": "SKU 283433 | model 12327 | ea | https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689 | The Home Depot · DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled · precio público online; sucursal/ZIP no verificados",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled",
+              "es": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "a86c10e8-f41c-4d20-9d24-c522a23d4e01",
+            "unit": "hr",
+            "notes": "1 reparaciones ÷ 8 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "repair:labor",
+            "costType": "labor",
+            "quantity": 0.13,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "1 patches ÷ 8 per hour; rounded up to 0.01 hr.",
+              "es": "1 reparaciones ÷ 8 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Material para reparación menor — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Minor wall patch material — labor",
+              "es": "Material para reparación menor — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "facd0388-732d-4d86-a11a-82df9287de8e",
+            "unit": "gal",
+            "notes": "Envases completos; rendimiento y desperdicio son supuestos editables.",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "sku": "433052",
+              "url": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+              "unit": "gal",
+              "brand": "BEHR",
+              "model": "275001",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "1 US gal · eggshell · Ultra Pure White",
+              "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+              "cacheHit": false,
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD01",
+              "unitCost": 46.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                "factor": 128,
+                "to_unit": "US_fl_oz"
+              },
+              "validUntil": null,
+              "limitations": [
+                "La ficha muestra Select store. No se aplicó promoción de tarjeta. Precio leído al abrir página original en web; HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "US_gallon",
+                "color": "Ultra Pure White",
+                "sheen": "eggshell",
+                "amount": 1
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": "fresh",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "painting:material",
+            "takeoff": {
+              "coats": 2,
+              "areaSqFt": 368,
+              "packages": 3,
+              "wastePercent": 10,
+              "packageGallons": 1,
+              "requiredGallons": 2.3132,
+              "coverageSqFtPerGallon": 350
+            },
+            "costType": "material",
+            "quantity": 3,
+            "unitCost": 46.98,
+            "catalogId": "00000000-0000-4000-8000-000000000001",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "Whole purchasable packages; coverage and waste are editable assumptions.",
+              "es": "Envases completos; rendimiento y desperdicio son supuestos editables."
+            },
+            "description": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White",
+            "needsReview": true,
+            "priceSource": "SKU 433052 | model 275001 | gal | https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159 | The Home Depot · BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White · precio público online; sucursal/ZIP no verificados",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White",
+              "es": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "756aa5a9-e6bd-4d1f-8e81-4ffd5e1fc4b5",
+            "unit": "hr",
+            "notes": "736 sf-mano ÷ 150 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "painting:labor",
+            "costType": "labor",
+            "quantity": 4.91,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "736 coat-sf ÷ 150 per hour; rounded up to 0.01 hr.",
+              "es": "736 sf-mano ÷ 150 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Pintura interior de paredes — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Interior wall paint — labor",
+              "es": "Pintura interior de paredes — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "13b73352-ce39-44cf-9bc7-35f9da734664",
+            "unit": "sf",
+            "notes": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "cleanup:material",
+            "costType": "material",
+            "quantity": 368,
+            "unitCost": 0.03,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "Consumables allowance only; excludes separately counted paint and patch material.",
+              "es": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte."
+            },
+            "description": "Limpiar y retirar protecciones",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Clean and remove protection",
+              "es": "Limpiar y retirar protecciones"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "cb201a51-6774-49bf-9714-9065b1cdf69e",
+            "unit": "hr",
+            "notes": "368 sf ÷ 1000 por hora; redondeado hacia arriba a 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "cleanup:labor",
+            "costType": "labor",
+            "quantity": 0.37,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "368 sf ÷ 1000 per hour; rounded up to 0.01 hr.",
+              "es": "368 sf ÷ 1000 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Limpiar y retirar protecciones — mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Clean and remove protection — labor",
+              "es": "Limpiar y retirar protecciones — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "d57796f2-0c9e-4427-a1fb-b2b671725b67",
+            "unit": "gal",
+            "notes": "Imprimante: envases completos de compra manuales; sin inferir rendimiento ni consumo desde la pintura. Sin mano de obra adicional para consumibles; las horas de imprimación se revisan aparte.",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000016",
+              "sku": "0460001",
+              "url": "https://catalinapaintstore.com/products/fresh-start-high-hiding-all-purpose?variant=31816202616901",
+              "unit": "gal",
+              "brand": "Benjamin Moore",
+              "model": "",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "Catalina Paints",
+              "freight": "unknown",
+              "package": "1 US gal",
+              "product": "Fresh Start High Hiding All-Purpose Primer",
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_public_HTML_HTTP_200",
+              "location": "",
+              "salesTax": "unknown",
+              "sourceId": "CA02",
+              "unitCost": 52.1,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                "factor": 128,
+                "to_unit": "US_fl_oz"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Variante Gallon identificada en opciones y JSON-LD; no usar desde 26.30 que corresponde a quart.",
+                "No se confirmó variante por sucursal ni entrega a ZIP."
+              ],
+              "packageData": {
+                "unit": "US_gallon",
+                "amount": 1
+              },
+              "supplierUrl": "https://catalinapaintstore.com/",
+              "verifiedZip": null,
+              "localContext": "local_supplier_online_offer_zip_pending",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_public_HTML_HTTP_200",
+              "supplierCoverage": "Red de tiendas en Los Ángeles declarada en web oficial. Retiro en sus tiendas; entrega dentro de 7 millas de cada tienda sujeta a elegibilidad de ZIP. No se comprobó sucursal o dirección de entrega concreta.",
+              "inventoryVerified": false,
+              "observationFreshness": "direct_public_retrieval_2026-10-17",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "manual",
+            "taskId": "bedroom-walls",
+            "ruleKey": "supplement:primer-0f991a02082bec55:material",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 52.1,
+            "catalogId": "00000000-0000-4000-8000-000000000016",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "Primer: manual whole purchase packages; no coverage or consumption inferred from wall paint. No consumable labor added; primer application hours are reviewed separately.",
+              "es": "Imprimante: envases completos de compra manuales; sin inferir rendimiento ni consumo desde la pintura. Sin mano de obra adicional para consumibles; las horas de imprimación se revisan aparte."
+            },
+            "description": "Benjamin Moore Fresh Start High Hiding All-Purpose Primer · 1 US gal",
+            "needsReview": true,
+            "priceSource": "SKU 0460001 | gal | https://catalinapaintstore.com/products/fresh-start-high-hiding-all-purpose?variant=31816202616901 | Catalina Paints · Fresh Start High Hiding All-Purpose Primer · 1 US gal · precio público online; sucursal/ZIP no verificados",
+            "ruleVersion": "interior-walls-1",
+            "materialRole": "primer",
+            "priceMissing": false,
+            "translations": {
+              "en": "Benjamin Moore Fresh Start High Hiding All-Purpose Primer · 1 US gal",
+              "es": "Benjamin Moore Fresh Start High Hiding All-Purpose Primer · 1 US gal"
+            },
+            "ruleOverrides": {
+              "price": true,
+              "quantity": true
+            },
+            "quantityPending": false,
+            "materialSelectionId": "primer-0f991a02082bec55",
+            "quantityPendingReason": "PACKAGE_CHANGED",
+            "previousPurchaseQuantity": {
+              "unit": "gal",
+              "quantity": 2,
+              "catalogId": "00000000-0000-4000-8000-00000000000d"
+            },
+            "previousMaterialSelection": {
+              "unit": "gal",
+              "price": {
+                "id": "00000000-0000-4000-8000-00000000000d",
+                "sku": "UGPR00-1-WH-1",
+                "url": "https://shop.dunnedwards.com/collections/d-e-primers/products/ultra-grip%C2%AE-premium-ultra-low-voc-multi-purpose-primer?variant=31786228449335",
+                "unit": "gal",
+                "brand": "Dunn-Edwards",
+                "model": "",
+                "reason": null,
+                "source": "phase-a-research",
+                "status": "public_observed",
+                "vendor": "Dunn-Edwards",
+                "freight": "unknown",
+                "package": "1 US gal · White",
+                "product": "ULTRA-GRIP Premium Ultra-Low VOC Multi-Surface Primer",
+                "cacheHit": false,
+                "category": "public-online-reference",
+                "currency": "USD",
+                "evidence": "official_public_HTML_HTTP_200",
+                "location": "Santa Monica - 049, 11710 Santa Monica Blvd, Los Angeles, CA 90025",
+                "salesTax": "unknown",
+                "sourceId": "DE03",
+                "unitCost": 69,
+                "checkedAt": "2026-10-17",
+                "freshness": "fresh",
+                "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+                "conversion": {
+                  "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                  "factor": 128,
+                  "to_unit": "US_fl_oz"
+                },
+                "validUntil": null,
+                "limitations": [
+                  "Precio del galón; el precio desde 20.50 corresponde a quart.",
+                  "No inferir que este primer sea obligatorio o idóneo para todo muro.",
+                  "Retiro/entrega local sin validar."
+                ],
+                "packageData": {
+                  "unit": "US_gallon",
+                  "color": "White",
+                  "amount": 1
+                },
+                "supplierUrl": "https://www.dunnedwards.com/paint-store/santa-monica-049/",
+                "verifiedZip": null,
+                "localContext": "supplier_has_LA_branch_online_price_not_localized",
+                "paintcareFee": "included_where_applicable_including_CA",
+                "priceVersion": 1,
+                "substitution": false,
+                "verification": {
+                  "market": {
+                    "city": "Los Angeles",
+                    "region": "CA",
+                    "country": "US",
+                    "currency": "USD"
+                  },
+                  "reason": null,
+                  "status": "public_observed",
+                  "ageDays": 11,
+                  "checkedAt": "2026-10-17",
+                  "validUntil": null,
+                  "policyVersion": "source-evidence-1",
+                  "productMatched": true,
+                  "reviewAfterDays": 30,
+                  "branchZipMatched": false,
+                  "externallyQueried": false
+                },
+                "priceCategory": "public-online-reference",
+                "sourceVersion": "phase-A-research-1",
+                "evidenceMethod": "official_public_HTML_HTTP_200",
+                "supplierCoverage": "Sucursal en Los Ángeles comprobada; oferta web no validada para retiro ni entrega a ese ZIP.",
+                "externallyQueried": false,
+                "inventoryVerified": false,
+                "observationFreshness": "fresh",
+                "internalPriceApproval": "not-recorded"
+              },
+              "quantity": 2,
+              "catalogId": "00000000-0000-4000-8000-00000000000d",
+              "quantityPending": false
+            }
+          },
+          {
+            "id": "2db02664-91de-408f-b89f-e5bf9da4811f",
+            "unit": "ea",
+            "notes": "Consumibles de protección: envases completos de compra manuales; sin inferir rendimiento ni consumo desde la pintura. Sin mano de obra adicional para consumibles; las horas de imprimación se revisan aparte. Sustituye el supuesto de consumibles de protección; revisa que las partidas cubran todos los materiales.",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000009",
+              "sku": "590695",
+              "url": "https://www.lowes.com/pd/ScotchBlue-1-88-in-x-60-yd-Painters-Tape/1003202270",
+              "unit": "ea",
+              "brand": "ScotchBlue",
+              "model": "2090-48C",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "Lowe's",
+              "freight": "unknown",
+              "package": "1 roll",
+              "product": "Original Multi-Surface 2090 Painter's Tape",
+              "cacheHit": false,
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_public_HTML_HTTP_200",
+              "location": "Mid-city #2714, 4550 West Pico Blvd Unit D-101, Los Angeles, CA 90019",
+              "salesTax": "unknown",
+              "sourceId": "LO04",
+              "unitCost": 8.28,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "factor": 180,
+                "to_unit": "linear_ft"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Precio de un rollo; sin suscripción ni descuento.",
+                "Datos de entrega sin ubicación no prueban entrega a LA."
+              ],
+              "packageData": {
+                "unit": "roll",
+                "amount": 1,
+                "width_in": 1.88,
+                "length_yd": 60
+              },
+              "supplierUrl": "https://www.lowes.com/store/ca-los-angeles/2714",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_public_HTML_HTTP_200",
+              "supplierCoverage": "Sucursal local comprobada; fichas de productos sin tienda o ZIP asociado.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": "fresh",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "supplement:protection-ffaaa8965402b02b:material",
+            "costType": "material",
+            "quantity": 2,
+            "unitCost": 8.28,
+            "catalogId": "00000000-0000-4000-8000-000000000009",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "Protection consumables: manual whole purchase packages; no coverage or consumption inferred from wall paint. No consumable labor added; primer application hours are reviewed separately. Replaces the protection consumables allowance; review completeness of itemized materials.",
+              "es": "Consumibles de protección: envases completos de compra manuales; sin inferir rendimiento ni consumo desde la pintura. Sin mano de obra adicional para consumibles; las horas de imprimación se revisan aparte. Sustituye el supuesto de consumibles de protección; revisa que las partidas cubran todos los materiales."
+            },
+            "description": "ScotchBlue Original Multi-Surface 2090 Painter's Tape · 1 roll",
+            "needsReview": true,
+            "priceSource": "SKU 590695 | model 2090-48C | ea | https://www.lowes.com/pd/ScotchBlue-1-88-in-x-60-yd-Painters-Tape/1003202270 | Lowe's · Original Multi-Surface 2090 Painter's Tape · 1 roll · precio público online; sucursal/ZIP no verificados",
+            "ruleVersion": "interior-walls-1",
+            "materialRole": "protection",
+            "priceMissing": false,
+            "translations": {
+              "en": "ScotchBlue Original Multi-Surface 2090 Painter's Tape · 1 roll",
+              "es": "ScotchBlue Original Multi-Surface 2090 Painter's Tape · 1 roll"
+            },
+            "ruleOverrides": {},
+            "quantityPending": false,
+            "materialSelectionId": "protection-ffaaa8965402b02b"
+          },
+          {
+            "id": "63fe542a-aa78-4306-a490-2794b7f4c26d",
+            "unit": "ea",
+            "notes": "Consumibles de protección: envases completos de compra manuales; sin inferir rendimiento ni consumo desde la pintura. Sin mano de obra adicional para consumibles; las horas de imprimación se revisan aparte. Sustituye el supuesto de consumibles de protección; revisa que las partidas cubran todos los materiales.",
+            "price": {
+              "id": "00000000-0000-4000-8000-00000000000a",
+              "sku": "3487100",
+              "url": "https://www.lowes.com/pd/Project-Source-9-ft-x-12-ft-Clear-0-7-mil-Light-duty-Plastic-Sheeting/5003330935",
+              "unit": "ea",
+              "brand": "Project Source",
+              "model": "110SG0912LOWES.7C",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "Lowe's",
+              "freight": "unknown",
+              "package": "1 sheet",
+              "product": "Light Duty Plastic Drop Cloth",
+              "cacheHit": false,
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_public_HTML_HTTP_200",
+              "location": "Mid-city #2714, 4550 West Pico Blvd Unit D-101, Los Angeles, CA 90019",
+              "salesTax": "unknown",
+              "sourceId": "LO05",
+              "unitCost": 3.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "factor": 108,
+                "to_unit": "nominal_sq_ft"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Precio individual, no bundle o multipack.",
+                "Área nominal sin traslapos; uso/protección adecuada deben revisarse.",
+                "No hay sucursal/ZIP para la oferta."
+              ],
+              "packageData": {
+                "unit": "sheet",
+                "amount": 1,
+                "dimensions_ft": [
+                  9,
+                  12
+                ],
+                "thickness_mil": 0.7
+              },
+              "supplierUrl": "https://www.lowes.com/store/ca-los-angeles/2714",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_public_HTML_HTTP_200",
+              "supplierCoverage": "Sucursal local comprobada; fichas de productos sin tienda o ZIP asociado.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": "fresh",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "supplement:protection-5138f85ea4e12e79:material",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 3.98,
+            "catalogId": "00000000-0000-4000-8000-00000000000a",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "Protection consumables: manual whole purchase packages; no coverage or consumption inferred from wall paint. No consumable labor added; primer application hours are reviewed separately. Replaces the protection consumables allowance; review completeness of itemized materials.",
+              "es": "Consumibles de protección: envases completos de compra manuales; sin inferir rendimiento ni consumo desde la pintura. Sin mano de obra adicional para consumibles; las horas de imprimación se revisan aparte. Sustituye el supuesto de consumibles de protección; revisa que las partidas cubran todos los materiales."
+            },
+            "description": "Project Source Light Duty Plastic Drop Cloth · 1 sheet",
+            "needsReview": true,
+            "priceSource": "SKU 3487100 | model 110SG0912LOWES.7C | ea | https://www.lowes.com/pd/Project-Source-9-ft-x-12-ft-Clear-0-7-mil-Light-duty-Plastic-Sheeting/5003330935 | Lowe's · Light Duty Plastic Drop Cloth · 1 sheet · precio público online; sucursal/ZIP no verificados",
+            "ruleVersion": "interior-walls-1",
+            "materialRole": "protection",
+            "priceMissing": false,
+            "translations": {
+              "en": "Project Source Light Duty Plastic Drop Cloth · 1 sheet",
+              "es": "Project Source Light Duty Plastic Drop Cloth · 1 sheet"
+            },
+            "ruleOverrides": {},
+            "quantityPending": false,
+            "materialSelectionId": "protection-5138f85ea4e12e79"
+          },
+          {
+            "id": "9e3982d0-6abc-41f7-b1b5-b54085fee9c6",
+            "unit": "ea",
+            "notes": "Abrasivos de preparación: envases completos de compra manuales; sin inferir rendimiento ni consumo desde la pintura. Sin mano de obra adicional para consumibles; las horas de imprimación se revisan aparte. Sustituye el supuesto de consumibles de preparación; revisa que las partidas cubran todos los materiales.",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000008",
+              "sku": "6014059",
+              "url": "https://www.lowes.com/pd/3M-3M-Pro-Grade-Precision-rd-Sheets-Sandpaper-Purple-Abrasive-120-grit/5015565859",
+              "unit": "ea",
+              "brand": "3M",
+              "model": "SHT120-PGP-6T",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "Lowe's",
+              "freight": "unknown",
+              "package": "6 sheets · 120 grit",
+              "product": "PRO Grade Precision Medium 120 Grit Sheet Sandpaper",
+              "cacheHit": false,
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_public_HTML_HTTP_200",
+              "location": "Mid-city #2714, 4550 West Pico Blvd Unit D-101, Los Angeles, CA 90019",
+              "salesTax": "unknown",
+              "sourceId": "LO03",
+              "unitCost": 6.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "factor": 6,
+                "to_unit": "sheet"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Paquete de 6; no confundir con SandBlaster Pro 20120-SBP-5 discontinuado en web.",
+                "Sin disponibilidad local confirmada."
+              ],
+              "packageData": {
+                "grit": 120,
+                "unit": "sheets",
+                "amount": 6,
+                "dimensions_in": [
+                  3.67,
+                  9
+                ]
+              },
+              "supplierUrl": "https://www.lowes.com/store/ca-los-angeles/2714",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_public_HTML_HTTP_200",
+              "supplierCoverage": "Sucursal local comprobada; fichas de productos sin tienda o ZIP asociado.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": "fresh",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "supplement:abrasive-13ce48bfdca6dc87:material",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 6.98,
+            "catalogId": "00000000-0000-4000-8000-000000000008",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "Preparation abrasives: manual whole purchase packages; no coverage or consumption inferred from wall paint. No consumable labor added; primer application hours are reviewed separately. Replaces the preparation consumables allowance; review completeness of itemized materials.",
+              "es": "Abrasivos de preparación: envases completos de compra manuales; sin inferir rendimiento ni consumo desde la pintura. Sin mano de obra adicional para consumibles; las horas de imprimación se revisan aparte. Sustituye el supuesto de consumibles de preparación; revisa que las partidas cubran todos los materiales."
+            },
+            "description": "3M PRO Grade Precision Medium 120 Grit Sheet Sandpaper · 6 sheets · 120 grit",
+            "needsReview": true,
+            "priceSource": "SKU 6014059 | model SHT120-PGP-6T | ea | https://www.lowes.com/pd/3M-3M-Pro-Grade-Precision-rd-Sheets-Sandpaper-Purple-Abrasive-120-grit/5015565859 | Lowe's · PRO Grade Precision Medium 120 Grit Sheet Sandpaper · 6 sheets · 120 grit · precio público online; sucursal/ZIP no verificados",
+            "ruleVersion": "interior-walls-1",
+            "materialRole": "abrasive",
+            "priceMissing": false,
+            "translations": {
+              "en": "3M PRO Grade Precision Medium 120 Grit Sheet Sandpaper · 6 sheets · 120 grit",
+              "es": "3M PRO Grade Precision Medium 120 Grit Sheet Sandpaper · 6 sheets · 120 grit"
+            },
+            "ruleOverrides": {},
+            "quantityPending": false,
+            "materialSelectionId": "abrasive-13ce48bfdca6dc87"
+          },
+          {
+            "id": "0481a83e-414c-46bf-a515-de6f0c547813",
+            "unit": "hr",
+            "notes": "Horas de aplicación de imprimante pendientes. Las manos/productividad de terminación no determinan este trabajo. Confirma horas adicionales o indica cero explícitamente si ya están incluidas; sin horas adicionales supuestas.",
+            "price": {
+              "reason": "PRIMER_LABOR_HOURS_PENDING",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "manual",
+            "taskId": "bedroom-walls",
+            "ruleKey": "supplement:primer:labor",
+            "costType": "labor",
+            "quantity": 0,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "Primer application labor hours pending. Finish-paint coats/productivity do not establish primer labor. Confirm incremental hours, or explicitly enter zero if already included; no extra hours assumed.",
+              "es": "Horas de aplicación de imprimante pendientes. Las manos/productividad de terminación no determinan este trabajo. Confirma horas adicionales o indica cero explícitamente si ya están incluidas; sin horas adicionales supuestas."
+            },
+            "description": "Aplicación de imprimante - mano de obra",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Primer application - labor",
+              "es": "Aplicación de imprimante - mano de obra"
+            },
+            "ruleOverrides": {
+              "quantity": true
+            },
+            "quantityPending": false
+          },
+          {
+            "id": "ee2558b3-a1f6-4e21-b638-b2fded2f3590",
+            "unit": "lot",
+            "notes": "5% del costo de materiales y mano de obra; excluye esta partida. No incluye impuestos ni flete confirmados.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "expenses:expenses",
+            "costType": "other",
+            "quantity": 1,
+            "unitCost": 38.14,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "5% of material and labor cost; excludes this expenses line. No tax or freight claim.",
+              "es": "5% del costo de materiales y mano de obra; excluye esta partida. No incluye impuestos ni flete confirmados."
+            },
+            "description": "Supuesto de gastos del trabajo",
+            "needsReview": true,
+            "priceSource": "Supuesto provisional editable — sin precio local confirmado",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Job expenses allowance",
+              "es": "Supuesto de gastos del trabajo"
+            },
+            "ruleOverrides": {},
+            "expenseCalculation": {
+              "mode": "percentage",
+              "percent": 5,
+              "baseCents": 76283,
+              "amountCents": 3814
+            }
+          }
+        ],
+        "title": "Dormitorio"
+      }
+    ],
+    "conversationId": "29fba4d9-ec1a-48c8-974b-eb5cda7fdd9f",
+    "pricingContext": {
+      "jobZip": ""
+    },
+    "materialPricing": {
+      "tax": null,
+      "stock": null,
+      "source": "server-internal-catalog",
+      "freight": null,
+      "externallyQueried": false
+    }
+  },
+  "version": 5,
+  "created_at": "2026-10-28T15:42:20.461Z",
+  "updated_at": "2026-10-28T15:42:27.529Z",
+  "finalized_at": null,
+  "finalized_version": null,
+  "finalization_request_id": null
+}

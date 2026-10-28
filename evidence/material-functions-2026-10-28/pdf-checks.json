@@ -1,0 +1,62 @@
+{
+  "pending-en": {
+    "pages": 4,
+    "paint_identifier": true,
+    "original_primer_identifier": true,
+    "two_protection_identifiers": true,
+    "abrasive_identifier": true,
+    "source_date_preserved": true,
+    "original_plan_disclosed": true,
+    "allowance_replacement_disclosed": true,
+    "all_pages_numbered": true,
+    "preliminary": true,
+    "primer_labor_pending": true,
+    "text_within_bounds": true
+  },
+  "reviewed-en": {
+    "pages": 4,
+    "paint_identifier": true,
+    "original_primer_identifier": true,
+    "two_protection_identifiers": true,
+    "abrasive_identifier": true,
+    "source_date_preserved": true,
+    "original_plan_disclosed": true,
+    "allowance_replacement_disclosed": true,
+    "all_pages_numbered": true,
+    "saved_total_present": true,
+    "new_primer_identifier": true,
+    "explicit_zero_labor_review": true,
+    "reviewed_labor_not_pending": true,
+    "text_within_bounds": true
+  },
+  "pending-es": {
+    "pages": 5,
+    "paint_identifier": true,
+    "original_primer_identifier": true,
+    "two_protection_identifiers": true,
+    "abrasive_identifier": true,
+    "source_date_preserved": true,
+    "original_plan_disclosed": true,
+    "allowance_replacement_disclosed": true,
+    "all_pages_numbered": true,
+    "preliminary": true,
+    "primer_labor_pending": true,
+    "text_within_bounds": true
+  },
+  "reviewed-es": {
+    "pages": 5,
+    "paint_identifier": true,
+    "original_primer_identifier": true,
+    "two_protection_identifiers": true,
+    "abrasive_identifier": true,
+    "source_date_preserved": true,
+    "original_plan_disclosed": true,
+    "allowance_replacement_disclosed": true,
+    "all_pages_numbered": true,
+    "saved_total_present": true,
+    "new_primer_identifier": true,
+    "explicit_zero_labor_review": true,
+    "reviewed_labor_not_pending": true,
+    "text_within_bounds": true
+  }
+}

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import {materialRoles,supplementalMaterialRoles} from './materialSelection.js'
 import {offerContextSchema} from './priceOffers.js'
 import { conversionsSchema, roomsSchema } from './estimatingMarket.js'
 import { defaultPaintTemplate } from './paintJob.js'
@@ -11,8 +12,8 @@ export const taskSchema = z.object({
   preparation: bilingual, product: bilingual, finish: bilingual,
   assumptions: bilingual, provenance: bilingual, confirmed: z.boolean(),
 }).strict()
-export const materialRequestSchema=z.object({taskId:z.string().max(80),role:z.enum(['paint','repair']),id:z.string().max(80).optional(),sku:z.string().max(100).optional(),model:z.string().max(100).optional(),variant:z.string().max(200).optional(),package:z.string().max(200).optional(),vendor:z.string().max(200).optional(),storeId:z.string().max(100).optional(),storeZip:z.string().regex(/^\d{5}$/).optional(),alternativeFor:z.string().max(1000).optional(),alternativeAccepted:z.boolean().optional()}).strict()
-export const materialEvidenceSchema=z.object({taskId:z.string().max(80),role:z.enum(['paint','repair']),id:z.string().nullable(),label:z.string().max(1000),unitCost:z.number().nonnegative().nullable(),unit:z.string(),checkedAt:z.string(),url:z.string(),status:z.string(),freshness:z.string(),reason:z.string().nullable(),alternativeFor:z.string().max(1000).optional(),alternativeAccepted:z.boolean().optional()}).strict()
+export const materialRequestSchema=z.object({taskId:z.string().max(80),role:z.enum(materialRoles),selectionId:z.string().min(1).max(80).optional(),purchaseQuantity:z.number().int().min(0).max(1000000).nullable().optional(),requestedLabel:z.string().max(1000).optional(),selectionReason:z.string().max(100).optional(),id:z.string().max(80).optional(),sku:z.string().max(100).optional(),model:z.string().max(100).optional(),variant:z.string().max(200).optional(),package:z.string().max(200).optional(),vendor:z.string().max(200).optional(),storeId:z.string().max(100).optional(),storeZip:z.string().regex(/^\d{5}$/).optional(),alternativeFor:z.string().max(1000).optional(),alternativeAccepted:z.boolean().optional()}).strict()
+export const materialEvidenceSchema=z.object({taskId:z.string().max(80),role:z.enum(materialRoles),selectionId:z.string().min(1).max(80).optional(),purchaseQuantity:z.number().int().min(0).max(1000000).nullable().optional(),requestedLabel:z.string().max(1000).optional(),selectionReason:z.string().max(100).optional(),id:z.string().nullable(),label:z.string().max(1000),unitCost:z.number().nonnegative().nullable(),unit:z.string(),checkedAt:z.string(),url:z.string(),status:z.string(),freshness:z.string(),reason:z.string().nullable(),alternativeFor:z.string().max(1000).optional(),alternativeAccepted:z.boolean().optional()}).strict()
 export const planSchema = z.object({ title: bilingual, address: text, zip: z.string().max(20),
   pricingContext:offerContextSchema.optional(),materialRequests:z.array(materialRequestSchema).max(80).optional(),materialEvidence:z.array(materialEvidenceSchema).max(80).optional(),
   tasks: z.array(taskSchema).min(1).max(40), pending: z.array(bilingual).max(20),
@@ -65,7 +66,9 @@ export const catalogSchema = z.object({ id: z.string().uuid(), product: z.string
 }).strict().refine(x => x.status !== 'verified' || (x.unitCost !== null && x.verifiedZip && x.localPriceEvidence && x.vendor && x.location && x.url), 'Local verification requires product, exact ZIP and product/branch evidence')
   .refine(x => x.status !== 'public_observed' || x.unitCost !== null, 'An observed price requires a value')
   .refine(x => x.status !== 'quote_required' || x.unitCost === null, 'A quote-required record has no observed price')
+export const supplementalSelectionSchema=z.object({selectionId:z.string().min(1).max(80),role:z.enum(supplementalMaterialRoles),catalogId:z.string().max(80).nullable(),purchaseQuantity:z.number().int().min(0).max(1000000).nullable(),requestedLabel:z.string().max(1000).optional()}).strict()
 export const paintTemplateSchema = z.object({
+  materialSelections:z.array(supplementalSelectionSchema).max(30).optional(),
   coats: z.number().positive().max(10), coverageSqFtPerGallon: z.number().positive().max(10000), wastePercent: z.number().min(0).max(100), patchCount: z.number().int().min(0).max(1000), repairPackages: z.number().int().min(0).max(1000).optional(),
   paintCatalogId: z.string().uuid().nullable(), repairCatalogId: z.string().uuid().nullable(),
   hourlyRate: z.number().min(0).max(10000), expensesPercent: z.number().min(0).max(100), marginPercent: z.number().min(0).max(90),

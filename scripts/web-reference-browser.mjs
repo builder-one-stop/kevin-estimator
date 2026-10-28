@@ -16,7 +16,7 @@ try{
   const page=await context.newPage();active=page;page.on('pageerror',e=>report.errors.push(e.message))
   await page.goto(h.url+'/__fixture/session');await page.getByRole('button',{name:'Enter test workspace'}).click();await page.getByRole('button',{name:a('new'),exact:true}).click();await page.waitForURL(/\/chat\/[0-9a-f-]+$/)
   const id=page.url().split('/').at(-1)
-  await page.locator('#chat-message').fill('Paint interior walls12 x10 x8 ft'+(alternative?' SKU UNKNOWN-REQUESTED':''));await page.getByRole('button',{name:a('send'),exact:true}).click()
+  await page.locator('#chat-message').fill('Paint interior walls 12 x10 x8 ft'+(alternative?' SKU UNKNOWN-REQUESTED':''));await page.getByRole('button',{name:a('send'),exact:true}).click()
   await expect(page.getByRole('button',{name:a('approve'),exact:true})).toBeEnabled({timeout:20000})
   await expect(page.locator('.plan-materials')).toContainText(language==='es'?'Los precios web sirven como referencia':'Web prices are budgeting references')
   if(alternative){

@@ -94,3 +94,4 @@
 
 /* Material plan evidence must remain readable inside the chat and at390px. */
 .plan-materials{min-width:0;max-width:100%}.plan-materials article{overflow-wrap:anywhere;padding:.65rem 0;border-bottom:1px solid var(--border,#ddd)}.plan-materials input,.plan-materials select{min-width:0;max-width:100%;width:100%;box-sizing:border-box}.plan-materials strong{overflow-wrap:anywhere}
+.paint-material-functions{grid-column:1/-1;min-width:0;max-width:100%;box-sizing:border-box;border:1px solid var(--border,#ddd);border-radius:8px;padding:12px}.paint-material-functions>div{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:10px;padding:12px 0;border-bottom:1px solid var(--border,#ddd)}.paint-material-functions input,.paint-material-functions select{width:100%;min-width:0;max-width:100%;box-sizing:border-box}.paint-material-functions button,.plan-materials button{max-width:100%;white-space:normal;overflow-wrap:anywhere}

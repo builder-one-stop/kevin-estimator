@@ -1,0 +1,76 @@
+{
+  "environment": "Isolated headless Chrome, loopback only, ephemeral database, controlled model and existing public catalog. No live AI/supplier query or new prices.",
+  "checks": [
+    {
+      "language": "en",
+      "distinctFunctions": 4,
+      "protectionItems": 2,
+      "defaultPaintPrice": 46.98,
+      "primerOriginalPrice": 69,
+      "primerReplacementPrice": 52.1,
+      "primerPendingLaborReviewedExplicitZero": true,
+      "manualPrimerQuantity": 1,
+      "sourceDatePreserved": "2026-10-17",
+      "restoredAfterReload": true,
+      "recalculatedArea": 368,
+      "noDuplicatePhaseAllowances": true,
+      "viewport": 390,
+      "totals": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "costCents": 80097
+          }
+        ],
+        "costsByType": {
+          "material": 24308,
+          "labor": 51975,
+          "equipment": 0,
+          "other": 3814
+        },
+        "laborHours": 6.93,
+        "costCents": 80097,
+        "markupCents": 26696,
+        "profitCents": 26696,
+        "priceCents": 106793,
+        "marginPercent": 24.9978931203356
+      }
+    },
+    {
+      "language": "es",
+      "distinctFunctions": 4,
+      "protectionItems": 2,
+      "defaultPaintPrice": 46.98,
+      "primerOriginalPrice": 69,
+      "primerReplacementPrice": 52.1,
+      "primerPendingLaborReviewedExplicitZero": true,
+      "manualPrimerQuantity": 1,
+      "sourceDatePreserved": "2026-10-17",
+      "restoredAfterReload": true,
+      "recalculatedArea": 368,
+      "noDuplicatePhaseAllowances": true,
+      "viewport": 390,
+      "totals": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "costCents": 80097
+          }
+        ],
+        "costsByType": {
+          "material": 24308,
+          "labor": 51975,
+          "equipment": 0,
+          "other": 3814
+        },
+        "laborHours": 6.93,
+        "costCents": 80097,
+        "markupCents": 26696,
+        "profitCents": 26696,
+        "priceCents": 106793,
+        "marginPercent": 24.9978931203356
+      }
+    }
+  ],
+  "errors": []
+}

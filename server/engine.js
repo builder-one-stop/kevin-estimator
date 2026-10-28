@@ -1,4 +1,4 @@
-import {MaterialCatalogService,prepareMaterialPlan,requestedMaterial} from './materialCatalog.js'
+import {MaterialCatalogService,prepareMaterialPlan,requestedMaterials} from './materialCatalog.js'
 import { buildLocalTradeDocument } from '../shared/localTradePlan.js'
 import {summarizeConversationUsage} from '../shared/apiUsage.js'
 import {attachHybridBudget} from '../shared/workRegistry.js'
@@ -169,8 +169,9 @@ export class EstimatorEngine {
    const settings=(await this.repo.settings(owner))?.data||defaultSettings()
    settings.catalog=effectiveCatalog(settings.catalog);settings.catalogIsEffective=true
    const materialService=new MaterialCatalogService(settings)
-   const materialQuery=requestedMaterial(row.state.messages)
-   context.materialReferences=materialService.search({...materialQuery,role:'paint'}).rows.slice(0,6).map(x=>({id:x.id,product:x.product,brand:x.brand,sku:x.sku,model:x.model,package:x.package,unit:x.unit,unitCost:x.unitCost,checkedAt:x.checkedAt,status:x.status,source:x.provenanceClass==='current-owner'?'current-owner':x.sourceId?'public-research':'current-owner',localVerified:false}))
+   const materialQueries=requestedMaterials(row.state.messages,settings.catalog)
+   const materialCandidates=materialQueries.length?materialQueries.flatMap(({role,selectionId,...selection})=>materialService.search({...Object.fromEntries(['id','sku','model'].filter(k=>selection[k]).map(k=>[k,selection[k]])),role}).rows.map(x=>({...x,materialRole:role,selectionId}))):materialService.search({role:'paint'}).rows
+   context.materialReferences=materialCandidates.slice(0,20).map(x=>({role:x.materialRole||'paint',selectionId:x.selectionId,id:x.id,product:x.product,brand:x.brand,sku:x.sku,model:x.model,package:x.package,unit:x.unit,unitCost:x.unitCost,checkedAt:x.checkedAt,status:x.status,source:x.provenanceClass==='current-owner'?'current-owner':x.sourceId?'public-research':'current-owner',localVerified:false}))
    const assets=await this.repo.assets(owner,row.id)
    if(assets.length)await stage('images')
    const images=await Promise.all(assets.map(a=>this.repo.image(owner,a.id)))
@@ -211,13 +212,13 @@ export class EstimatorEngine {
         const selectedPaint=settings.catalog.find(x=>x.id===template.paintCatalogId)
         const selectedRepair=settings.catalog.find(x=>x.id===template.repairCatalogId)
         const materialIds=s.plan.materialEvidence?.filter(x=>x.taskId===task.id)||[]
-        const selectedIds=s.materialPricing?.enabled?{paintCatalogId:materialIds.find(x=>x.role==='paint')?.id||null,repairCatalogId:materialIds.find(x=>x.role==='repair')?.id||null}:null
+        const selectedIds=s.materialPricing?.enabled?{paintCatalogId:materialIds.find(x=>x.role==='paint')?.id||null,repairCatalogId:materialIds.find(x=>x.role==='repair')?.id||null,materialSelections:materialIds.filter(x=>!['paint','repair'].includes(x.role)).map(x=>({selectionId:x.selectionId,role:x.role,catalogId:x.id,purchaseQuantity:x.purchaseQuantity??null,requestedLabel:x.label}))}:null
         const forTask={...template,
           paintCatalogId:selectedPaint && approved.includes(selectedPaint.brand.toLowerCase()) && approved.includes(selectedPaint.product.toLowerCase()) ? template.paintCatalogId : null,
           repairCatalogId:selectedRepair && approved.includes(selectedRepair.brand.toLowerCase()) && approved.includes(selectedRepair.product.toLowerCase()) ? template.repairCatalogId : null,...selectedIds}
         const calculated=makePaintItems(task.id,inputs,forTask,settings.catalog,s.documentLanguage,s.plan.zip)
         document.sections.find(section=>section.id===task.id).items=calculated.items
-        paint[task.id]={version:PAINT_RULE_VERSION,inputs,template:structuredClone(forTask),parameterEvidence:calculated.parameterEvidence,catalogSnapshots:settings.catalog.filter(x=>[forTask.paintCatalogId,forTask.repairCatalogId].includes(x.id)).map(x=>structuredClone(x)),areaSqFt:calculated.areaSqFt}
+        paint[task.id]={version:PAINT_RULE_VERSION,inputs,template:structuredClone(forTask),parameterEvidence:calculated.parameterEvidence,catalogSnapshots:settings.catalog.filter(x=>[forTask.paintCatalogId,forTask.repairCatalogId,...(forTask.materialSelections||[]).map(s=>s.catalogId)].includes(x.id)).map(x=>structuredClone(x)),areaSqFt:calculated.areaSqFt}
       }
       document.rules={paint}
       document.scope.plan.markupBps=markupBps

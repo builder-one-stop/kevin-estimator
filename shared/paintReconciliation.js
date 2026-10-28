@@ -52,12 +52,15 @@ export function paintLineNotes(item, rule, language = 'en') {
     return [custom,explanation].filter(Boolean).join('\n')
   }
   if(item.quantityPending && item.quantityPendingReason==='PACKAGE_CHANGED')return [custom,es?'Cambió el producto o envase: confirma una nueva cantidad de compra; la cantidad manual anterior se conserva como antecedente.':'Product or package changed: confirm a new purchase quantity; the earlier manual quantity is retained as history.'].filter(Boolean).join('\n')
+  if(item.quantityPending&&item.ruleKey==='supplement:primer:labor')return [custom,local(item.ruleNotes)].filter(Boolean).join('\n')
+  if(item.quantityPendingReason==='PURCHASE_UNIT_REVIEW'&&item.quantityPending)return [custom,es?'Unidad de precio y envase requieren revisión; sin convertir una unidad de consumo en un envase de compra.':'Price unit and package require review; no conversion from consumption units to purchase packages inferred.',local(item.ruleNotes)].filter(Boolean).join('\n')
+  if(item.quantityPending&&item.materialSelectionId)return [custom,es?'Cantidad de compra pendiente para esta función; sin consumo supuesto.':'Purchase quantity pending for this function; no consumption assumed.',local(item.ruleNotes)].filter(Boolean).join('\n')
   if(item.quantityPending)return [custom,es?'Producto o envase sin resolver; cantidad de compra pendiente. Las medidas originales se conservan en el plan.':'Product or purchase package unresolved; purchase quantity pending. Original measurements remain in the plan.'].filter(Boolean).join('\n')
   const quantityChanged = item.ruleOverrides?.quantity || (item.takeoff && Number(item.quantity) !== Number(item.takeoff.packages))
   if (item.ruleKey && quantityChanged) {
     const explanation = es ? `Cantidad ajustada manualmente: ${item.quantity} ${item.unit}. Sustituye la cantidad calculada; no se afirma el cálculo anterior como cantidad actual.`
       : `Manual quantity override: ${item.quantity} ${item.unit}. Replaces the calculated quantity; the earlier takeoff is not the current order.`
-    return [custom,explanation].filter(Boolean).join('\n')
+    return [custom,explanation,item.materialSelectionId?local(item.ruleNotes):item.ruleKey==='supplement:primer:labor'?(es?'Horas de imprimación revisadas manualmente; confirma si están incluidas en la terminación.':'Primer hours reviewed manually; confirm whether included in finish labor.'):''].filter(Boolean).join('\n')
   }
   const notes = item.ruleNotes ? local(item.ruleNotes) : item.basis && [item.basis.en,item.basis.es].includes(item.notes) ? local(item.basis) : item.notes
   return [notes,takeoffSummary(item.takeoff,language)].filter(Boolean).join('\n')

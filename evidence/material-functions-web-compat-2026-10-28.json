@@ -1,0 +1,43 @@
+{
+  "environment": "Controlled local app; no supplier account/contact, no chosen store/job ZIP, no remote APIs.",
+  "checks": [
+    {
+      "case": "web-en",
+      "publicPrice": 46.98,
+      "observed": "2026-10-17",
+      "store": null,
+      "jobZip": null,
+      "supplierAccount": false,
+      "supplierContact": false,
+      "reload": true,
+      "pdf": true,
+      "alternativeAccepted": false
+    },
+    {
+      "case": "web-es",
+      "publicPrice": 46.98,
+      "observed": "2026-10-17",
+      "store": null,
+      "jobZip": null,
+      "supplierAccount": false,
+      "supplierContact": false,
+      "reload": true,
+      "pdf": true,
+      "alternativeAccepted": false
+    },
+    {
+      "case": "alternative-es",
+      "publicPrice": 46.98,
+      "observed": "2026-10-17",
+      "store": null,
+      "jobZip": null,
+      "supplierAccount": false,
+      "supplierContact": false,
+      "reload": true,
+      "pdf": true,
+      "alternativeAccepted": true
+    }
+  ],
+  "errors": [],
+  "reproduction": "scripts/web-reference-browser.mjs with separate loopback ports5322/8912 and temporary output; corrected missing space in synthetic geometry request, strict parser retained."
+}

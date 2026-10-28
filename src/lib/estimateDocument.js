@@ -94,6 +94,8 @@ export function validateEstimate(document, markupBps) {
   for (const section of document.sections) {
     if (typeof section.title !== 'string' || !Array.isArray(section.items)) return 'Invalid section'
     for (const item of section.items) {
+      if(item.materialSelectionId&&item.quantityPendingReason==='PURCHASE_UNIT_REVIEW'&&!item.quantityPending&&!(item.unit==='ea'&&item.price?.status==='manual'))return 'Review purchase package price unit'
+      if(item.materialSelectionId&&!item.quantityPending&&!Number.isSafeInteger(item.quantity)) return 'Purchase packages must be whole numbers'
       if (item.markupBps != null && (!Number.isInteger(item.markupBps) || item.markupBps < 0 || item.markupBps > 100000)) return 'Invalid item markup'
       if (typeof item.description !== 'string' || !COST_TYPES.includes(item.costType) || !UNITS.includes(item.unit)) return 'Invalid item'
       if (!Number.isFinite(Number(item.quantity)) || Number(item.quantity) < 0 || !Number.isFinite(Number(item.unitCost)) || Number(item.unitCost) < 0) return 'Invalid quantity or cost'
