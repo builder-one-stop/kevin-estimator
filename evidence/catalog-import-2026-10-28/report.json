@@ -1,6 +1,7 @@
 {
   "environment": "Isolated PGlite, existing synthetic admin-B/operator-A roles, no external service.",
   "checks": [
+    "Maintenance queue exposes missing/stale coverage without changing source dates or amounts",
     "Invalid units/duplicates block apply; preview never persists",
     "Merge preserves pending entries; Save/reload versions only this owner catalog",
     "Second import updates existingID with history; replace removals explicit; cancel preserves list",
