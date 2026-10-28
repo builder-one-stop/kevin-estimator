@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "command": "npm run build",
+  "revalidatedWithIsolatedLockfileDependencies": true,
+  "guardIssues": [],
+  "publicConfigSource": "existing authorized Kevin release frontend public configuration",
+  "variableNames": [
+    "VITE_SUPABASE_URL",
+    "VITE_SUPABASE_ANON_KEY"
+  ],
+  "kevinTarget": true,
+  "privateConfigurationCopied": false,
+  "netlifyVariablesModified": false,
+  "guardModified": false,
+  "packager": "@netlify/zip-it-and-ship-it 16.5.0",
+  "runtime": "nodejs24.x",
+  "warning": "existing chunk >500kB",
+  "deploymentPerformed": false,
+  "remoteSqlPerformed": false
+}

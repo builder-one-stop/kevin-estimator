@@ -1,0 +1,67 @@
+{
+  "functions": [
+    {
+      "bundler": "nft",
+      "invocationMode": "background",
+      "buildData": {
+        "bootstrapVersion": "2.24.0",
+        "runtimeAPIVersion": 2
+      },
+      "mainFile": "/netlify/functions/ai-run.mjs",
+      "name": "ai-run",
+      "priority": 10,
+      "runtimeVersion": "nodejs24.x",
+      "path": "ai-run.zip",
+      "runtime": "js"
+    },
+    {
+      "bundler": "nft",
+      "invocationMode": "stream",
+      "buildData": {
+        "bootstrapVersion": "2.24.0",
+        "runtimeAPIVersion": 2
+      },
+      "mainFile": "/netlify/functions/ai.mjs",
+      "name": "ai",
+      "priority": 10,
+      "runtimeVersion": "nodejs24.x",
+      "path": "ai.zip",
+      "runtime": "js"
+    },
+    {
+      "bundler": "nft",
+      "invocationMode": "stream",
+      "buildData": {
+        "bootstrapVersion": "2.24.0",
+        "runtimeAPIVersion": 2
+      },
+      "mainFile": "/netlify/functions/worker-cleanup.mjs",
+      "name": "worker-cleanup",
+      "priority": 10,
+      "runtimeVersion": "nodejs24.x",
+      "path": "worker-cleanup.zip",
+      "runtime": "js",
+      "schedule": "17 * * * *"
+    },
+    {
+      "bundler": "nft",
+      "invocationMode": "stream",
+      "buildData": {
+        "bootstrapVersion": "2.24.0",
+        "runtimeAPIVersion": 2
+      },
+      "mainFile": "/netlify/functions/workers.mjs",
+      "name": "workers",
+      "priority": 10,
+      "runtimeVersion": "nodejs24.x",
+      "path": "workers.zip",
+      "runtime": "js"
+    }
+  ],
+  "system": {
+    "arch": "x64",
+    "platform": "win32"
+  },
+  "timestamp": 1793206898482,
+  "version": 1
+}

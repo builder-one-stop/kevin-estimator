@@ -1,0 +1,30 @@
+{
+  "environment": "Windows isolated extracted ZIPs; private env unset; fetch blocked; Linux ELF inspected separately, not executed",
+  "results": [
+    {
+      "name": "ai-run",
+      "bundledImport": true,
+      "status": 401,
+      "cleanupNotInvoked": false
+    },
+    {
+      "name": "ai",
+      "bundledImport": true,
+      "status": 503,
+      "cleanupNotInvoked": false
+    },
+    {
+      "name": "workers",
+      "bundledImport": true,
+      "status": 503,
+      "cleanupNotInvoked": false
+    },
+    {
+      "name": "worker-cleanup",
+      "bundledImport": true,
+      "status": null,
+      "cleanupNotInvoked": true
+    }
+  ],
+  "networkCalls": 0
+}

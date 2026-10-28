@@ -1,5 +1,7 @@
 # Pricing + mobile integration candidate — 2026-10-28
 
+**Current preparation update:** Both local build/packaging blockers below were subsequently resolved; see [preparation closure](pricing-mobile-preparation-2026-10-28.md). The original matrix is retained as evidence of the first validation block. Remote migration/deployment and physical-device QA are not validated by that closure.
+
 Isolated worktree: `C:\Users\ricar\Documents\Codex\2026-10-25\task-2\pricing-mobile-worktree`; branch `feat/pricing-mobile-candidate-20261028`.
 
 Sources: pricing `d66ba4c2e529321252d576cf55b6ea1ed50fffeb`; mobile `56e21f9e928262677ab3a9dd218f8019d05b819b`, whose parent/merge-base is release `732d08dfe0c476ec7c52d9427e67c957b5b6bec1`. Cherry-pick produced `7934abf`. The only conflict was appended CSS: both blocks were retained. Every nonempty CSS line from each source is present. No functional edits beyond this existing mobile commit.
