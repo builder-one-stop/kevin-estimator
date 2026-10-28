@@ -2,6 +2,9 @@ import { exactCatalogMatch } from './researchCatalog.js'
 import { assessPrice } from './priceEvidence.js'
 import {priceFreshness} from './priceOffers.js'
 
+export const webReferenceNotice=(language='en')=>language==='es'
+ ? 'Los precios web sirven como referencia para presupuestar. No necesitas cuenta ni contacto de proveedor, tienda elegida o ZIP de obra. El precio de compra, impuestos y flete pueden variar. Elegir una tienda no actualiza la fecha observada.'
+ : 'Web prices are budgeting references. No supplier account or contact, selected store or job ZIP is required. Purchase prices, tax and delivery may vary. Selecting a store does not refresh the observed date.'
 export function priceSourceLabel(entry, price, language = 'en') {
   const es = language === 'es'
   const state = entry.evidenceKind==='authorized-quote'&&price.freshness!=='stale'?(es?'cotización importada autorizada; sin verificación local':'authorized imported quote; not locally verified'):price.freshness === 'stale'
@@ -12,7 +15,8 @@ export function priceSourceLabel(entry, price, language = 'en') {
       ? (es ? 'precio público online; sucursal/ZIP no verificados' : 'public online price; branch/ZIP unverified')
       : (es ? 'precio provisional; revisar' : 'provisional price; review')
   const identity=[entry.sku&&`SKU ${entry.sku}`,entry.model&&`model ${entry.model}`,entry.variant,entry.offer?.storeId&&`store ${entry.offer.storeId}`,entry.offer?.storeZip&&`store ZIP ${entry.offer.storeZip}`,entry.offer?.jobZip&&`job ZIP ${entry.offer.jobZip}`,entry.unit,entry.url].filter(Boolean).join(' | ')
-  return `${identity} | ${entry.vendor} · ${entry.product} · ${entry.package} · ${state}`
+  const alternative=entry.referenceSelection?.kind==='accepted-alternative'?(es?`Alternativa referencial aceptada para ${entry.referenceSelection.requested}; sin equivalencia confirmada. `:`Accepted budgeting alternative for ${entry.referenceSelection.requested}; equivalence not confirmed. `):''
+  return `${alternative}${identity} | ${entry.vendor} · ${entry.product} · ${entry.package} · ${state}`
 }
 
 export function catalogPriceSnapshot(entry, jobZip = '') {

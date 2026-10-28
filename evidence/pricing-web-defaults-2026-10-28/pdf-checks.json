@@ -1,0 +1,26 @@
+{
+  "web-en": {
+    "pages": 3,
+    "reference_notice": true,
+    "no_account_required": true,
+    "bounds": true,
+    "source_date_preserved": true,
+    "alternative_disclosed": true
+  },
+  "web-es": {
+    "pages": 3,
+    "reference_notice": true,
+    "no_account_required": true,
+    "bounds": true,
+    "source_date_preserved": true,
+    "alternative_disclosed": true
+  },
+  "alternative-es": {
+    "pages": 3,
+    "reference_notice": true,
+    "no_account_required": true,
+    "bounds": true,
+    "source_date_preserved": true,
+    "alternative_disclosed": true
+  }
+}

@@ -29,7 +29,6 @@ export function requestedMaterial(messages=[]){
  const match=[...text.matchAll(/\b(SKU|model|modelo)\s*[:#]?\s*([A-Za-z0-9][A-Za-z0-9_-]{1,99})\b/gi)].at(-1)
  return match?{[match[1].toLowerCase()==='sku'?'sku':'model']:match[2]}:null
 }
-const bi=text=>({en:text,es:text})
 export async function prepareMaterialPlan(plan,settings,messages=[]){
  const result=structuredClone(plan),service=new MaterialCatalogService(settings),snapshots=[]
  const template={...defaultPaintTemplate(),...settings.paintTemplate},explicit=requestedMaterial(messages)
@@ -41,19 +40,20 @@ export async function prepareMaterialPlan(plan,settings,messages=[]){
   const defaultRow=service.rows.find(row=>row.id===defaultId)
   const useDefault=defaultRow&&approvedText.includes(defaultRow.product.toLowerCase())&&approvedText.includes(defaultRow.brand.toLowerCase())
   const query=chosen?Object.fromEntries(['id','sku','model','variant','package','vendor','storeId','storeZip'].filter(k=>chosen[k]).map(k=>[k,chosen[k]])):role==='paint'&&explicit?explicit:{id:useDefault?defaultId:'unselected'}
-  const found=service.search({...query,role}),entry=found.rows.length===1?found.rows[0]:null
+  const alternative=chosen?.alternativeFor?{alternativeFor:chosen.alternativeFor,alternativeAccepted:chosen.alternativeAccepted===true}:{}
+  const found=service.search({...query,role}),entry=found.rows.length===1&&(!alternative.alternativeFor||alternative.alternativeAccepted)?found.rows[0]:null
   const resolved=entry?await service.resolve(entry,result.pricingContext?.jobZip??result.zip):null
-  if(resolved)snapshots.push(resolved)
-  const request={taskId:task.id,role,...query}
+  if(resolved){if(alternative.alternativeAccepted)resolved.referenceSelection={kind:'accepted-alternative',requested:alternative.alternativeFor,accepted:true};snapshots.push(resolved)}
+  const request={taskId:task.id,role,...query,...alternative}
   requests.push(request)
   const label=resolved?`${resolved.vendor} | ${resolved.brand} ${resolved.product} | ${resolved.package} | SKU ${resolved.sku||'-'} | ${resolved.unit}`:`${role}: ${Object.entries(query).map(([k,v])=>`${k} ${v}`).join(', ')} - product/price pending / producto/precio pendiente`
-  evidence.push({taskId:task.id,role,id:resolved?.id||null,label,unitCost:resolved?.unitCost??null,unit:resolved?.unit||'',checkedAt:resolved?.checkedAt||'',url:resolved?.url||'',status:resolved?.status||'quote_required',freshness:resolved?.freshness||'unavailable',reason:resolved?.reason||(found.total>1?'AMBIGUOUS_OFFER':resolved?null:'NO_EXACT_PRODUCT')})
+  evidence.push({taskId:task.id,role,...alternative,id:resolved?.id||null,label,unitCost:resolved?.unitCost??null,unit:resolved?.unit||'',checkedAt:resolved?.checkedAt||'',url:resolved?.url||'',status:resolved?.status||'quote_required',freshness:resolved?.freshness||'unavailable',reason:resolved?.reason||(alternative.alternativeFor&&!alternative.alternativeAccepted?'ALTERNATIVE_NOT_ACCEPTED':found.total>1?'AMBIGUOUS_OFFER':resolved?null:'NO_EXACT_PRODUCT')})
  }
  if(!requests.length)return {plan:result,snapshots:[],enabled:false}
  result.materialRequests=requests;result.materialEvidence=evidence
  for(const task of result.tasks.filter(isInteriorWallPaint)){
   const rows=evidence.filter(r=>r.taskId===task.id)
-  task.product=bi(rows.map(r=>r.label).join('; '))
+  task.product={en:rows.map(r=>(r.alternativeAccepted?`Accepted budgeting alternative for ${r.alternativeFor}; equivalence not confirmed. `:'')+r.label).join('; '),es:rows.map(r=>(r.alternativeAccepted?`Alternativa referencial aceptada para ${r.alternativeFor}; sin equivalencia confirmada. `:'')+r.label).join('; ')}
   task.provenance={en:'Exact internal catalog selection; public web observations or current-owner imports. No live supplier query; job ZIP and buying store are separate.',es:'Selección exacta del catálogo interno; observaciones web públicas o importaciones de esta cuenta. Sin consulta en vivo; ZIP de obra y tienda de compra son distintos.'}
  }
  return {plan:result,snapshots,enabled:true}

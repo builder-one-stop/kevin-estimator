@@ -1,0 +1,42 @@
+{
+  "environment": "Controlled local app; no supplier account/contact, no chosen store/job ZIP, no remote APIs.",
+  "checks": [
+    {
+      "case": "web-en",
+      "publicPrice": 46.98,
+      "observed": "2026-10-17",
+      "store": null,
+      "jobZip": null,
+      "supplierAccount": false,
+      "supplierContact": false,
+      "reload": true,
+      "pdf": true,
+      "alternativeAccepted": false
+    },
+    {
+      "case": "web-es",
+      "publicPrice": 46.98,
+      "observed": "2026-10-17",
+      "store": null,
+      "jobZip": null,
+      "supplierAccount": false,
+      "supplierContact": false,
+      "reload": true,
+      "pdf": true,
+      "alternativeAccepted": false
+    },
+    {
+      "case": "alternative-es",
+      "publicPrice": 46.98,
+      "observed": "2026-10-17",
+      "store": null,
+      "jobZip": null,
+      "supplierAccount": false,
+      "supplierContact": false,
+      "reload": true,
+      "pdf": true,
+      "alternativeAccepted": true
+    }
+  ],
+  "errors": []
+}
