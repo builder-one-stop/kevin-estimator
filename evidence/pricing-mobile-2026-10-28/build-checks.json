@@ -1,0 +1,16 @@
+{
+  "lint": "passed",
+  "frontendCompilation": "passed-with-synthetic-config",
+  "warning": "existing chunk >500kB",
+  "productionBuild": "not-run-guard-blocked",
+  "missingCandidateNames": [
+    "VITE_SUPABASE_URL",
+    "VITE_SUPABASE_ANON_KEY"
+  ],
+  "existingPublicConfigurationIssues": [
+    "PUBLIC_SUPABASE_TARGET_INVALID"
+  ],
+  "netlifyPackaging": "not-run-tooling-unavailable",
+  "sourceCheckoutsPreserved": true,
+  "qaListenersClosed": true
+}

@@ -1,0 +1,49 @@
+{
+  "scope": "Local source/import and compiled fixture frontend audit; NOT Netlify deployment or ZIP validation",
+  "functions": [
+    {
+      "file": "netlify\\functions\\ai-run.mjs",
+      "defaultHandler": true,
+      "background": true,
+      "sha256": "b40c5026320debf03b62ca86a74d842d61a4a4a300eab1e1f5949977a9f56a81"
+    },
+    {
+      "file": "netlify\\functions\\ai.mjs",
+      "defaultHandler": true,
+      "background": false,
+      "sha256": "669ce1c41f0dc22e23f7be7cb95149c7d7fa1e5163a2486d14b8809c03b0a702"
+    },
+    {
+      "file": "netlify\\functions\\worker-cleanup.mjs",
+      "defaultHandler": true,
+      "background": false,
+      "sha256": "0ec97969027b75d61414678be46af9c804d050ef5dd5be2990c71b6c805c1db0"
+    },
+    {
+      "file": "netlify\\functions\\workers.mjs",
+      "defaultHandler": true,
+      "background": false,
+      "sha256": "f90025abaab73e3444d102cd14f5a0b87c38f8c9ff49f8237cc7b632b15f6be9"
+    }
+  ],
+  "nativeDependencies": [
+    {
+      "package": "sharp",
+      "available": true
+    },
+    {
+      "package": "@img/sharp-linux-x64",
+      "available": true
+    },
+    {
+      "package": "@img/sharp-libvips-linux-x64",
+      "available": true
+    }
+  ],
+  "packagerAvailable": false,
+  "privateValueMatches": [],
+  "configurationFilesInDist": [],
+  "networkCalls": 0,
+  "zipProduced": false,
+  "status": "passed-with-packaging-limitation"
+}

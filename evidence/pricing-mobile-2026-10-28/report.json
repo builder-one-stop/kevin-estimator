@@ -1,0 +1,130 @@
+{
+  "environment": "Controlled local chat and ephemeral database; new isolated headless Chrome; browser network loopback only. Official technical research is checked-in metadata; no live supplier/AI/price calls.",
+  "checks": [
+    {
+      "language": "en",
+      "oldPaintQuantity": 3,
+      "unchangedBeforeExplicitRecalc": true,
+      "appliedPaintQuantity": 4,
+      "appliedPrimerQuantity": 2,
+      "explicitPrimerCoats": 1,
+      "explicitPrimerArea": "room-walls",
+      "wasteAppliedOnce": true,
+      "manualPrimerQuantityRetained": 5,
+      "resetPrimerQuantity": 3,
+      "resizedPaintQuantity": 6,
+      "areaSqFt": 640,
+      "wrongPrimerProfilePending": true,
+      "returnedExactPrimerQuantity": 3,
+      "priceObservationPreserved": "2026-10-17",
+      "technicalConsultedAt": "2026-10-28",
+      "manualPaintPricePreserved": 49,
+      "primerLaborStillPending": true,
+      "reload": true,
+      "viewport": 390,
+      "originalTotals": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "costCents": 74577
+          }
+        ],
+        "costsByType": {
+          "material": 21226,
+          "labor": 49800,
+          "equipment": 0,
+          "other": 3551
+        },
+        "laborHours": 7.64,
+        "costCents": 74577,
+        "markupCents": 24857,
+        "profitCents": 24857,
+        "priceCents": 99434,
+        "marginPercent": 24.99849146167307
+      },
+      "totals": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "costCents": 144766
+          }
+        ],
+        "costsByType": {
+          "material": 48322,
+          "labor": 89550,
+          "equipment": 0,
+          "other": 6894
+        },
+        "laborHours": 12.94,
+        "costCents": 144766,
+        "markupCents": 48251,
+        "profitCents": 48251,
+        "priceCents": 193017,
+        "marginPercent": 24.998316210489232
+      }
+    },
+    {
+      "language": "es",
+      "oldPaintQuantity": 3,
+      "unchangedBeforeExplicitRecalc": true,
+      "appliedPaintQuantity": 4,
+      "appliedPrimerQuantity": 2,
+      "explicitPrimerCoats": 1,
+      "explicitPrimerArea": "room-walls",
+      "wasteAppliedOnce": true,
+      "manualPrimerQuantityRetained": 5,
+      "resetPrimerQuantity": 3,
+      "resizedPaintQuantity": 6,
+      "areaSqFt": 640,
+      "wrongPrimerProfilePending": true,
+      "returnedExactPrimerQuantity": 3,
+      "priceObservationPreserved": "2026-10-17",
+      "technicalConsultedAt": "2026-10-28",
+      "manualPaintPricePreserved": 49,
+      "primerLaborStillPending": true,
+      "reload": true,
+      "viewport": 390,
+      "originalTotals": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "costCents": 74577
+          }
+        ],
+        "costsByType": {
+          "material": 21226,
+          "labor": 49800,
+          "equipment": 0,
+          "other": 3551
+        },
+        "laborHours": 7.64,
+        "costCents": 74577,
+        "markupCents": 24857,
+        "profitCents": 24857,
+        "priceCents": 99434,
+        "marginPercent": 24.99849146167307
+      },
+      "totals": {
+        "sections": [
+          {
+            "id": "bedroom-walls",
+            "costCents": 144766
+          }
+        ],
+        "costsByType": {
+          "material": 48322,
+          "labor": 89550,
+          "equipment": 0,
+          "other": 6894
+        },
+        "laborHours": 12.94,
+        "costCents": 144766,
+        "markupCents": 48251,
+        "profitCents": 48251,
+        "priceCents": 193017,
+        "marginPercent": 24.998316210489232
+      }
+    }
+  ],
+  "errors": []
+}

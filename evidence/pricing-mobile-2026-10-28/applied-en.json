@@ -1,0 +1,1536 @@
+{
+  "id": "299c38e5-1f05-4953-ad53-2af9db941a6f",
+  "owner_id": "10000000-0000-4000-8000-000000000001",
+  "client_id": null,
+  "project_id": null,
+  "title": "Bedroom wall painting",
+  "status": "Draft",
+  "markup_bps": 3333,
+  "document": {
+    "rules": {
+      "paint": {
+        "bedroom-walls": {
+          "inputs": {
+            "widthFt": 10,
+            "heightFt": 8,
+            "lengthFt": 12,
+            "openingsSqFt": 0,
+            "useGrossWalls": true
+          },
+          "version": "interior-walls-1",
+          "areaSqFt": 352,
+          "template": {
+            "coats": 2,
+            "hourlyRate": 75,
+            "patchCount": 1,
+            "productivity": {
+              "repair": 8,
+              "cleanup": 1000,
+              "painting": 150,
+              "protection": 800,
+              "preparation": 350
+            },
+            "wastePercent": 10,
+            "marginPercent": 25,
+            "paintCatalogId": "00000000-0000-4000-8000-000000000001",
+            "repairPackages": 1,
+            "expensesPercent": 5,
+            "repairCatalogId": "00000000-0000-4000-8000-000000000003",
+            "technicalProfile": {
+              "id": "behr-ultra-275001-white-eggshell-v1",
+              "base": "Ultra Pure White",
+              "role": "paint",
+              "basis": "Per applied layer at stated wet/dry film; not a whole multi-coat system guarantee.",
+              "range": [
+                250,
+                400
+              ],
+              "sheen": "eggshell",
+              "version": 1,
+              "filmMils": [
+                {
+                  "dry": 2.4,
+                  "wet": 6.4,
+                  "coverage": 250
+                },
+                {
+                  "dry": 1.5,
+                  "wet": 4,
+                  "coverage": 400
+                }
+              ],
+              "identity": {
+                "skus": [
+                  "433052"
+                ],
+                "unit": "gal",
+                "brand": "BEHR",
+                "model": "275001",
+                "package": "1 US gal · eggshell · Ultra Pure White",
+                "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+                "variant": ""
+              },
+              "revision": "11/2020",
+              "bridgeUrl": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+              "criterion": "lower-range-bound-estimating-choice",
+              "pdfSha256": "8e88f1fa499c0735d9bbc0ff40ad7e069f45010c1c2f6b677ae363cc70b916e8",
+              "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/da/dae4efe2-cd05-4c12-b7f8-344757743ad9.pdf",
+              "conditions": {
+                "en": "Prepared, clean, dry substrate; texture, porosity and application affect coverage. Spray loss excluded. Coat count and job waste require review. No labor productivity inferred.",
+                "es": "Soporte preparado, limpio y seco; textura, porosidad y aplicación afectan rendimiento. Excluye pérdida por pulverización. Revisar manos y merma de obra. Sin productividad laboral inferida."
+              },
+              "scopeLimit": "Only model275001/Ultra Pure White/eggshell/1USgal; not2753/2754, PREMIUM PLUS or other sheens.",
+              "sourcePage": 1,
+              "consultedAt": "2026-10-28",
+              "coverageUnit": "sf/USgal/coat",
+              "corroborationUrl": "https://www.behr.com/pro/products/interior-products/interior-paints-and-coatings/paints-and-coatings/behr-ultra-interior/behr-ultra-interior-eggshell-enamel-2750",
+              "manufacturerNumber": "2750",
+              "manufacturerGuarantee": false,
+              "applicationTemperatureF": [
+                50,
+                90
+              ]
+            },
+            "materialSelections": [
+              {
+                "role": "primer",
+                "coats": 1,
+                "catalogId": "00000000-0000-4000-8000-000000000002",
+                "selectionId": "primer-dea419c85a699224",
+                "quantityMode": "documented-coverage",
+                "wastePercent": 10,
+                "requestedLabel": "The Home Depot | KILZ KILZ 2 ALL PURPOSE White Interior/Exterior Primer | 1 US gal · White | SKU - | gal",
+                "coverageAreaMode": "room-walls",
+                "purchaseQuantity": null,
+                "technicalProfile": {
+                  "id": "kilz2-20941-white-us1gal-v1",
+                  "base": "White",
+                  "role": "primer",
+                  "basis": "Per applied layer at stated wet/dry film; not a whole multi-coat system guarantee.",
+                  "range": [
+                    300,
+                    400
+                  ],
+                  "sheen": "primer; sheen depends on substrate",
+                  "version": 1,
+                  "filmMils": [
+                    {
+                      "dry": 1.7,
+                      "wet": 5.3,
+                      "coverage": 300
+                    },
+                    {
+                      "dry": 1.3,
+                      "wet": 4,
+                      "coverage": 400
+                    }
+                  ],
+                  "identity": {
+                    "skus": [
+                      "",
+                      "140770"
+                    ],
+                    "unit": "gal",
+                    "brand": "KILZ",
+                    "model": "20941",
+                    "package": "1 US gal · White",
+                    "product": "KILZ 2 ALL PURPOSE White Interior/Exterior Primer",
+                    "variant": ""
+                  },
+                  "revision": "03/2019 (legacy header 6/2014)",
+                  "bridgeUrl": "https://www.homedepot.com/p/KILZ-KILZ-2-ALL-PURPOSE-1-gal-White-Interior-Exterior-Multi-Surface-Primer-Sealer-and-Stain-Blocker-20941/100096395",
+                  "criterion": "lower-range-bound-estimating-choice",
+                  "pdfSha256": "0e72498490391aef975c7952d1ad8637ac13cb6e5291e30f3beb537cb26f0dc9",
+                  "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/b5/b505644b-bcec-4656-9ad9-64839581d23d.pdf",
+                  "conditions": {
+                    "en": "Prepared, clean, dry substrate; texture, porosity and application affect coverage. Spray loss excluded. Coat count and job waste require review. No labor productivity inferred.",
+                    "es": "Soporte preparado, limpio y seco; textura, porosidad y aplicación afectan rendimiento. Excluye pérdida por pulverización. Revisar manos y merma de obra. Sin productividad laboral inferida."
+                  },
+                  "scopeLimit": "Only model20941/KILZ2 All-Purpose White/1USgal; notGray, KILZ3 or other formulations.",
+                  "sourcePage": 1,
+                  "consultedAt": "2026-10-28",
+                  "coverageUnit": "sf/USgal/coat",
+                  "corroborationUrl": "https://www.kilz.com/primer/kilz-2",
+                  "manufacturerNumber": "2000",
+                  "manufacturerGuarantee": false,
+                  "applicationTemperatureF": [
+                    50,
+                    90
+                  ]
+                },
+                "coverageSqFtPerGallon": 300
+              }
+            ],
+            "consumablesUsdPerSqFt": {
+              "cleanup": 0.03,
+              "protection": 0.08,
+              "preparation": 0.06
+            },
+            "coverageSqFtPerGallon": 250
+          },
+          "catalogSnapshots": [
+            {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "sku": "433052",
+              "url": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+              "unit": "gal",
+              "brand": "BEHR",
+              "model": "275001",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "1 US gal · eggshell · Ultra Pure White",
+              "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+              "cacheHit": false,
+              "category": "interior_paint",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD01",
+              "unitCost": 46.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                "factor": 128,
+                "to_unit": "US_fl_oz"
+              },
+              "validUntil": null,
+              "limitations": [
+                "La ficha muestra Select store. No se aplicó promoción de tarjeta. Precio leído al abrir página original en web; HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "US_gallon",
+                "color": "Ultra Pure White",
+                "sheen": "eggshell",
+                "amount": 1
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": null,
+              "internalPriceApproval": "not-recorded"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "sku": "283433",
+              "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+              "unit": "ea",
+              "brand": "DAP",
+              "model": "12327",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "32 oz as labeled",
+              "product": "DryDex Dry Time Indicator Spackling Paste",
+              "cacheHit": false,
+              "category": "patch",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD03",
+              "unitCost": 11.48,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": null,
+              "validUntil": null,
+              "limitations": [
+                "No convertir oz a fl oz sin confirmar volumen/peso en especificación.",
+                "No es el mismo modelo que DAP 12330 vendido por Lowe's; no asumir equivalencia exacta.",
+                "HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "oz_as_labeled",
+                "amount": 32,
+                "purchase_unit": "container"
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": null,
+              "internalPriceApproval": "not-recorded"
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000002",
+              "sku": "",
+              "url": "https://www.homedepot.com/p/KILZ-KILZ-2-ALL-PURPOSE-1-gal-White-Interior-Exterior-Multi-Surface-Primer-Sealer-and-Stain-Blocker-20941/100096395",
+              "unit": "gal",
+              "brand": "KILZ",
+              "model": "20941",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "1 US gal · White",
+              "product": "KILZ 2 ALL PURPOSE White Interior/Exterior Primer",
+              "cacheHit": false,
+              "category": "primer",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD02",
+              "unitCost": 22.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                "factor": 128,
+                "to_unit": "US_fl_oz"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Modelo observado 20941, no sustituir por otro código histórico de KILZ 2.",
+                "Precio no vinculado a Sunset #6616; HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "US_gallon",
+                "color": "White",
+                "amount": 1
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": null,
+              "internalPriceApproval": "not-recorded"
+            }
+          ],
+          "parameterEvidence": {
+            "labor": {
+              "value": 75,
+              "reason": "Contractor charge assumption; not a BLS wage conversion.",
+              "status": "provisional"
+            },
+            "waste": {
+              "value": 10,
+              "reason": "Editable allowance, not manufacturer-verified loss.",
+              "status": "provisional"
+            },
+            "coverage": {
+              "range": [
+                250,
+                400
+              ],
+              "value": 250,
+              "status": "documented-range-assumption",
+              "profile": {
+                "id": "behr-ultra-275001-white-eggshell-v1",
+                "base": "Ultra Pure White",
+                "role": "paint",
+                "basis": "Per applied layer at stated wet/dry film; not a whole multi-coat system guarantee.",
+                "range": [
+                  250,
+                  400
+                ],
+                "sheen": "eggshell",
+                "version": 1,
+                "filmMils": [
+                  {
+                    "dry": 2.4,
+                    "wet": 6.4,
+                    "coverage": 250
+                  },
+                  {
+                    "dry": 1.5,
+                    "wet": 4,
+                    "coverage": 400
+                  }
+                ],
+                "identity": {
+                  "skus": [
+                    "433052"
+                  ],
+                  "unit": "gal",
+                  "brand": "BEHR",
+                  "model": "275001",
+                  "package": "1 US gal · eggshell · Ultra Pure White",
+                  "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+                  "variant": ""
+                },
+                "revision": "11/2020",
+                "bridgeUrl": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+                "criterion": "lower-range-bound-estimating-choice",
+                "pdfSha256": "8e88f1fa499c0735d9bbc0ff40ad7e069f45010c1c2f6b677ae363cc70b916e8",
+                "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/da/dae4efe2-cd05-4c12-b7f8-344757743ad9.pdf",
+                "conditions": {
+                  "en": "Prepared, clean, dry substrate; texture, porosity and application affect coverage. Spray loss excluded. Coat count and job waste require review. No labor productivity inferred.",
+                  "es": "Soporte preparado, limpio y seco; textura, porosidad y aplicación afectan rendimiento. Excluye pérdida por pulverización. Revisar manos y merma de obra. Sin productividad laboral inferida."
+                },
+                "scopeLimit": "Only model275001/Ultra Pure White/eggshell/1USgal; not2753/2754, PREMIUM PLUS or other sheens.",
+                "sourcePage": 1,
+                "consultedAt": "2026-10-28",
+                "coverageUnit": "sf/USgal/coat",
+                "corroborationUrl": "https://www.behr.com/pro/products/interior-products/interior-paints-and-coatings/paints-and-coatings/behr-ultra-interior/behr-ultra-interior-eggshell-enamel-2750",
+                "manufacturerNumber": "2750",
+                "manufacturerGuarantee": false,
+                "applicationTemperatureF": [
+                  50,
+                  90
+                ]
+              },
+              "criterion": "lower-range-bound-estimating-choice",
+              "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/da/dae4efe2-cd05-4c12-b7f8-344757743ad9.pdf",
+              "documentRevision": "11/2020",
+              "manufacturerGuarantee": false
+            },
+            "productivity": {
+              "reason": "Requires measured job results for calibration.",
+              "status": "provisional",
+              "values": {
+                "repair": 8,
+                "cleanup": 1000,
+                "painting": 150,
+                "protection": 800,
+                "preparation": 350
+              }
+            }
+          },
+          "retiredMaterialAllowances": {}
+        }
+      }
+    },
+    "scope": {
+      "plan": {
+        "zip": "",
+        "tasks": [
+          {
+            "id": "bedroom-walls",
+            "room": {
+              "en": "Bedroom",
+              "es": "Dormitorio"
+            },
+            "work": {
+              "en": "Interior wall painting",
+              "es": "Pintura interior de paredes"
+            },
+            "finish": {
+              "en": "Eggshell, Ultra Pure White",
+              "es": "Eggshell, Ultra Pure White"
+            },
+            "product": {
+              "en": "The Home Depot | BEHR BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer | 1 US gal · eggshell · Ultra Pure White | SKU 433052 | gal; The Home Depot | DAP DryDex Dry Time Indicator Spackling Paste | 32 oz as labeled | SKU 283433 | ea; The Home Depot | KILZ KILZ 2 ALL PURPOSE White Interior/Exterior Primer | 1 US gal · White | SKU - | gal",
+              "es": "The Home Depot | BEHR BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer | 1 US gal · eggshell · Ultra Pure White | SKU 433052 | gal; The Home Depot | DAP DryDex Dry Time Indicator Spackling Paste | 32 oz as labeled | SKU 283433 | ea; The Home Depot | KILZ KILZ 2 ALL PURPOSE White Interior/Exterior Primer | 1 US gal · White | SKU - | gal"
+            },
+            "excluded": {
+              "en": "Ceiling, trim, doors and large repairs",
+              "es": "Techo, molduras, puertas y reparaciones mayores"
+            },
+            "included": {
+              "en": "Walls, protection, preparation, minor nail-hole patching and cleanup",
+              "es": "Paredes, protección, preparación, reparación menor y limpieza"
+            },
+            "confirmed": true,
+            "components": [
+              {
+                "en": "Interior wall painting materials",
+                "es": "Materiales de pintura interior de paredes"
+              }
+            ],
+            "provenance": {
+              "en": "Exact internal catalog selection; public web observations or current-owner imports. No live supplier query; job ZIP and buying store are separate.",
+              "es": "Selección exacta del catálogo interno; observaciones web públicas o importaciones de esta cuenta. Sin consulta en vivo; ZIP de obra y tienda de compra son distintos."
+            },
+            "assumptions": {
+              "en": "Two coats; 350 sf/gal; 10% waste; provisional productivity and consumables",
+              "es": "Dos manos; 350 sf/gal; 10% desperdicio; productividad y consumibles provisionales"
+            },
+            "preparation": {
+              "en": "Protect, prepare and patch minor nail holes once",
+              "es": "Proteger, preparar y reparar agujeros menores una vez"
+            },
+            "measurements": {
+              "en": "Paint walls 12 x10 x8 ft; paint SKU 433052; primer model 20941",
+              "es": "Paint walls 12 x10 x8 ft; paint SKU 433052; primer model 20941"
+            }
+          }
+        ],
+        "title": {
+          "en": "Bedroom wall painting",
+          "es": "Pintura de paredes de dormitorio"
+        },
+        "address": "",
+        "pending": [],
+        "markupBps": 3333,
+        "assumptions": {
+          "en": "Gross walls, no openings deducted. Template coverage, productivity, expenses and margin are editable assumptions; catalog prices are public online observations, not local quotes.",
+          "es": "Paredes brutas, sin descontar aberturas. Rendimiento, productividad, gastos y margen son supuestos editables; los precios del catálogo son observaciones públicas, no cotizaciones locales."
+        },
+        "materialEvidence": [
+          {
+            "id": "00000000-0000-4000-8000-000000000001",
+            "url": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+            "role": "paint",
+            "unit": "gal",
+            "label": "The Home Depot | BEHR BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer | 1 US gal · eggshell · Ultra Pure White | SKU 433052 | gal",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 46.98,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000003",
+            "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+            "role": "repair",
+            "unit": "ea",
+            "label": "The Home Depot | DAP DryDex Dry Time Indicator Spackling Paste | 32 oz as labeled | SKU 283433 | ea",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 11.48,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000002",
+            "url": "https://www.homedepot.com/p/KILZ-KILZ-2-ALL-PURPOSE-1-gal-White-Interior-Exterior-Multi-Surface-Primer-Sealer-and-Stain-Blocker-20941/100096395",
+            "role": "primer",
+            "unit": "gal",
+            "label": "The Home Depot | KILZ KILZ 2 ALL PURPOSE White Interior/Exterior Primer | 1 US gal · White | SKU - | gal",
+            "reason": null,
+            "status": "public_observed",
+            "taskId": "bedroom-walls",
+            "unitCost": 22.98,
+            "checkedAt": "2026-10-17",
+            "freshness": "fresh",
+            "selectionId": "primer-dea419c85a699224"
+          }
+        ],
+        "materialRequests": [
+          {
+            "sku": "433052",
+            "role": "paint",
+            "taskId": "bedroom-walls"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000003",
+            "role": "repair",
+            "taskId": "bedroom-walls"
+          },
+          {
+            "role": "primer",
+            "model": "20941",
+            "taskId": "bedroom-walls",
+            "selectionId": "primer-dea419c85a699224"
+          }
+        ]
+      },
+      "revision": 1,
+      "approvalType": "plan"
+    },
+    "market": {
+      "id": "us-ca-los-angeles",
+      "city": "Los Angeles",
+      "region": "California",
+      "country": "US",
+      "areaUnit": "sf",
+      "currency": "USD",
+      "lengthUnit": "ft"
+    },
+    "aiUsage": {
+      "scope": "OpenAI API only; excludes ChatGPT subscription, hosting, Netlify and Supabase charges.",
+      "apiCalls": 0,
+      "inputTokens": 0,
+      "cachedTokens": 0,
+      "outputTokens": 0,
+      "rateVersions": [],
+      "schemaVersion": "api-usage-1",
+      "conversationId": "9ac45b78-385a-48cb-9f59-1ef844cb678f",
+      "unmeteredCalls": 0,
+      "unpricedEvents": 0,
+      "billingVerified": false,
+      "estimatedCostUsd": 0,
+      "knownEstimatedCostUsd": 0,
+      "legacyRunsWithUnknownCallCount": 0
+    },
+    "business": {
+      "name": "One Stop Building & Remodeling",
+      "phone": "",
+      "address": "",
+      "license": ""
+    },
+    "language": "en",
+    "proposal": {
+      "intro": "",
+      "notes": "",
+      "scope": "",
+      "terms": "",
+      "exclusions": ""
+    },
+    "sections": [
+      {
+        "id": "bedroom-walls",
+        "items": [
+          {
+            "id": "ca502ca6-3b7a-4936-aa82-55901621d3c4",
+            "unit": "sf",
+            "notes": "Consumables allowance only; excludes separately counted paint and patch material.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "protection:material",
+            "costType": "material",
+            "quantity": 352,
+            "unitCost": 0.08,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "Consumables allowance only; excludes separately counted paint and patch material.",
+              "es": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte."
+            },
+            "description": "Protect floor and furnishings",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Protect floor and furnishings",
+              "es": "Proteger piso y muebles"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "64a97aea-6c63-48e8-b7ec-0cb674b0262b",
+            "unit": "hr",
+            "notes": "352 sf ÷ 800 per hour; rounded up to 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "protection:labor",
+            "costType": "labor",
+            "quantity": 0.44,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "352 sf ÷ 800 per hour; rounded up to 0.01 hr.",
+              "es": "352 sf ÷ 800 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Protect floor and furnishings — labor",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Protect floor and furnishings — labor",
+              "es": "Proteger piso y muebles — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "9785101e-7bfc-4d51-aefd-d42f6e58cf24",
+            "unit": "sf",
+            "notes": "Consumables allowance only; excludes separately counted paint and patch material.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "preparation:material",
+            "costType": "material",
+            "quantity": 352,
+            "unitCost": 0.06,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "Consumables allowance only; excludes separately counted paint and patch material.",
+              "es": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte."
+            },
+            "description": "Prepare wall surfaces",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Prepare wall surfaces",
+              "es": "Preparar superficies de pared"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "a53aa1da-97a3-4089-8731-bb4d664828ae",
+            "unit": "hr",
+            "notes": "352 sf ÷ 350 per hour; rounded up to 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "preparation:labor",
+            "costType": "labor",
+            "quantity": 1.01,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "352 sf ÷ 350 per hour; rounded up to 0.01 hr.",
+              "es": "352 sf ÷ 350 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Prepare wall surfaces — labor",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Prepare wall surfaces — labor",
+              "es": "Preparar superficies de pared — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "3a4e8c73-8934-40ab-b90e-ab5c98d51e76",
+            "unit": "ea",
+            "notes": "1 whole repair package(s): editable purchase allowance, not yield per hole.  Preparation excludes this material.",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000003",
+              "sku": "283433",
+              "url": "https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689",
+              "unit": "ea",
+              "brand": "DAP",
+              "model": "12327",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "32 oz as labeled",
+              "product": "DryDex Dry Time Indicator Spackling Paste",
+              "cacheHit": false,
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD03",
+              "unitCost": 11.48,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": null,
+              "validUntil": null,
+              "limitations": [
+                "No convertir oz a fl oz sin confirmar volumen/peso en especificación.",
+                "No es el mismo modelo que DAP 12330 vendido por Lowe's; no asumir equivalencia exacta.",
+                "HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "oz_as_labeled",
+                "amount": 32,
+                "purchase_unit": "container"
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": "fresh",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "repair:material",
+            "costType": "material",
+            "quantity": 1,
+            "unitCost": 11.48,
+            "catalogId": "00000000-0000-4000-8000-000000000003",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "1 whole repair package(s): editable purchase allowance, not yield per hole.  Preparation excludes this material.",
+              "es": "1 envases completos para reparación: supuesto de compra editable, no rendimiento por agujero.  La preparación excluye este material."
+            },
+            "description": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled",
+            "needsReview": true,
+            "priceSource": "SKU 283433 | model 12327 | ea | https://www.homedepot.com/p/DAP-DryDex-32-oz-Dry-Time-Indicator-Spackling-Paste-12327/100155689 | The Home Depot · DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled · public online price; branch/ZIP unverified",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled",
+              "es": "DAP DryDex Dry Time Indicator Spackling Paste · 32 oz as labeled"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "5850f5b2-95a1-4f49-8f48-1b772d8d4054",
+            "unit": "hr",
+            "notes": "1 patches ÷ 8 per hour; rounded up to 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "repair:labor",
+            "costType": "labor",
+            "quantity": 0.13,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "1 patches ÷ 8 per hour; rounded up to 0.01 hr.",
+              "es": "1 reparaciones ÷ 8 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Minor wall patch material — labor",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Minor wall patch material — labor",
+              "es": "Material para reparación menor — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "7aab66d8-1b64-41e2-8dd7-a13230a93cb4",
+            "unit": "gal",
+            "notes": "Whole purchasable packages; coverage and waste are editable assumptions.",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "sku": "433052",
+              "url": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+              "unit": "gal",
+              "brand": "BEHR",
+              "model": "275001",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "1 US gal · eggshell · Ultra Pure White",
+              "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+              "cacheHit": false,
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD01",
+              "unitCost": 46.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                "factor": 128,
+                "to_unit": "US_fl_oz"
+              },
+              "validUntil": null,
+              "limitations": [
+                "La ficha muestra Select store. No se aplicó promoción de tarjeta. Precio leído al abrir página original en web; HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "US_gallon",
+                "color": "Ultra Pure White",
+                "sheen": "eggshell",
+                "amount": 1
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": "fresh",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "painting:material",
+            "takeoff": {
+              "coats": 2,
+              "areaSqFt": 352,
+              "packages": 4,
+              "wastePercent": 10,
+              "packageGallons": 1,
+              "requiredGallons": 3.0976,
+              "coverageSqFtPerGallon": 250
+            },
+            "costType": "material",
+            "quantity": 4,
+            "unitCost": 46.98,
+            "catalogId": "00000000-0000-4000-8000-000000000001",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "Whole purchasable packages; coverage and waste are editable assumptions.",
+              "es": "Envases completos; rendimiento y desperdicio son supuestos editables."
+            },
+            "description": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White",
+            "needsReview": true,
+            "priceSource": "SKU 433052 | model 275001 | gal | https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159 | The Home Depot · BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White · public online price; branch/ZIP unverified",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White",
+              "es": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer · 1 US gal · eggshell · Ultra Pure White"
+            },
+            "ruleOverrides": {},
+            "technicalCoverage": {
+              "range": [
+                250,
+                400
+              ],
+              "value": 250,
+              "status": "documented-range-assumption",
+              "profile": {
+                "id": "behr-ultra-275001-white-eggshell-v1",
+                "base": "Ultra Pure White",
+                "role": "paint",
+                "basis": "Per applied layer at stated wet/dry film; not a whole multi-coat system guarantee.",
+                "range": [
+                  250,
+                  400
+                ],
+                "sheen": "eggshell",
+                "version": 1,
+                "filmMils": [
+                  {
+                    "dry": 2.4,
+                    "wet": 6.4,
+                    "coverage": 250
+                  },
+                  {
+                    "dry": 1.5,
+                    "wet": 4,
+                    "coverage": 400
+                  }
+                ],
+                "identity": {
+                  "skus": [
+                    "433052"
+                  ],
+                  "unit": "gal",
+                  "brand": "BEHR",
+                  "model": "275001",
+                  "package": "1 US gal · eggshell · Ultra Pure White",
+                  "product": "BEHR ULTRA Ultra Pure White Eggshell Interior Paint & Primer",
+                  "variant": ""
+                },
+                "revision": "11/2020",
+                "bridgeUrl": "https://www.homedepot.com/p/BEHR-ULTRA-1-gal-Ultra-Pure-White-Extra-Durable-Eggshell-Enamel-Interior-Paint-Primer-275001/203202159",
+                "criterion": "lower-range-bound-estimating-choice",
+                "pdfSha256": "8e88f1fa499c0735d9bbc0ff40ad7e069f45010c1c2f6b677ae363cc70b916e8",
+                "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/da/dae4efe2-cd05-4c12-b7f8-344757743ad9.pdf",
+                "conditions": {
+                  "en": "Prepared, clean, dry substrate; texture, porosity and application affect coverage. Spray loss excluded. Coat count and job waste require review. No labor productivity inferred.",
+                  "es": "Soporte preparado, limpio y seco; textura, porosidad y aplicación afectan rendimiento. Excluye pérdida por pulverización. Revisar manos y merma de obra. Sin productividad laboral inferida."
+                },
+                "scopeLimit": "Only model275001/Ultra Pure White/eggshell/1USgal; not2753/2754, PREMIUM PLUS or other sheens.",
+                "sourcePage": 1,
+                "consultedAt": "2026-10-28",
+                "coverageUnit": "sf/USgal/coat",
+                "corroborationUrl": "https://www.behr.com/pro/products/interior-products/interior-paints-and-coatings/paints-and-coatings/behr-ultra-interior/behr-ultra-interior-eggshell-enamel-2750",
+                "manufacturerNumber": "2750",
+                "manufacturerGuarantee": false,
+                "applicationTemperatureF": [
+                  50,
+                  90
+                ]
+              },
+              "criterion": "lower-range-bound-estimating-choice",
+              "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/da/dae4efe2-cd05-4c12-b7f8-344757743ad9.pdf",
+              "documentRevision": "11/2020",
+              "manufacturerGuarantee": false
+            }
+          },
+          {
+            "id": "0291a4f6-2f99-4dcc-8253-fcb5657ad17e",
+            "unit": "hr",
+            "notes": "704 coat-sf ÷ 150 per hour; rounded up to 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "painting:labor",
+            "costType": "labor",
+            "quantity": 4.7,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "704 coat-sf ÷ 150 per hour; rounded up to 0.01 hr.",
+              "es": "704 sf-mano ÷ 150 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Interior wall paint — labor",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Interior wall paint — labor",
+              "es": "Pintura interior de paredes — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "f48fe735-ec03-4f42-9abc-304e90335d89",
+            "unit": "sf",
+            "notes": "Consumables allowance only; excludes separately counted paint and patch material.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "cleanup:material",
+            "costType": "material",
+            "quantity": 352,
+            "unitCost": 0.03,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "Consumables allowance only; excludes separately counted paint and patch material.",
+              "es": "Supuesto solo para consumibles; excluye pintura y material de reparación contados aparte."
+            },
+            "description": "Clean and remove protection",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Clean and remove protection",
+              "es": "Limpiar y retirar protecciones"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "e5925a60-70eb-46cb-a691-2b4e9c1e8350",
+            "unit": "hr",
+            "notes": "352 sf ÷ 1000 per hour; rounded up to 0.01 hr.",
+            "price": {
+              "reason": "ASSUMED_PRODUCTIVITY_AND_RATE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "cleanup:labor",
+            "costType": "labor",
+            "quantity": 0.36,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "352 sf ÷ 1000 per hour; rounded up to 0.01 hr.",
+              "es": "352 sf ÷ 1000 por hora; redondeado hacia arriba a 0.01 hr."
+            },
+            "description": "Clean and remove protection — labor",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Clean and remove protection — labor",
+              "es": "Limpiar y retirar protecciones — mano de obra"
+            },
+            "ruleOverrides": {}
+          },
+          {
+            "id": "611177ec-0818-424c-b46d-c3f20a88b991",
+            "unit": "gal",
+            "notes": "Primer: whole packages calculated from explicitly selected sheet and editable job inputs. No consumable labor added; primer application hours are reviewed separately.",
+            "price": {
+              "id": "00000000-0000-4000-8000-000000000002",
+              "sku": "",
+              "url": "https://www.homedepot.com/p/KILZ-KILZ-2-ALL-PURPOSE-1-gal-White-Interior-Exterior-Multi-Surface-Primer-Sealer-and-Stain-Blocker-20941/100096395",
+              "unit": "gal",
+              "brand": "KILZ",
+              "model": "20941",
+              "reason": null,
+              "source": "phase-a-research",
+              "status": "public_observed",
+              "vendor": "The Home Depot",
+              "freight": "unknown",
+              "package": "1 US gal · White",
+              "product": "KILZ 2 ALL PURPOSE White Interior/Exterior Primer",
+              "cacheHit": false,
+              "category": "public-online-reference",
+              "currency": "USD",
+              "evidence": "official_product_page_opened_in_web_direct_HTTP_403",
+              "location": "Sunset #6616, 5600 Sunset Blvd, Hollywood, CA 90028",
+              "salesTax": "unknown",
+              "sourceId": "HD02",
+              "unitCost": 22.98,
+              "checkedAt": "2026-10-17",
+              "freshness": "fresh",
+              "sourceUrl": "https://github.com/builder-one-stop/kevin-estimator/issues/2#issuecomment-6241898228",
+              "conversion": {
+                "note": "Conversión de galón estadounidense nominal; no certifica contenido neto medido.",
+                "factor": 128,
+                "to_unit": "US_fl_oz"
+              },
+              "validUntil": null,
+              "limitations": [
+                "Modelo observado 20941, no sustituir por otro código histórico de KILZ 2.",
+                "Precio no vinculado a Sunset #6616; HTTP directo 403."
+              ],
+              "packageData": {
+                "unit": "US_gallon",
+                "color": "White",
+                "amount": 1
+              },
+              "supplierUrl": "https://www.homedepot.com/l/Sunset/CA/Hollywood/90028/6616",
+              "verifiedZip": null,
+              "localContext": "supplier_has_LA_branch_online_price_not_localized",
+              "paintcareFee": "unknown_or_not_applicable",
+              "priceVersion": 1,
+              "substitution": false,
+              "verification": {
+                "market": {
+                  "city": "Los Angeles",
+                  "region": "CA",
+                  "country": "US",
+                  "currency": "USD"
+                },
+                "reason": null,
+                "status": "public_observed",
+                "ageDays": 11,
+                "checkedAt": "2026-10-17",
+                "validUntil": null,
+                "policyVersion": "source-evidence-1",
+                "productMatched": true,
+                "reviewAfterDays": 30,
+                "branchZipMatched": false,
+                "externallyQueried": false
+              },
+              "priceCategory": "public-online-reference",
+              "sourceVersion": "phase-A-research-1",
+              "evidenceMethod": "official_product_page_opened_in_web_direct_HTTP_403",
+              "supplierCoverage": "Sucursal local comprobada; precio/producto/stock no vinculados a esta sucursal.",
+              "externallyQueried": false,
+              "inventoryVerified": false,
+              "observationFreshness": "fresh",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "supplement:primer-dea419c85a699224:material",
+            "takeoff": {
+              "coats": 1,
+              "areaSqFt": 352,
+              "packages": 2,
+              "areaSource": "room-walls",
+              "wastePercent": 10,
+              "packageGallons": 1,
+              "requiredGallons": 1.2907,
+              "coverageSqFtPerGallon": 300
+            },
+            "costType": "material",
+            "quantity": 2,
+            "unitCost": 22.98,
+            "catalogId": "00000000-0000-4000-8000-000000000002",
+            "markupBps": null,
+            "priceDate": "2026-10-17",
+            "ruleNotes": {
+              "en": "Primer: whole packages calculated from explicitly selected sheet and editable job inputs. No consumable labor added; primer application hours are reviewed separately.",
+              "es": "Imprimante: envases completos calculados con la ficha elegida y parámetros editables de obra. Sin mano de obra adicional para consumibles; las horas de imprimación se revisan aparte."
+            },
+            "description": "KILZ 2 ALL PURPOSE White Interior/Exterior Primer · 1 US gal · White",
+            "needsReview": true,
+            "priceSource": "model 20941 | gal | https://www.homedepot.com/p/KILZ-KILZ-2-ALL-PURPOSE-1-gal-White-Interior-Exterior-Multi-Surface-Primer-Sealer-and-Stain-Blocker-20941/100096395 | The Home Depot · KILZ 2 ALL PURPOSE White Interior/Exterior Primer · 1 US gal · White · public online price; branch/ZIP unverified",
+            "ruleVersion": "interior-walls-1",
+            "materialRole": "primer",
+            "priceMissing": false,
+            "translations": {
+              "en": "KILZ 2 ALL PURPOSE White Interior/Exterior Primer · 1 US gal · White",
+              "es": "KILZ 2 ALL PURPOSE White Interior/Exterior Primer · 1 US gal · White"
+            },
+            "ruleOverrides": {},
+            "quantityPending": false,
+            "technicalCoverage": {
+              "range": [
+                300,
+                400
+              ],
+              "value": 300,
+              "status": "documented-range-assumption",
+              "profile": {
+                "id": "kilz2-20941-white-us1gal-v1",
+                "base": "White",
+                "role": "primer",
+                "basis": "Per applied layer at stated wet/dry film; not a whole multi-coat system guarantee.",
+                "range": [
+                  300,
+                  400
+                ],
+                "sheen": "primer; sheen depends on substrate",
+                "version": 1,
+                "filmMils": [
+                  {
+                    "dry": 1.7,
+                    "wet": 5.3,
+                    "coverage": 300
+                  },
+                  {
+                    "dry": 1.3,
+                    "wet": 4,
+                    "coverage": 400
+                  }
+                ],
+                "identity": {
+                  "skus": [
+                    "",
+                    "140770"
+                  ],
+                  "unit": "gal",
+                  "brand": "KILZ",
+                  "model": "20941",
+                  "package": "1 US gal · White",
+                  "product": "KILZ 2 ALL PURPOSE White Interior/Exterior Primer",
+                  "variant": ""
+                },
+                "revision": "03/2019 (legacy header 6/2014)",
+                "bridgeUrl": "https://www.homedepot.com/p/KILZ-KILZ-2-ALL-PURPOSE-1-gal-White-Interior-Exterior-Multi-Surface-Primer-Sealer-and-Stain-Blocker-20941/100096395",
+                "criterion": "lower-range-bound-estimating-choice",
+                "pdfSha256": "0e72498490391aef975c7952d1ad8637ac13cb6e5291e30f3beb537cb26f0dc9",
+                "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/b5/b505644b-bcec-4656-9ad9-64839581d23d.pdf",
+                "conditions": {
+                  "en": "Prepared, clean, dry substrate; texture, porosity and application affect coverage. Spray loss excluded. Coat count and job waste require review. No labor productivity inferred.",
+                  "es": "Soporte preparado, limpio y seco; textura, porosidad y aplicación afectan rendimiento. Excluye pérdida por pulverización. Revisar manos y merma de obra. Sin productividad laboral inferida."
+                },
+                "scopeLimit": "Only model20941/KILZ2 All-Purpose White/1USgal; notGray, KILZ3 or other formulations.",
+                "sourcePage": 1,
+                "consultedAt": "2026-10-28",
+                "coverageUnit": "sf/USgal/coat",
+                "corroborationUrl": "https://www.kilz.com/primer/kilz-2",
+                "manufacturerNumber": "2000",
+                "manufacturerGuarantee": false,
+                "applicationTemperatureF": [
+                  50,
+                  90
+                ]
+              },
+              "criterion": "lower-range-bound-estimating-choice",
+              "sourceUrl": "https://images.thdstatic.com/catalog/pdfImages/b5/b505644b-bcec-4656-9ad9-64839581d23d.pdf",
+              "documentRevision": "03/2019 (legacy header 6/2014)",
+              "manufacturerGuarantee": false
+            },
+            "materialSelectionId": "primer-dea419c85a699224"
+          },
+          {
+            "id": "c796313a-4b9d-435d-a8a0-4c0896156396",
+            "unit": "hr",
+            "notes": "Primer application labor hours pending. Finish-paint coats/productivity do not establish primer labor. Confirm incremental hours, or explicitly enter zero if already included; no extra hours assumed.",
+            "price": {
+              "reason": "PRIMER_LABOR_HOURS_PENDING",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "supplement:primer:labor",
+            "costType": "labor",
+            "quantity": 1,
+            "unitCost": 75,
+            "markupBps": null,
+            "priceDate": "",
+            "rateBasis": {
+              "mode": "contractor_cost",
+              "source": "editable-cost-assumption",
+              "baseRate": 75,
+              "burdenRate": null,
+              "basePending": false,
+              "burdenPercent": null,
+              "separateBurden": false,
+              "statisticalWage": false,
+              "verifiedContractorPrice": false
+            },
+            "ruleNotes": {
+              "en": "Primer application labor hours pending. Finish-paint coats/productivity do not establish primer labor. Confirm incremental hours, or explicitly enter zero if already included; no extra hours assumed.",
+              "es": "Horas de aplicación de imprimante pendientes. Las manos/productividad de terminación no determinan este trabajo. Confirma horas adicionales o indica cero explícitamente si ya están incluidas; sin horas adicionales supuestas."
+            },
+            "description": "Primer application - labor",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Primer application - labor",
+              "es": "Aplicación de imprimante - mano de obra"
+            },
+            "ruleOverrides": {},
+            "quantityPending": true
+          },
+          {
+            "id": "0f38f1ac-a2fb-4ab5-87c3-d35c186c8442",
+            "unit": "lot",
+            "notes": "5% of material and labor cost; excludes this expenses line. No tax or freight claim.",
+            "price": {
+              "reason": "NO_BACKED_PRICE",
+              "source": "rule-assumption",
+              "status": "provisional",
+              "category": "provisional-assumption",
+              "internalPriceApproval": "not-recorded"
+            },
+            "origin": "rule-engine",
+            "taskId": "bedroom-walls",
+            "ruleKey": "expenses:expenses",
+            "costType": "other",
+            "quantity": 1,
+            "unitCost": 40.16,
+            "markupBps": null,
+            "priceDate": "",
+            "ruleNotes": {
+              "en": "5% of material and labor cost; excludes this expenses line. No tax or freight claim.",
+              "es": "5% del costo de materiales y mano de obra; excluye esta partida. No incluye impuestos ni flete confirmados."
+            },
+            "description": "Job expenses allowance",
+            "needsReview": true,
+            "priceSource": "Editable provisional assumption — no confirmed local price",
+            "ruleVersion": "interior-walls-1",
+            "translations": {
+              "en": "Job expenses allowance",
+              "es": "Supuesto de gastos del trabajo"
+            },
+            "ruleOverrides": {},
+            "expenseCalculation": {
+              "mode": "percentage",
+              "percent": 5,
+              "baseCents": 80320,
+              "amountCents": 4016
+            }
+          }
+        ],
+        "title": "Bedroom"
+      }
+    ],
+    "conversationId": "9ac45b78-385a-48cb-9f59-1ef844cb678f",
+    "pricingContext": {
+      "jobZip": ""
+    },
+    "materialPricing": {
+      "tax": null,
+      "stock": null,
+      "source": "server-internal-catalog",
+      "freight": null,
+      "externallyQueried": false
+    }
+  },
+  "version": 3,
+  "created_at": "2026-10-28T16:50:35.272Z",
+  "updated_at": "2026-10-28T16:50:40.456Z",
+  "finalized_at": null,
+  "finalized_version": null,
+  "finalization_request_id": null
+}
